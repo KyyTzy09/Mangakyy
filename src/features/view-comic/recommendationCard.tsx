@@ -10,7 +10,7 @@ interface Props {
     data: ComicType
 }
 
-export default function RecomendationCard({ data }: Props) {
+export default function RecommendationCard({ data }: Props) {
     return (
         <Link to={`/read/${data.manga_id}`}>
             <div
