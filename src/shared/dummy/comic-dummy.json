@@ -1,0 +1,664 @@
+{
+    "retcode": 0,
+    "message": "success",
+    "meta": {
+        "request_id": "e0ac7ab4-83fe-4e78-8c59-a67f6d50971b",
+        "timestamp": 1772088483392,
+        "process_time": "1ms",
+        "page": 1,
+        "page_size": 10,
+        "total_page": 1,
+        "total_record": 5
+    },
+    "data": [
+        {
+            "alternative_title": "마왕18세",
+            "bookmark_count": 10704,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770211510599_cvgef3.webp",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770221738829_f4vqwx.jpg",
+            "created_at": "2026-02-04T13:26:05Z",
+            "deleted_at": null,
+            "description": "Ravis Vindica, putra dari Raja Iblis Agung yang menguasai Dunia Iblis.\nKarena bertindak sewenang-wenang dan memusnahkan satu keluarga iblis yang memberontak, ia dijatuhi hukuman berupa pengasingan ke Dunia Manusia.\n\nSaat menjalani kehidupan dalam tubuh seorang siswa biasa, ia menyadari bahwa kekuatan sihir iblis yang seharusnya tidak bisa ia gunakan ternyata bereaksi terhadap “kejahatan”.\n\nSedikit demi sedikit ia mulai memahami cara menggunakan kekuatannya, dan ia pun memulai pencarian petunjuk untuk kembali ke Dunia Iblis.",
+            "is_recommended": true,
+            "latest_chapter_id": "ac099173-0b1b-4a9e-b245-c80c09cec8a0",
+            "latest_chapter_number": 28,
+            "latest_chapter_time": "2026-02-24T16:23:15Z",
+            "manga_id": "08888cf1-daa0-4189-ada9-d06416f333fa",
+            "rank": 9999,
+            "release_year": "2026",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "The 18 Year Old Demon King",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 0,
+            "view_count": 1740434
+        },
+        {
+            "alternative_title": "暴君名家の反逆者-Aster-",
+            "bookmark_count": 15710,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770078119503_niu0mj.png",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770125090621_rxnpb5.jpg",
+            "created_at": "2026-02-03T00:24:27Z",
+            "deleted_at": null,
+            "description": "Ash mengabdikan seluruh hidupnya kepada ayah angkatnya, bertekad membalas budi karena telah diterima dan dibesarkan sebagai seorang yatim piatu.\n\nNamun, kebenaran yang ia ketahui tepat di ambang kematian ternyata sama sekali berbeda.\n\nSemua usaha yang telah ia bangun…\n\nSemua kepercayaan yang telah ia berikan…\n\nBahkan kekuatan terhebat yang sejak awal terlahir bersamanya —Seven Wings—\n\nSemuanya telah dirampas darinya…!\n\nKalau begitu…\n\nAkankah kita memulai kehidupan pembalasan dan pembalikan takdir?",
+            "is_recommended": true,
+            "latest_chapter_id": "e6bb52a5-fc56-468c-860e-e3e81f02c2b6",
+            "latest_chapter_number": 10,
+            "latest_chapter_time": "2026-02-24T00:32:26Z",
+            "manga_id": "07cba925-da21-497e-a5e0-b2ca712917df",
+            "rank": 9999,
+            "release_year": "2026",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "The Rebel Of The Tyrant Noble Family",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 8.5,
+            "view_count": 1047302
+        },
+        {
+            "alternative_title": "히든 특성 13개 들고 시작한다",
+            "bookmark_count": 12731,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/image/016c54be-82d5-42a5-a4e0-f14f8c67e21b.jpg",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/image/ddc72240-8bc7-458f-889a-63f3aa1b396b.jpg",
+            "created_at": "2025-11-20T15:51:07Z",
+            "deleted_at": null,
+            "description": "Dunia di mana permainan dan kenyataan menyatu.\n\nKisah seorang pria yang awalnya memiliki 13 sifat tersembunyi.",
+            "is_recommended": true,
+            "latest_chapter_id": "e74d38dd-5e00-4641-9b7a-3efe1b9e20eb",
+            "latest_chapter_number": 19,
+            "latest_chapter_time": "2026-02-23T14:50:33Z",
+            "manga_id": "15495a79-526d-4349-b23d-ba2fa866a6bd",
+            "rank": 9999,
+            "release_year": "2025",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "I Start With 13 Hidden Traits",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 8.5,
+            "view_count": 1559905
+        },
+        {
+            "alternative_title": "Aku? Kamu?",
+            "bookmark_count": 3250,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770559935410_uqj5e3.jpg",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770559999533_338c39.jpg",
+            "created_at": "2024-11-23T22:00:09Z",
+            "deleted_at": null,
+            "description": "Haloo gess selamat datang di Shinigami News!!! abstract Title\n\nShinigami News di web update tiap hari Minggu.\n\nDisini buat senang-senang aja! Yang ribut langsung gw ban!",
+            "is_recommended": true,
+            "latest_chapter_id": "c454d70b-6e70-455f-8f4d-5223c57826d6",
+            "latest_chapter_number": 45,
+            "latest_chapter_time": "2026-02-22T14:18:51Z",
+            "manga_id": "eda86a93-42fc-4442-a672-da8f1c2f5624",
+            "rank": 9999,
+            "release_year": "2024",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Shinigami ID",
+                        "slug": "shinigami-id-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Shinigami ID",
+                        "slug": "shinigami-id"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    },
+                    {
+                        "name": "Adventure",
+                        "slug": "adventure"
+                    },
+                    {
+                        "name": "Fantasy",
+                        "slug": "fantasy"
+                    },
+                    {
+                        "name": "Martial Arts",
+                        "slug": "martial-arts"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "Shinigami News",
+            "updated_at": "2026-02-26T06:14:12Z",
+            "user_rate": 0,
+            "view_count": 1630482
+        },
+        {
+            "alternative_title": "마신",
+            "bookmark_count": 9494,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770949462525_h3p4ko.jpg",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770949472234_0z30m8.jpg",
+            "created_at": "2026-01-28T22:41:28Z",
+            "deleted_at": null,
+            "description": "Dari Penulis yang mengerjakan dan dari Studio yang mengerjakan dan masih banyak lagi!]\n\nSeratus anak terperangkap di Gunung Hengshan. Hanya satu yang berhasil keluar hidup-hidup, seorang anak laki-laki bernama Dan Hyeongwoo.\n\nIa bertahan dari neraka yang diciptakan oleh Cheon Gija dan sebagai gantinya memperoleh kekuatan yang layak disebut sebagai kekuatan dewa iblis. Namun, dunia terasa asing baginya, dan aturan-aturannya sama sekali tak masuk akal…\n\nKarena itu, ia menjadi seorang pendekar pengawal di Agen Pengawalan Henan, mempelajari kembali apa arti menjadi manusia dan bagaimana dunia bekerja, dari nol.\n\nSemua yang ia lakukan hanya demi satu tujuan: hari ketika ia akan menuntut balas pada Cheon Gija.",
+            "is_recommended": true,
+            "latest_chapter_id": "6726f322-b47f-4ab3-bc9f-093ebaa7db07",
+            "latest_chapter_number": 18,
+            "latest_chapter_time": "2026-02-22T12:13:39Z",
+            "manga_id": "9ca53068-027e-499c-8ec7-fc0c8a95c252",
+            "rank": 9999,
+            "release_year": "2026",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "JHS Studio",
+                        "slug": "jhs-studio"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Woo",
+                        "slug": "woo-author"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    },
+                    {
+                        "name": "Adventure",
+                        "slug": "adventure"
+                    },
+                    {
+                        "name": "Fantasy",
+                        "slug": "fantasy"
+                    },
+                    {
+                        "name": "Martial Arts",
+                        "slug": "martial-arts"
+                    },
+                    {
+                        "name": "Murim",
+                        "slug": "murim"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "The Demon God",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 8.5,
+            "view_count": 1284564
+        },
+        {
+            "alternative_title": "마왕18세",
+            "bookmark_count": 10704,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770211510599_cvgef3.webp",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770221738829_f4vqwx.jpg",
+            "created_at": "2026-02-04T13:26:05Z",
+            "deleted_at": null,
+            "description": "Ravis Vindica, putra dari Raja Iblis Agung yang menguasai Dunia Iblis.\nKarena bertindak sewenang-wenang dan memusnahkan satu keluarga iblis yang memberontak, ia dijatuhi hukuman berupa pengasingan ke Dunia Manusia.\n\nSaat menjalani kehidupan dalam tubuh seorang siswa biasa, ia menyadari bahwa kekuatan sihir iblis yang seharusnya tidak bisa ia gunakan ternyata bereaksi terhadap “kejahatan”.\n\nSedikit demi sedikit ia mulai memahami cara menggunakan kekuatannya, dan ia pun memulai pencarian petunjuk untuk kembali ke Dunia Iblis.",
+            "is_recommended": true,
+            "latest_chapter_id": "ac099173-0b1b-4a9e-b245-c80c09cec8a0",
+            "latest_chapter_number": 28,
+            "latest_chapter_time": "2026-02-24T16:23:15Z",
+            "manga_id": "08888cf1-daa0-4189-ada9-d06416f333fa",
+            "rank": 9999,
+            "release_year": "2026",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "The 18 Year Old Demon King",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 0,
+            "view_count": 1740434
+        },
+        {
+            "alternative_title": "暴君名家の反逆者-Aster-",
+            "bookmark_count": 15710,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770078119503_niu0mj.png",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770125090621_rxnpb5.jpg",
+            "created_at": "2026-02-03T00:24:27Z",
+            "deleted_at": null,
+            "description": "Ash mengabdikan seluruh hidupnya kepada ayah angkatnya, bertekad membalas budi karena telah diterima dan dibesarkan sebagai seorang yatim piatu.\n\nNamun, kebenaran yang ia ketahui tepat di ambang kematian ternyata sama sekali berbeda.\n\nSemua usaha yang telah ia bangun…\n\nSemua kepercayaan yang telah ia berikan…\n\nBahkan kekuatan terhebat yang sejak awal terlahir bersamanya —Seven Wings—\n\nSemuanya telah dirampas darinya…!\n\nKalau begitu…\n\nAkankah kita memulai kehidupan pembalasan dan pembalikan takdir?",
+            "is_recommended": true,
+            "latest_chapter_id": "e6bb52a5-fc56-468c-860e-e3e81f02c2b6",
+            "latest_chapter_number": 10,
+            "latest_chapter_time": "2026-02-24T00:32:26Z",
+            "manga_id": "07cba925-da21-497e-a5e0-b2ca712917df",
+            "rank": 9999,
+            "release_year": "2026",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "The Rebel Of The Tyrant Noble Family",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 8.5,
+            "view_count": 1047302
+        },
+        {
+            "alternative_title": "히든 특성 13개 들고 시작한다",
+            "bookmark_count": 12731,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/image/016c54be-82d5-42a5-a4e0-f14f8c67e21b.jpg",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/image/ddc72240-8bc7-458f-889a-63f3aa1b396b.jpg",
+            "created_at": "2025-11-20T15:51:07Z",
+            "deleted_at": null,
+            "description": "Dunia di mana permainan dan kenyataan menyatu.\n\nKisah seorang pria yang awalnya memiliki 13 sifat tersembunyi.",
+            "is_recommended": true,
+            "latest_chapter_id": "e74d38dd-5e00-4641-9b7a-3efe1b9e20eb",
+            "latest_chapter_number": 19,
+            "latest_chapter_time": "2026-02-23T14:50:33Z",
+            "manga_id": "15495a79-526d-4349-b23d-ba2fa866a6bd",
+            "rank": 9999,
+            "release_year": "2025",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Menyusul",
+                        "slug": "menyusul"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "I Start With 13 Hidden Traits",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 8.5,
+            "view_count": 1559905
+        },
+        {
+            "alternative_title": "Aku? Kamu?",
+            "bookmark_count": 3250,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770559935410_uqj5e3.jpg",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770559999533_338c39.jpg",
+            "created_at": "2024-11-23T22:00:09Z",
+            "deleted_at": null,
+            "description": "Haloo gess selamat datang di Shinigami News!!! abstract Title\n\nShinigami News di web update tiap hari Minggu.\n\nDisini buat senang-senang aja! Yang ribut langsung gw ban!",
+            "is_recommended": true,
+            "latest_chapter_id": "c454d70b-6e70-455f-8f4d-5223c57826d6",
+            "latest_chapter_number": 45,
+            "latest_chapter_time": "2026-02-22T14:18:51Z",
+            "manga_id": "eda86a93-42fc-4442-a672-da8f1c2f5624",
+            "rank": 9999,
+            "release_year": "2024",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "Shinigami ID",
+                        "slug": "shinigami-id-0"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Shinigami ID",
+                        "slug": "shinigami-id"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    },
+                    {
+                        "name": "Adventure",
+                        "slug": "adventure"
+                    },
+                    {
+                        "name": "Fantasy",
+                        "slug": "fantasy"
+                    },
+                    {
+                        "name": "Martial Arts",
+                        "slug": "martial-arts"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "Shinigami News",
+            "updated_at": "2026-02-26T06:14:12Z",
+            "user_rate": 0,
+            "view_count": 1630482
+        },
+        {
+            "alternative_title": "마신",
+            "bookmark_count": 9494,
+            "country_id": "KR",
+            "cover_image_url": "https://assets.shngm.id/thumbnail/cover/banner_1770949462525_h3p4ko.jpg",
+            "cover_portrait_url": "https://assets.shngm.id/thumbnail/cover/banner_1770949472234_0z30m8.jpg",
+            "created_at": "2026-01-28T22:41:28Z",
+            "deleted_at": null,
+            "description": "Dari Penulis yang mengerjakan dan dari Studio yang mengerjakan dan masih banyak lagi!]\n\nSeratus anak terperangkap di Gunung Hengshan. Hanya satu yang berhasil keluar hidup-hidup, seorang anak laki-laki bernama Dan Hyeongwoo.\n\nIa bertahan dari neraka yang diciptakan oleh Cheon Gija dan sebagai gantinya memperoleh kekuatan yang layak disebut sebagai kekuatan dewa iblis. Namun, dunia terasa asing baginya, dan aturan-aturannya sama sekali tak masuk akal…\n\nKarena itu, ia menjadi seorang pendekar pengawal di Agen Pengawalan Henan, mempelajari kembali apa arti menjadi manusia dan bagaimana dunia bekerja, dari nol.\n\nSemua yang ia lakukan hanya demi satu tujuan: hari ketika ia akan menuntut balas pada Cheon Gija.",
+            "is_recommended": true,
+            "latest_chapter_id": "6726f322-b47f-4ab3-bc9f-093ebaa7db07",
+            "latest_chapter_number": 18,
+            "latest_chapter_time": "2026-02-22T12:13:39Z",
+            "manga_id": "9ca53068-027e-499c-8ec7-fc0c8a95c252",
+            "rank": 9999,
+            "release_year": "2026",
+            "status": 1,
+            "taxonomy": {
+                "Artist": [
+                    {
+                        "name": "JHS Studio",
+                        "slug": "jhs-studio"
+                    }
+                ],
+                "Author": [
+                    {
+                        "name": "Woo",
+                        "slug": "woo-author"
+                    }
+                ],
+                "Format": [
+                    {
+                        "name": "Manhwa",
+                        "slug": "manhwa"
+                    }
+                ],
+                "Genre": [
+                    {
+                        "name": "Action",
+                        "slug": "action"
+                    },
+                    {
+                        "name": "Adventure",
+                        "slug": "adventure"
+                    },
+                    {
+                        "name": "Fantasy",
+                        "slug": "fantasy"
+                    },
+                    {
+                        "name": "Martial Arts",
+                        "slug": "martial-arts"
+                    },
+                    {
+                        "name": "Murim",
+                        "slug": "murim"
+                    }
+                ],
+                "Type": [
+                    {
+                        "name": "Project",
+                        "slug": "project"
+                    }
+                ]
+            },
+            "title": "The Demon God",
+            "updated_at": "2026-02-26T06:24:11Z",
+            "user_rate": 8.5,
+            "view_count": 1284564
+        }
+    ],
+    "facet": {
+        "release_year": {
+            "2024": 1,
+            "2025": 1,
+            "2026": 3
+        },
+        "taxonomy.Artist.name": {
+            "JHS Studio": 1,
+            "Menyusul": 3,
+            "Shinigami ID": 1
+        },
+        "taxonomy.Artist.slug": {
+            "jhs-studio": 1,
+            "menyusul-0": 3,
+            "shinigami-id-0": 1
+        },
+        "taxonomy.Author.name": {
+            "Menyusul": 3,
+            "Shinigami ID": 1,
+            "Woo": 1
+        },
+        "taxonomy.Author.slug": {
+            "menyusul": 3,
+            "shinigami-id": 1,
+            "woo-author": 1
+        },
+        "taxonomy.Format.name": {
+            "Manhwa": 5
+        },
+        "taxonomy.Format.slug": {
+            "manhwa": 5
+        },
+        "taxonomy.Genre.name": {
+            "Action": 3,
+            "Adventure": 2,
+            "Fantasy": 2,
+            "Martial Arts": 2,
+            "Murim": 1
+        },
+        "taxonomy.Genre.slug": {
+            "action": 3,
+            "adventure": 2,
+            "fantasy": 2,
+            "martial-arts": 2,
+            "murim": 1
+        },
+        "taxonomy.Type.name": {
+            "Project": 5
+        },
+        "taxonomy.Type.slug": {
+            "project": 5
+        }
+    }
+}
