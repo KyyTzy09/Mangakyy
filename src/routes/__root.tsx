@@ -5,19 +5,13 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-
-import Header from '../components/Header'
-
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
-
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-
 import appCss from '../styles.css?url'
-
 import type { QueryClient } from '@tanstack/react-query'
-
-import type { TRPCRouter } from '#/integrations/trpc/router'
+import type { TRPCRouter } from '@/integrations/trpc/router'
 import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
+import Navbar from '@/features/index/navbar'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -36,7 +30,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Mangakyy',
       },
     ],
     links: [
@@ -55,9 +49,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className='bg-black/95 min-h-screen pt-20'>
+        <Navbar />
         <TanStackQueryProvider>
-          <Header />
           {children}
           <TanStackDevtools
             config={{
