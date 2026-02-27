@@ -1,7 +1,7 @@
 import LatestCard from '@/features/view-comic/latestCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
-import type { ComicType } from '@/shared/types/comicResponse.type'
+import type { ComicType } from '@/shared/interfaces'
 import { useNavigate } from '@tanstack/react-router'
 import { LucideTimer } from 'lucide-react'
 import React from 'react'

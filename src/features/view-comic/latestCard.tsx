@@ -1,4 +1,4 @@
-import type { ComicType } from '@/shared/types/comicResponse.type'
+import type { ComicType } from '@/shared/interfaces'
 import { displayCountryName } from '@/shared/utils/countryConverter'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
 import { Bookmark, Clock, Eye, Globe, Star } from 'lucide-react'

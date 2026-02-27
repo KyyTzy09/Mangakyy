@@ -1,7 +1,7 @@
 import RecommendationCard from '@/features/view-comic/recommendationCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
-import type { ComicType } from '@/shared/types/comicResponse.type'
+import type { ComicType } from '@/shared/interfaces'
 import { TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 

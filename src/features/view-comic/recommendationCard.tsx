@@ -1,5 +1,5 @@
 import { Label } from '@/shared/shadcn/label'
-import type { ComicType } from '@/shared/types/comicResponse.type'
+import type { ComicType } from '@/shared/interfaces'
 import { countryCodeToFlag } from '@/shared/utils/countryConverter'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
 import { Link } from '@tanstack/react-router'

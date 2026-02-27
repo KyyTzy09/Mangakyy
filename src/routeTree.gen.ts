@@ -10,8 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UpdateIndexRouteImport } from './routes/update/index'
-import { Route as ReadMangaIdRouteImport } from './routes/read/$mangaId'
+import { Route as UpdateIndexRouteImport } from './routes/update.index'
+import { Route as ReadMangaIdRouteImport } from './routes/read.$mangaId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
 const IndexRoute = IndexRouteImport.update({

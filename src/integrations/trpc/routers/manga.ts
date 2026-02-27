@@ -1,10 +1,13 @@
+import { shinigamiService } from "@/api/service/shinigami";
 import { createTRPCRouter, publicProcedure } from "../init";
 
 export const mangaRouter = createTRPCRouter({
-    getPopular: publicProcedure.query(async () => {
-        return [{
-            judul: "Haloo",
-            hai: "Halo"
-        }]
+    getRecommendationComic: publicProcedure.query(async () => {
+        const data = await shinigamiService.getComicRecomendation("manhwa")
+        return data?.data
+    }),
+    getPopularComic: publicProcedure.query(async () => {
+        const data = await shinigamiService.getPopularComic()
+        return data?.data
     })
 })

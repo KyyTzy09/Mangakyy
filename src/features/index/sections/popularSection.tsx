@@ -1,12 +1,12 @@
 import RecommendationCard from '@/features/view-comic/recommendationCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
-import type { ComicType } from '@/shared/types/comicResponse.type'
+import type { ComicType, PopularComic } from '@/shared/interfaces'
 import { Flame } from 'lucide-react'
 import React, { useState } from 'react'
 
 interface Props {
-    popular: ComicType[]
+    popular: PopularComic[]
 }
 
 const popularButton = [
@@ -48,9 +48,9 @@ export default function PopularSection({ popular }: Props) {
                 </div>
             </header>
             <div className='grid grid-cols-5 w-full gap-3'>
-                {popular?.map((data,i) => {
+                {popular?.map((data, i) => {
                     return (
-                        <RecommendationCard data={data} index={i} key={i} />
+                        <RecommendationCard data={data as ComicType} index={i} key={i} />
                     )
                 })}
             </div>
