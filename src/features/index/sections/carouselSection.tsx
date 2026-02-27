@@ -20,7 +20,7 @@ export default function CarouselSection() {
         <AnimatePresence mode="wait">
             <motion.div
                 key={index}
-                className="relative w-full h-95 rounded-2xl bg-zinc-900 overflow-hidden"
+                className="relative w-full h-[300px] md:h-[380px] lg:h-[420px] rounded-2xl bg-zinc-900"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}

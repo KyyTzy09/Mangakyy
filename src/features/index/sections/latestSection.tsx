@@ -21,9 +21,9 @@ export default function LatestSection({ latest }: Props) {
                 </Label>
             </header>
             <div className='grid grid-cols-3 md:flex md:flex-col w-full h-full gap-2'>
-                {latest?.map((data) => {
+                {latest?.map((data,i ) => {
                     return (
-                        <LatestCard data={data} />
+                        <LatestCard key={i} data={data} />
                     )
                 }).slice(0, 5)}
             </div>

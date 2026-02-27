@@ -36,7 +36,7 @@ export default function LatestCard({ data }: Props) {
                     {/* status badge */}
                     <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-xs backdrop-blur">
                         <div className="h-2 w-2 rounded-full bg-green-400" />
-                        {status}
+                        
                     </div>
 
                     {/* year */}

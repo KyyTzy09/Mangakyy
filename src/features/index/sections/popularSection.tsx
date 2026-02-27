@@ -35,9 +35,10 @@ export default function PopularSection({ popular }: Props) {
                     Populer {selectedType.title}
                 </Label>
                 <div className='flex items-center justify-between bg-gray-600/20 backdrop-blur-sm w-auto h-auto p-2 rounded-full gap-2'>
-                    {popularButton.map(({ title, value }) => {
+                    {popularButton.map(({ title, value }, i) => {
                         return (
                             <Button
+                                key={i}
                                 onClick={() => setSelectedType({ title, value })}
                                 className={`${selectedType.value === value ? "bg-primary" : "bg-transparent text-gray-400"}  hover:bg-blue-400 rounded-full transition duration-700 font-semibold`}>
                                 {title}
@@ -49,7 +50,7 @@ export default function PopularSection({ popular }: Props) {
             <div className='grid grid-cols-5 w-full gap-3'>
                 {popular?.map((data,i) => {
                     return (
-                        <RecommendationCard data={data} index={i} />
+                        <RecommendationCard data={data} index={i} key={i} />
                     )
                 })}
             </div>

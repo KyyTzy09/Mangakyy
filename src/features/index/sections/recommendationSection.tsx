@@ -38,9 +38,10 @@ export default function RecommendationSection({ recommendation }: Props) {
                     Rekomendasi Teratas
                 </Label>
                 <div className='flex items-center justify-between bg-gray-600/20 backdrop-blur-sm w-auto h-auto p-2 rounded-full gap-2'>
-                    {recommendationButton.map(({ title, value }) => {
+                    {recommendationButton.map(({ title, value },i) => {
                         return (
                             <Button
+                                key={i}
                                 onClick={() => handleRecommendationClick(value as "manhwa" | "manga" | "manhua")}
                                 className={`${value === selectedType ? "bg-primary text-white" : "bg-transparent text-gray-400"} rounded-full transition duration-700 font-semibold hover:text-white hover:bg-transparent`}>
                                 {title}
@@ -52,7 +53,7 @@ export default function RecommendationSection({ recommendation }: Props) {
             <div className='grid grid-cols-5 w-full gap-3'>
                 {recommendation?.map((data, i) => {
                     return (
-                        <RecommendationCard data={data} index={i} />
+                        <RecommendationCard key={i} data={data} index={i} />
                     )
                 })}
             </div>
