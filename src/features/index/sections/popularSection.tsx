@@ -1,29 +1,32 @@
+import RecommendationCard from '@/features/view-comic/recommendationCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import type { ComicType } from '@/shared/types/comicResponse.type'
 import { Flame } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface Props {
     popular: ComicType[]
 }
 
-const recommendationButton = [
+const popularButton = [
     {
-        title: "Minggu ini",
-        value: ""
+        title: "Harian",
+        value: "daily"
     },
     {
-        title: "Manhua",
-        value: "manhua"
+        title: "Mingguan",
+        value: "weekly"
     },
     {
-        title: "Manhwa",
-        value: "manhwa"
+        title: "Semua",
+        value: "all_time"
     },
 ]
 
 export default function PopularSection({ popular }: Props) {
+    const [selectedType, setSelectedType] = useState<string>()
+
     return (
         <section className='flex flex-col w-full h-full text-white'>
             <header className='flex items-center justify-between w-full'>
@@ -32,18 +35,22 @@ export default function PopularSection({ popular }: Props) {
                     Populer { }
                 </Label>
                 <div className='flex items-center justify-between bg-gray-600/20 backdrop-blur-sm w-auto h-auto p-2 rounded-full gap-2'>
-                    {Array.from({ length: 3 }).map(() => {
+                    {popularButton.map(({ title, value }) => {
                         return (
                             <Button
                                 className='bg-transparent hover:bg-primary rounded-full transition duration-700 font-semibold'>
-                                Button
+                                {title}
                             </Button>
                         )
                     })}
                 </div>
             </header>
             <div className='grid grid-cols-5 w-full gap-3'>
-
+                {popular?.map((data) => {
+                    return (
+                        <RecommendationCard data={data} />
+                    )
+                })}
             </div>
         </section>
     )
