@@ -10,11 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UpdateIndexRouteImport } from './routes/update/index'
+import { Route as ReadMangaIdRouteImport } from './routes/read/$mangaId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdateIndexRoute = UpdateIndexRouteImport.update({
+  id: '/update/',
+  path: '/update/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadMangaIdRoute = ReadMangaIdRouteImport.update({
+  id: '/read/$mangaId',
+  path: '/read/$mangaId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
@@ -25,27 +37,35 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/read/$mangaId': typeof ReadMangaIdRoute
+  '/update/': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/read/$mangaId': typeof ReadMangaIdRoute
+  '/update': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/read/$mangaId': typeof ReadMangaIdRoute
+  '/update/': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/trpc/$'
+  fullPaths: '/' | '/read/$mangaId' | '/update/' | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/trpc/$'
-  id: '__root__' | '/' | '/api/trpc/$'
+  to: '/' | '/read/$mangaId' | '/update' | '/api/trpc/$'
+  id: '__root__' | '/' | '/read/$mangaId' | '/update/' | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ReadMangaIdRoute: typeof ReadMangaIdRoute
+  UpdateIndexRoute: typeof UpdateIndexRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
@@ -56,6 +76,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/update/': {
+      id: '/update/'
+      path: '/update'
+      fullPath: '/update/'
+      preLoaderRoute: typeof UpdateIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/read/$mangaId': {
+      id: '/read/$mangaId'
+      path: '/read/$mangaId'
+      fullPath: '/read/$mangaId'
+      preLoaderRoute: typeof ReadMangaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/trpc/$': {
@@ -70,6 +104,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ReadMangaIdRoute: ReadMangaIdRoute,
+  UpdateIndexRoute: UpdateIndexRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,4 +1,5 @@
 import { Button } from '@/shared/shadcn/button'
+import { Input } from '@/shared/shadcn/input'
 import { Link } from '@tanstack/react-router'
 import { Bell, Search, User } from 'lucide-react'
 
@@ -22,7 +23,7 @@ export default function Navbar() {
             <div className='flex w-full h-full items-center justify-between px-5'>
                 <section className='w-1/2 flex items-center gap-6'>
                     <div className='text-xl'>
-                        <Link to={"/"} class>
+                        <Link to={"/"}>
                             <span className='text-white font-bold'>
                                 BLUE
                             </span>
@@ -47,7 +48,7 @@ export default function Navbar() {
                     <div className='hidden md:flex text-gray-400 items-center justify-between w-75 h-full rounded-full bg-gray-600/20 backdrop-blur-sm pl-2 gap-2'>
                         <div className='flex items-center justify-start w-[80%] gap-2'>
                             <Search className='w-4 h-4' />
-                            <input placeholder="Cari komik" className='w-[70%] h-full' />
+                            <Input placeholder="Cari komik" className='w-[70%] h-full aria-selected:ring-0 focus-visible:ring-0 border-0' />
                         </div>
                         <Button className='flex items-center justify-center w-10 h-full rounded-full bg-primary text-white'>
                             <Search className='w-4 h-4' />

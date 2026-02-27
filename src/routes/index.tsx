@@ -10,7 +10,7 @@ export const Route = createFileRoute('/')({ component: App })
 function App() {
   return (
     <div className='font-primary flex flex-col w-full min-h-screen px-5 md:px-20'>
-      <div className='flex flex-col w-full h-full gap-10 bg-linear-to-b from-transparent via-black to-primary px-5'>
+      <div className='flex flex-col w-full h-full gap-10 bg-linear-to-b from-transparent via-black to-primary px-5 pt-20'>
         <div className='w-full'>
           <CarouselSection />
         </div>

@@ -25,20 +25,21 @@ const popularButton = [
 ]
 
 export default function PopularSection({ popular }: Props) {
-    const [selectedType, setSelectedType] = useState<string>()
+    const [selectedType, setSelectedType] = useState<{ title: string, value: string }>({ title: "Harian", value: "daily" })
 
     return (
-        <section className='flex flex-col w-full h-full text-white'>
+        <section className='flex flex-col w-full h-full text-white gap-5'>
             <header className='flex items-center justify-between w-full'>
                 <Label className='text-white font-semibold text-2xl'>
                     <Flame className='w-6 h-6 text-red-500' />
-                    Populer { }
+                    Populer {selectedType.title}
                 </Label>
                 <div className='flex items-center justify-between bg-gray-600/20 backdrop-blur-sm w-auto h-auto p-2 rounded-full gap-2'>
                     {popularButton.map(({ title, value }) => {
                         return (
                             <Button
-                                className='bg-transparent hover:bg-primary rounded-full transition duration-700 font-semibold'>
+                                onClick={() => setSelectedType({ title, value })}
+                                className={`${selectedType.value === value ? "bg-primary" : "bg-transparent text-gray-400"}  hover:bg-blue-400 rounded-full transition duration-700 font-semibold`}>
                                 {title}
                             </Button>
                         )
@@ -46,9 +47,9 @@ export default function PopularSection({ popular }: Props) {
                 </div>
             </header>
             <div className='grid grid-cols-5 w-full gap-3'>
-                {popular?.map((data) => {
+                {popular?.map((data,i) => {
                     return (
-                        <RecommendationCard data={data} />
+                        <RecommendationCard data={data} index={i} />
                     )
                 })}
             </div>

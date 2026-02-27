@@ -4,16 +4,21 @@ import { countryCodeToFlag } from '@/shared/utils/countryConverter'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
 import { Link } from '@tanstack/react-router'
 import { Star, Timer } from 'lucide-react'
-import React from 'react'
+import { motion } from 'motion/react'
 
 interface Props {
     data: ComicType
+    index: number
 }
 
-export default function RecommendationCard({ data }: Props) {
+export default function RecommendationCard({ data, index }: Props) {
     return (
         <Link to={`/read/${data.manga_id}`}>
-            <div
+            <motion.div
+                initial={{ translateY: 10 }}
+                animate={{ translateY: 0 }}
+                exit={{ translateY: 10 }}
+                transition={{ delay: index * 0.1 }}
                 key={data.manga_id}
                 className='group flex flex-col w-full h-auto font-primary text-white bg-black gap-3 p-2 rounded-sm'>
                 <div className='relative w-full h-65 overflow-hidden rounded-md'>
@@ -45,7 +50,7 @@ export default function RecommendationCard({ data }: Props) {
                         {formatRelativeTime(new Date(data.latest_chapter_time))}
                     </Label>
                 </div>
-            </div>
+            </motion.div>
         </Link>
     )
 }

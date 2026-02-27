@@ -2,6 +2,7 @@ import LatestCard from '@/features/view-comic/latestCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import type { ComicType } from '@/shared/types/comicResponse.type'
+import { useNavigate } from '@tanstack/react-router'
 import { LucideTimer } from 'lucide-react'
 import React from 'react'
 
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function LatestSection({ latest }: Props) {
+    const navigate = useNavigate()
     return (
         <section className='flex flex-col w-full gap-2 p-2 rounded-md'>
             <header className='flex items-center justify-between w-full'>
@@ -25,7 +27,7 @@ export default function LatestSection({ latest }: Props) {
                     )
                 }).slice(0, 5)}
             </div>
-            <Button className='flex items-center justify-center w-full bg-gray-600 transition duration-700'>
+            <Button onClick={() => navigate({ to: "/update" })} className='flex items-center justify-center w-full bg-gray-600 transition duration-700'>
                 {" Selengkapnya >"}
             </Button>
         </section>

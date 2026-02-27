@@ -50,9 +50,9 @@ export default function RecommendationSection({ recommendation }: Props) {
                 </div>
             </header>
             <div className='grid grid-cols-5 w-full gap-3'>
-                {recommendation?.map((data) => {
+                {recommendation?.map((data, i) => {
                     return (
-                        <RecommendationCard data={data} />
+                        <RecommendationCard data={data} index={i} />
                     )
                 })}
             </div>
