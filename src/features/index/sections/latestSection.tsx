@@ -1,4 +1,4 @@
-import LatestCard from '@/features/view-comic/latestCard'
+import LatestCard from '@/features/manga/latestCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import type { ComicType, UpdateComic } from '@/shared/interfaces'

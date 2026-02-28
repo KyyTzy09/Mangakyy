@@ -11,3 +11,7 @@ export function displayCountryName(countryCode: string): string {
 
     return regionName.of(countryCode) as string
 }
+
+export function displayComicType(countryCode: string): string {
+    return countryCode === "KR" ? "Manhwa" : countryCode === "JP" ? "Manga" : "Manhua"
+}

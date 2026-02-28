@@ -1,4 +1,4 @@
-import RecommendationCard from '@/features/view-comic/recommendationCard'
+import RecommendationCard from '@/features/manga/recommendationCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import type { ComicType } from '@/shared/interfaces'

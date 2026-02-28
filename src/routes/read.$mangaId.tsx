@@ -1,11 +1,172 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { getMangaDetail } from '@/api/server/manga'
+import ChapterList from '@/features/chapter/chapterList'
+import Stat from '@/features/manga/detailStatCard'
+import Tag from '@/features/manga/detailTagCard'
+import Selector from '@/shared/components/selector'
+import { Button } from '@/shared/shadcn/button'
+import { Label } from '@/shared/shadcn/label'
+import { displayComicType } from '@/shared/utils/countryConverter'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { ArrowLeft, Eye, Play, Star } from 'lucide-react'
+import type React from 'react'
 
 export const Route = createFileRoute('/read/$mangaId')({
   component: RouteComponent,
+  loader: async ({ params }) => {
+    return await getMangaDetail({ data: { mangaId: params.mangaId } })
+  }
 })
 
-function RouteComponent() {
-  const { useParams } = Route
-  const { mangaId } = useParams()
-  return (<div className='text-white'>manga Id: {mangaId}</div>)
+export default function RouteComponent() {
+  const detail = Route.useLoaderData()
+  const infoCardData = [
+    {
+      title: "Chapter",
+      value: detail?.data.latest_chapter_number,
+
+    },
+    {
+      title: "Status",
+      value: detail?.data.status === 1 ? "Ongoing" : "Completed"
+    },
+    {
+      title: "Type",
+      value: displayComicType(detail?.data?.country_id || "")
+    }
+  ]
+
+  const navigate = useNavigate()
+  return (
+    <main className="flex flex-col items-center justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100">
+      <section className="w-full relative overflow-hidden">
+        <header className='relative z-10 max-w-7xl mx-auto px-6 pt-5'>
+          <Button
+            onClick={() => navigate({ to: "/" })}
+            className='hover:bg-blue-400'
+          >
+            <ArrowLeft className='flex items-center justify-center font-primary' />
+            Kembali
+          </Button>
+        </header>
+        {/* BACKGROUND IMAGE */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={detail?.data.cover_image_url}
+            alt="bg"
+            className="w-full h-full object-cover blur-md scale-110 opacity-70"
+          />
+          {/* DARK OVERLAY */}
+          <div className="absolute inset-0 bg-linear-to-b from-black/40 via-[#0b1a33]/80 to-[#081226]" />
+        </div>
+        {/* CONTENT */}
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-10">
+          <div className="flex flex-col items-center md:items-start md:flex-row gap-8">
+            {/* COVER */}
+            <div className="flex flex-col items-center justify-center shrink-0 gap-4">
+              <img
+                src={detail?.data.cover_image_url}
+                alt="cover"
+                className="rounded-xl shadow-2xl w-[180px] sm:w-[220px] md:w-[240px]" />
+
+              <Button className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                <Play className="w-5 h-5" />
+                Baca Chapter Terbaru
+              </Button>
+            </div>
+
+            {/* DETAILS */}
+            <div className="flex-1">
+              {/* Tags */}
+              <div className="flex gap-2 mb-3 flex-wrap">
+                {detail?.data.taxonomy.Genre.map(({ name }, i) => (
+                  <Tag key={i}>{name}</Tag>
+                ))}
+              </div>
+              {/* Title */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+                {detail?.data.title}
+              </h1>
+              {/* Stats */}
+              <div className="flex gap-6 text-sm text-slate-300 mb-6 flex-wrap">
+                <Stat Icon={Star} color="text-yellow-400">
+                  {detail?.data.user_rate}
+                </Stat>
+                <Stat Icon={Eye} color="text-green-400">
+                  {detail?.data.view_count} Views
+                </Stat>
+              </div>
+
+              {/* Info Cards */}
+              <div className="flex flex-wrap gap-4 mb-6">
+                {infoCardData.map(({ title, value }, i) => (
+                  <InfoCard key={i} title={title}>
+                    {value}
+                  </InfoCard>
+                ))}
+              </div>
+
+              {/* Synopsis */}
+              <div className="max-w-[700px]">
+                <h3 className="font-semibold mb-2">
+                  Sinopsis
+                </h3>
+                <p className="text-slate-300 leading-relaxed">
+                  {detail?.data.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Chapter */}
+      <section className='flex flex-col w-full max-w-7xl min-h-screen items-center justify-start p-8 gap-5'>
+        <header className='flex items-center justify-between w-full'>
+          <Label className='text-white font-semibold text-xl'>
+            Chapter List
+          </Label>
+          <div className=''>
+          </div>
+        </header>
+        <div className='flex flex-col items-center justify-center w-full h-full'>
+          {Array.from({ length: 5 }).map(() => {
+            return <ChapterList chapterId='Yes' image={detail?.data.cover_image_url!} title={"Chapter"} time={new Date(detail?.data.updated_at!)} />
+          })}
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="border-t border-slate-800 py-12 text-center">
+        <div className="text-blue-400 font-bold text-lg mb-2">
+          ManhwaReader
+        </div>
+        <p className="text-slate-500 text-sm mb-4">
+          Your premium destination for the latest and highest quality manhwa
+          translations.
+        </p>
+        <div className="flex justify-center gap-6 text-sm text-slate-500">
+          <span>Terms</span>
+          <span>Privacy</span>
+          <span>Discord</span>
+          <span>Contact</span>
+        </div>
+      </footer>
+    </main>
+  )
+}
+
+/* COMPONENTS */
+
+function InfoCard({ title, children }: { title: string, children: React.ReactNode }) {
+  return (
+    <div className="bg-slate-800 px-4 py-3 rounded-xl min-w-[140px]">
+      <div className="text-xs text-slate-400">
+        {title}
+      </div>
+      <div className="font-semibold">
+        {children}
+      </div>
+    </div>
+  )
 }

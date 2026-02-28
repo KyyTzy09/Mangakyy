@@ -30,7 +30,7 @@ export class ShinigamiService {
     }
 
     public async getComicDetail(comicId: string) {
-        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/detail/${comicId}` })
+        return await apiClient<APIResponse<ComicType>>({ url: `/manga/detail/${comicId}` })
     }
     public async getChapterList(comicId: string, page: number = 1, pageSize: number = 24) {
         return await apiClient<APIResponse<ChapterList[]>>({ url: `/chapter/${comicId}/list?page=${page}&page_size=${pageSize}&sort_by=chapter_number&sort_order=desc` })

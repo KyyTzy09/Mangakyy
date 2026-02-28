@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UpdateIndexRouteImport } from './routes/update.index'
 import { Route as ReadMangaIdRouteImport } from './routes/read.$mangaId'
+import { Route as ChapterChapterIdRouteImport } from './routes/chapter.$chapterId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const ReadMangaIdRoute = ReadMangaIdRouteImport.update({
   path: '/read/$mangaId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChapterChapterIdRoute = ChapterChapterIdRouteImport.update({
+  id: '/chapter/$chapterId',
+  path: '/chapter/$chapterId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
@@ -37,12 +43,14 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
   '/update/': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
   '/update': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
@@ -50,20 +58,33 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
   '/update/': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/read/$mangaId' | '/update/' | '/api/trpc/$'
+  fullPaths:
+    | '/'
+    | '/chapter/$chapterId'
+    | '/read/$mangaId'
+    | '/update/'
+    | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/read/$mangaId' | '/update' | '/api/trpc/$'
-  id: '__root__' | '/' | '/read/$mangaId' | '/update/' | '/api/trpc/$'
+  to: '/' | '/chapter/$chapterId' | '/read/$mangaId' | '/update' | '/api/trpc/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/chapter/$chapterId'
+    | '/read/$mangaId'
+    | '/update/'
+    | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   ReadMangaIdRoute: typeof ReadMangaIdRoute
   UpdateIndexRoute: typeof UpdateIndexRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
@@ -92,6 +113,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReadMangaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chapter/$chapterId': {
+      id: '/chapter/$chapterId'
+      path: '/chapter/$chapterId'
+      fullPath: '/chapter/$chapterId'
+      preLoaderRoute: typeof ChapterChapterIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/trpc/$': {
       id: '/api/trpc/$'
       path: '/api/trpc/$'
@@ -104,6 +132,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChapterChapterIdRoute: ChapterChapterIdRoute,
   ReadMangaIdRoute: ReadMangaIdRoute,
   UpdateIndexRoute: UpdateIndexRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,

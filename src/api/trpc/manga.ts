@@ -1,5 +1,6 @@
 import { shinigamiService } from "@/api/service/shinigami";
-import { createTRPCRouter, publicProcedure } from "../init";
+import { createTRPCRouter, publicProcedure } from "../../integrations/trpc/init";
+import { getComicDetailSchema } from "@/shared/schemas/shinigami.scema";
 
 export const mangaRouter = createTRPCRouter({
     getRecommendationComic: publicProcedure.query(async () => {
@@ -13,5 +14,9 @@ export const mangaRouter = createTRPCRouter({
     getUpdateComic: publicProcedure.query(async () => {
         const data = await shinigamiService.getComicUpdate("project")
         return data
+    }),
+    getComicDetail: publicProcedure.input(getComicDetailSchema).query(async ({ input }) => {
+        const data = await shinigamiService.getComicDetail(input.mangaId)
+        return await data
     })
 })

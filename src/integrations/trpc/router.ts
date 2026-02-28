@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from './init'
 
 import type { TRPCRouterRecord } from '@trpc/server'
-import { mangaRouter } from './routers/manga'
+import { mangaRouter } from '../../api/trpc/manga'
 
 const todos = [
   { id: 1, name: 'Get groceries' },
