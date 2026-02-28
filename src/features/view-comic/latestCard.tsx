@@ -1,10 +1,10 @@
-import type { ComicType } from '@/shared/interfaces'
+import type { ComicType, UpdateComic } from '@/shared/interfaces'
 import { displayCountryName } from '@/shared/utils/countryConverter'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
 import { Bookmark, Clock, Eye, Globe, Star } from 'lucide-react'
 
 interface Props {
-    data: ComicType
+    data: UpdateComic
 }
 
 export default function LatestCard({ data }: Props) {
@@ -12,7 +12,7 @@ export default function LatestCard({ data }: Props) {
 
     return (
         <div
-            className="group relative w-full max-w-md"
+            className="group relative w-full min-h-full max-w-md"
         >
             {/* glow border */}
             <div className="absolute -inset-px rounded-2xl bg-linear-to-r from-primary/0 via-primary/40 to-primary/0 bg-clip-border opacity-0 blur transition duration-500 group-hover:opacity-100" />
@@ -36,7 +36,7 @@ export default function LatestCard({ data }: Props) {
                     {/* status badge */}
                     <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-xs backdrop-blur">
                         <div className="h-2 w-2 rounded-full bg-green-400" />
-                        
+
                     </div>
 
                     {/* year */}

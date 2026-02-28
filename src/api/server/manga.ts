@@ -12,3 +12,8 @@ export const getPopularManga = createServerFn().handler(async ({ context }) => {
     const caller = trpcRouter.createCaller(context!)
     return await caller.manga.getPopularComic()
 })
+
+export const getUpdateManga = createServerFn().handler(async ({ context }) => {
+    const caller = trpcRouter.createCaller(context!)
+    return await caller.manga.getUpdateComic()
+})

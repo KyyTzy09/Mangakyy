@@ -29,7 +29,7 @@ export default function PopularSection({ popular }: Props) {
 
     return (
         <section className='flex flex-col w-full h-full text-white gap-5'>
-            <header className='flex items-center justify-between w-full'>
+            <header className='flex flex-col md:flex-row items-center justify-between w-full gap-2'>
                 <Label className='text-white font-semibold text-2xl'>
                     <Flame className='w-6 h-6 text-red-500' />
                     Populer {selectedType.title}
@@ -47,7 +47,7 @@ export default function PopularSection({ popular }: Props) {
                     })}
                 </div>
             </header>
-            <div className='grid grid-cols-5 w-full gap-3'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-3'>
                 {popular?.map((data, i) => {
                     return (
                         <RecommendationCard data={data as ComicType} index={i} key={i} />

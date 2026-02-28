@@ -25,10 +25,10 @@ export default function Navbar() {
                     <div className='text-xl'>
                         <Link to={"/"}>
                             <span className='text-white font-bold'>
-                                BLUE
+                                MANGA
                             </span>
                             <span className='font-primary font-bold bg-linear-to-r from-blue-400 via-primary to-primary text-transparent bg-clip-text'>
-                                COMIC
+                                KYY
                             </span>
                         </Link>
                     </div>

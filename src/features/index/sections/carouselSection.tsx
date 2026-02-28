@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { ComicType } from "@/shared/interfaces";
 import { cleanText } from "@/shared/utils/cleaner";
+import { Button } from "@/shared/shadcn/button";
+import { useNavigate } from "@tanstack/react-router";
+import { Book, Crown, Star } from "lucide-react";
 
 interface Props {
     recommendations: ComicType[]
@@ -9,6 +12,7 @@ interface Props {
 
 export default function CarouselSection({ recommendations }: Props) {
     const [[index, direction], setSlide] = useState([0, 0]);
+    const navigate = useNavigate()
 
     const paginate = (newIndex: number) => {
         const newDirection = newIndex > index ? 1 : -1;
@@ -46,10 +50,8 @@ export default function CarouselSection({ recommendations }: Props) {
 
     return (
         <div className="relative w-full">
-
             {/* animated area */}
-            <div className="relative h-[300px] md:h-[380px] lg:h-[420px] overflow-hidden rounded-2xl bg-zinc-900">
-
+            <div className="relative h-[230px] md:h-[380px] lg:h-[420px] overflow-hidden rounded-2xl bg-zinc-900">
                 <AnimatePresence mode="wait" custom={direction}>
                     <motion.div
                         key={index}
@@ -72,46 +74,47 @@ export default function CarouselSection({ recommendations }: Props) {
                         />
 
                         {/* content */}
-                        <div className="relative flex h-full items-center gap-8 px-10">
+                        <div className="relative flex h-full items-center gap-8 px-5 md:px-10">
 
                             <img
                                 src={slide?.cover_image_url}
                                 alt="no-image"
-                                className="w-55 h-75 object-cover rounded-xl shadow-lg"
+                                className="w-auto h-[70%] md:w-55 md:h-75 object-cover rounded-xl shadow-lg"
                             />
 
-                            <div className="max-w-xl">
-
-                                <div className="flex gap-2 mb-2">
-                                    <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full">
+                            <div className="flex flex-col max-w-xl gap-2">
+                                <div className="hidden gap-2 md:flex">
+                                    <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full text-[10px] md:text-md">
                                         TRENDING
                                     </span>
 
                                     {slide?.taxonomy?.Genre.map(({ name, slug }) => (
-                                        <span key={slug} className="bg-zinc-700 text-white text-xs px-3 py-1 rounded-full">
+                                        <span key={slug} className="bg-zinc-700 text-white text-[10px] md:text-xs px-3 py-1 rounded-full">
                                             {name}
                                         </span>
                                     ))}
                                 </div>
 
-                                <h1 className="text-4xl font-bold text-white mb-3">
+                                <h1 className="text-lg line-clamp-1 md:line-clamp-none md:text-4xl font-bold text-white">
                                     {slide?.title}
                                 </h1>
 
-                                <p className="text-zinc-400 mb-4 line-clamp-3">
+                                <p className="text-zinc-400 line-clamp-2 md:line-clamp-3">
                                     {cleanText(slide?.description)}
                                 </p>
 
-                                <div className="flex gap-6 text-sm text-zinc-300 mb-6">
-                                    <span>⭐ {slide?.user_rate}</span>
-                                    <span>📖 {slide?.latest_chapter_number} Chapters</span>
-                                    <span>🏆 Rank #{slide?.rank}</span>
+                                <div className="flex gap-6 text-sm text-zinc-300">
+                                    <span className="flex gap-1"><Star className="w-4 h-4 fill-yellow-400 text-white" /> {slide?.user_rate}</span>
+                                    <span className="flex gap-1"><Book className="w-4 h-4 text-white" /> {slide?.latest_chapter_number} Chapters</span>
+                                    <span className="hidden md:flex gap-1"><Crown className="w-4 h-4 fill-yellow-400" /> Rank #{slide?.rank}</span>
                                 </div>
-
-                                <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl text-white font-medium">
-                                    Read Now
-                                </button>
-
+                                <div className="flex items-center justify-start w-full">
+                                    <Button
+                                        onClick={() => navigate({ to: `/read/${slide?.manga_id}` })}
+                                        className="w-auto bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl text-white font-medium">
+                                        Read Now
+                                    </Button>
+                                </div>
                             </div>
                         </div>
 

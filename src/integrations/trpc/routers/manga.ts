@@ -9,5 +9,9 @@ export const mangaRouter = createTRPCRouter({
     getPopularComic: publicProcedure.query(async () => {
         const data = await shinigamiService.getPopularComic()
         return data?.data
+    }),
+    getUpdateComic: publicProcedure.query(async () => {
+        const data = await shinigamiService.getComicUpdate("project")
+        return data
     })
 })

@@ -11,7 +11,7 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import type { TRPCRouter } from '@/integrations/trpc/router'
 import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
-import Navbar from '@/features/index/navbar'
+import Navbar from '@/shared/components/navbar'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -23,14 +23,66 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: "utf-8",
       },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
       },
       {
-        title: 'Mangakyy',
+        title: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis & Terupdate",
+      },
+      {
+        name: "description",
+        content:
+          "Mangakyy adalah platform untuk membaca manga, manhwa, dan manhua gratis dengan update cepat dan koleksi lengkap. Temukan berbagai genre seperti action, romance, fantasy, dan banyak lagi dengan kualitas terbaik.",
+      },
+      {
+        name: "keywords",
+        content:
+          "manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy",
+      },
+      {
+        name: "author",
+        content: "Mangakyy",
+      },
+      {
+        name: "robots",
+        content: "index, follow",
+      },
+
+      // Open Graph (buat preview Discord, Facebook, dll)
+      {
+        property: "og:title",
+        content: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis",
+      },
+      {
+        property: "og:description",
+        content:
+          "Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.",
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        property: "og:site_name",
+        content: "Mangakyy",
+      },
+
+      // Twitter card
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        name: "twitter:title",
+        content: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.",
       },
     ],
     links: [

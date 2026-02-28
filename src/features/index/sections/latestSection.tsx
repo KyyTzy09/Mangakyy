@@ -1,13 +1,13 @@
 import LatestCard from '@/features/view-comic/latestCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
-import type { ComicType } from '@/shared/interfaces'
+import type { ComicType, UpdateComic } from '@/shared/interfaces'
 import { useNavigate } from '@tanstack/react-router'
 import { LucideTimer } from 'lucide-react'
 import React from 'react'
 
 interface Props {
-    latest: ComicType[]
+    latest: UpdateComic[]
 }
 
 export default function LatestSection({ latest }: Props) {
@@ -20,8 +20,8 @@ export default function LatestSection({ latest }: Props) {
                     Update Terbaru
                 </Label>
             </header>
-            <div className='grid grid-cols-3 md:flex md:flex-col w-full h-full gap-2'>
-                {latest?.map((data,i ) => {
+            <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 w-full h-full gap-2'>
+                {latest?.map((data, i) => {
                     return (
                         <LatestCard key={i} data={data} />
                     )
