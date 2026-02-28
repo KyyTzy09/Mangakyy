@@ -1,17 +1,21 @@
 import type { ComicType, UpdateComic } from '@/shared/interfaces'
 import { displayCountryName } from '@/shared/utils/countryConverter'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
+import { useNavigate } from '@tanstack/react-router'
 import { Bookmark, Clock, Eye, Globe, Star } from 'lucide-react'
+import { motion } from 'motion/react'
 
 interface Props {
     data: UpdateComic
 }
 
 export default function LatestCard({ data }: Props) {
-    const { title, cover_image_url: cover, release_year: year, description, user_rate: rating, view_count: views, bookmark_count: saves, country_id: country, updated_at: updatedAgo, taxonomy: { Genre: genres } } = data
+    const navigate = useNavigate()
+    const { manga_id, title, cover_image_url: cover, release_year: year, description, user_rate: rating, view_count: views, bookmark_count: saves, country_id: country, updated_at: updatedAgo, taxonomy: { Genre: genres } } = data
 
     return (
-        <div
+        <motion.div
+            onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: manga_id } })}
             className="group relative w-full min-h-full max-w-md"
         >
             {/* glow border */}
@@ -103,6 +107,6 @@ export default function LatestCard({ data }: Props) {
 
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }

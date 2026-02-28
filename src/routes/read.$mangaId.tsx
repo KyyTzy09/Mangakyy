@@ -143,7 +143,9 @@ export default function RouteComponent() {
                 alt="cover"
                 className="rounded-xl shadow-2xl w-[180px] sm:w-[220px] md:w-[240px]" />
 
-              <Button className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+              <Button
+                onClick={() => navigate({ to: "/chapter/$chapterId", params: { chapterId: detail?.data.latest_chapter_id! } })}
+                className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
                 <Play className="w-5 h-5" />
                 Baca Chapter Terbaru
               </Button>
