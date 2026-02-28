@@ -1,5 +1,5 @@
 
-export function formatRelativeTime(input: Date | string): string {
+export function formatRelativeTime(input: Date | string, withYear?: boolean): string {
     const date = typeof input === "string" ? new Date(input) : input;
     const now = new Date();
 
@@ -39,8 +39,14 @@ export function formatRelativeTime(input: Date | string): string {
     }
 
     // lebih dari 14 hari → tampil tanggal + bulan
-    return date.toLocaleDateString("id-ID", {
+    const result = !withYear ? date.toLocaleDateString("id-ID", {
         day: "numeric",
         month: "short",
+    }) : date.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
     });
+
+    return result
 }

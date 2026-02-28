@@ -4,6 +4,7 @@ import { createTRPCRouter, publicProcedure } from './init'
 
 import type { TRPCRouterRecord } from '@trpc/server'
 import { mangaRouter } from '../../api/trpc/manga'
+import { chapterRouter } from '@/api/trpc/chapter'
 
 const todos = [
   { id: 1, name: 'Get groceries' },
@@ -24,6 +25,7 @@ const todosRouter = {
 
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
-  manga: mangaRouter
+  manga: mangaRouter,
+  chapter: chapterRouter
 })
 export type TRPCRouter = typeof trpcRouter

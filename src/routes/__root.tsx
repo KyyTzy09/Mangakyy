@@ -12,6 +12,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import type { TRPCRouter } from '@/integrations/trpc/router'
 import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import Navbar from '@/shared/components/navbar'
+import { Activity } from 'react'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -101,7 +102,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className='bg-black/95 min-h-screen pt-20'>
+      <body className="bg-black/95 min-h-screen">
         <Navbar />
         <TanStackQueryProvider>
           {children}

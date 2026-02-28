@@ -1,10 +1,12 @@
+import { getChapterList } from '@/api/server/chapter'
 import { getMangaDetail } from '@/api/server/manga'
 import ChapterList from '@/features/chapter/chapterList'
 import Stat from '@/features/manga/detailStatCard'
 import Tag from '@/features/manga/detailTagCard'
-import Selector from '@/shared/components/selector'
+import type { ComicDetail } from '@/shared/interfaces'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
+import { Separator } from '@/shared/shadcn/separator'
 import { displayComicType } from '@/shared/utils/countryConverter'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft, Eye, Play, Star } from 'lucide-react'
@@ -13,12 +15,84 @@ import type React from 'react'
 export const Route = createFileRoute('/read/$mangaId')({
   component: RouteComponent,
   loader: async ({ params }) => {
-    return await getMangaDetail({ data: { mangaId: params.mangaId } })
-  }
+    return {
+      detail: await getMangaDetail({ data: { mangaId: params.mangaId } }),
+      chapters: await getChapterList({ data: { mangaId: params.mangaId, page: 1 } })
+    }
+  },
+  head: async ({ loaderData }) => {
+    const data = loaderData
+    return {
+      meta: [
+        {
+          charSet: "utf-8",
+        },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        {
+          title: `${data?.detail?.data.title}`,
+        },
+        {
+          name: "description",
+          content:
+            `${data?.detail?.data.description}`,
+        },
+        {
+          name: "keywords",
+          content:
+            "manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy",
+        },
+        {
+          name: "author",
+          content: "Mangakyy",
+        },
+        {
+          name: "robots",
+          content: "index, follow",
+        },
+
+        // Open Graph (buat preview Discord, Facebook, dll)
+        {
+          property: "og:title",
+          content: `${data?.detail?.data.title}`,
+        },
+        {
+          property: "og:description",
+          content:
+            "Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.",
+        },
+        {
+          property: "og:type",
+          content: "website",
+        },
+        {
+          property: "og:site_name",
+          content: "Mangakyy",
+        },
+
+        // Twitter card
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          name: "twitter:title",
+          content: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis",
+        },
+        {
+          name: "twitter:description",
+          content:
+            "Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.",
+        },
+      ]
+    }
+  },
 })
 
 export default function RouteComponent() {
-  const detail = Route.useLoaderData()
+  const { detail, chapters } = Route.useLoaderData()
   const infoCardData = [
     {
       title: "Chapter",
@@ -37,7 +111,7 @@ export default function RouteComponent() {
 
   const navigate = useNavigate()
   return (
-    <main className="flex flex-col items-center justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100">
+    <main className="flex flex-col items-center justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20">
       <section className="w-full relative overflow-hidden">
         <header className='relative z-10 max-w-7xl mx-auto px-6 pt-5'>
           <Button
@@ -129,9 +203,10 @@ export default function RouteComponent() {
           <div className=''>
           </div>
         </header>
+        <Separator className='w-full bg-primary' />
         <div className='flex flex-col items-center justify-center w-full h-full'>
-          {Array.from({ length: 5 }).map(() => {
-            return <ChapterList chapterId='Yes' image={detail?.data.cover_image_url!} title={"Chapter"} time={new Date(detail?.data.updated_at!)} />
+          {chapters?.data?.map(({ chapter_id, chapter_number, thumbnail_image_url, release_date }) => {
+            return <ChapterList chapterId={chapter_id} image={thumbnail_image_url} title={`Chapter ${chapter_number}`} time={new Date(release_date)} />
           })}
         </div>
       </section>
