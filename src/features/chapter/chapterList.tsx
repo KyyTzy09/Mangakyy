@@ -9,12 +9,19 @@ interface Props {
     image: string
     title: string
     time: Date
+    index: number
 }
 
-export default function ChapterList({ chapterId, image, title, time }: Props) {
+export default function ChapterList({ chapterId, image, title, time, index }: Props) {
     const navigate = useNavigate()
     return (
-        <motion.div onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId } })} className="group flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 transition p-4 rounded-xl mb-2 cursor-pointer">
+        <motion.div
+            initial={{ translateY: 10 }}
+            animate={{ translateY: 0 }}
+            exit={{ translateY: 10 }}
+            transition={{ delay: index * 0.1 }}
+            onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId } })}
+            className="group flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 transition p-4 rounded-xl mb-2 cursor-pointer">
             <div className="flex gap-4 items-center">
                 <img
                     src={image}

@@ -7,14 +7,19 @@ import { motion } from 'motion/react'
 
 interface Props {
     data: UpdateComic
+    index: number
 }
 
-export default function LatestCard({ data }: Props) {
+export default function LatestCard({ data, index }: Props) {
     const navigate = useNavigate()
     const { manga_id, title, cover_image_url: cover, release_year: year, description, user_rate: rating, view_count: views, bookmark_count: saves, country_id: country, updated_at: updatedAgo, taxonomy: { Genre: genres } } = data
 
     return (
         <motion.div
+            initial={{ translateY: 10 }}
+            animate={{ translateY: 0 }}
+            exit={{ translateY: 10 }}
+            transition={{ delay: index * 0.1 }}
             onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: manga_id } })}
             className="group relative w-full min-h-full max-w-md"
         >

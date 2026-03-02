@@ -154,7 +154,7 @@ export default function RouteComponent() {
             {/* DETAILS */}
             <div className="flex-1">
               {/* Tags */}
-              <div className="flex gap-2 mb-3 flex-wrap">
+              <div className="flex gap-2 mb-3 flex-wrap items-center justify-center md:justify-start">
                 {detail?.data.taxonomy.Genre.map(({ name }, i) => (
                   <Tag key={i}>{name}</Tag>
                 ))}
@@ -174,7 +174,7 @@ export default function RouteComponent() {
               </div>
 
               {/* Info Cards */}
-              <div className="flex flex-wrap gap-4 mb-6">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-6">
                 {infoCardData.map(({ title, value }, i) => (
                   <InfoCard key={i} title={title}>
                     {value}
@@ -207,8 +207,8 @@ export default function RouteComponent() {
         </header>
         <Separator className='w-full bg-primary' />
         <div className='flex flex-col items-center justify-center w-full h-full'>
-          {chapters?.data?.map(({ chapter_id, chapter_number, thumbnail_image_url, release_date }) => {
-            return <ChapterList chapterId={chapter_id} image={thumbnail_image_url} title={`Chapter ${chapter_number}`} time={new Date(release_date)} />
+          {chapters?.data?.map(({ chapter_id, chapter_number, thumbnail_image_url, release_date }, i) => {
+            return <ChapterList chapterId={chapter_id} index={i} image={thumbnail_image_url} title={`Chapter ${chapter_number}`} time={new Date(release_date)} />
           })}
         </div>
       </section>
@@ -237,7 +237,7 @@ export default function RouteComponent() {
 
 function InfoCard({ title, children }: { title: string, children: React.ReactNode }) {
   return (
-    <div className="bg-slate-800 px-4 py-3 rounded-xl min-w-[140px]">
+    <div className="bg-slate-800 px-4 py-3 rounded-xl min-w-[100px]">
       <div className="text-xs text-slate-400">
         {title}
       </div>
