@@ -1,8 +1,15 @@
 import z from "zod";
 
+export const getRecommendationComicSchema = z.object({
+    format: z.enum(["manhwa", "manhua", "manga"]).optional() || "manhwa",
+    page: z.number().optional() || 1,
+    pageSize: z.number().optional() || 10
+})
+
 export const getPopularComicSchema = z.object({
     type: z.enum(["daily", "weekly", "all_time"]).optional() || "all_time",
-    page: z.number().optional() || 1
+    page: z.number().optional() || 1,
+    pageSize: z.number().optional() || 10
 })
 
 export const getComicDetailSchema = z.object({

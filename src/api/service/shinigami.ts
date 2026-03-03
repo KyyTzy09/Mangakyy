@@ -2,8 +2,8 @@ import { apiClient } from "@/shared/http/apiClient";
 import type { APIResponse, ChapterDetail, ChapterList, ComicType, PopularComic, TaxonomyItem, UpdateComic } from "@/shared/interfaces";
 
 export class ShinigamiService {
-    public async getComicRecomendation(format: string) {
-        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?format=${format}&page=1&page_size=10&is_recommended=true&sort=latest&sort_order=desc`, method: "get" })
+    public async getComicRecomendation(format: "manhwa" | "manhua" | "manga" = "manga", page: number = 1, pageSize: number = 10) {
+        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?format=${format}&page=${page}&page_size=${pageSize}&is_recommended=true&sort=latest&sort_order=desc`, method: "get" })
     }
 
     public async getComicUpdate(type: string, page: number = 1, pageSize: number = 19) {

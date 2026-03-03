@@ -4,7 +4,7 @@ import { Label } from '@/shared/shadcn/label'
 import type { ComicType, PopularComic } from '@/shared/interfaces'
 import { Flame } from 'lucide-react'
 import { useState } from 'react'
-import { useGetPopularManga } from '../../hooks/query'
+import { useGetPopularManga } from '../../hooks/MangaQuery'
 import RecommendationCardSkeleton from '../RecommendationCardSkeleton'
 
 interface Props {
@@ -42,10 +42,8 @@ export default function PopularSection({ popular }: Props) {
                         return (
                             <Button
                                 key={i}
-                                onClick={() => {
-                                    setSelectedType({ title, value: value as "daily" | "weekly" | "all_time" })
-                                }}
-                                className={`${selectedType.value === value ? "bg-primary" : "bg-transparent text-gray-400"}  hover:bg-blue-400 rounded-full transition duration-700 font-semibold`}>
+                                onClick={() => setSelectedType({ title, value: value as "daily" | "weekly" | "all_time" })}
+                                className={`${value === selectedType.value ? "bg-primary text-white" : "bg-transparent text-gray-400"} rounded-full transition duration-700 font-semibold hover:text-white hover:bg-transparent`}>
                                 {title}
                             </Button>
                         )

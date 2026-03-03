@@ -5,6 +5,8 @@ import type { ComicType } from '@/shared/interfaces'
 import { TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import Selector from '@/shared/components/selector'
+import { useGetRecommendationManga } from '../../hooks/MangaQuery'
+import RecommendationCardSkeleton from '../RecommendationCardSkeleton'
 
 interface Props {
     recommendation: ComicType[]
@@ -26,8 +28,9 @@ const recommendationButton = [
 ]
 
 export default function RecommendationSection({ recommendation }: Props) {
-    const [selectedType, setSelectedType] = useState<string>("manga")
+    const [selectedType, setSelectedType] = useState<"manga" | "manhua" | "manhwa">("manga")
 
+    const { data, isPending } = useGetRecommendationManga(selectedType, recommendation, 1)
     return (
         <section className='flex flex-col justify-center w-full h-full text-white gap-5'>
             <header className='flex flex-col md:flex-row items-center justify-between w-full gap-2'>
@@ -38,11 +41,11 @@ export default function RecommendationSection({ recommendation }: Props) {
                 <Selector items={recommendationButton} selectedValue={selectedType} setSelectedValue={setSelectedType} />
             </header>
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-3'>
-                {recommendation?.map((data, i) => {
+                {!isPending ? data?.map((data, i) => {
                     return (
-                        <RecommendationCard key={i} data={data} index={i} />
+                        <RecommendationCard data={data as ComicType} index={i} key={i} />
                     )
-                })}
+                }) : <RecommendationCardSkeleton count={10} />}
             </div>
         </section>
     )

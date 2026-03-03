@@ -9,7 +9,7 @@ import type { ComicType } from '@/shared/interfaces'
 export const Route = createFileRoute('/')({
   component: App,
   loader: async () => {
-    const recommendation = await getRecommendationManga()
+    const recommendation = await getRecommendationManga({ data: { format: "manga" } })
     return {
       recommendation,
       popular: await getPopularManga({ data: { type: "all_time" } }),

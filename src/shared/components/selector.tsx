@@ -4,7 +4,7 @@ import { Button } from '../shadcn/button'
 interface Props {
     items: { title: string, value: string }[]
     selectedValue: string
-    setSelectedValue: React.Dispatch<React.SetStateAction<string>>
+    setSelectedValue: React.Dispatch<React.SetStateAction<"manga" | "manhua" | "manhwa">>
 }
 
 export default function Selector({ items, selectedValue, setSelectedValue }: Props) {
@@ -14,7 +14,7 @@ export default function Selector({ items, selectedValue, setSelectedValue }: Pro
                 return (
                     <Button
                         key={i}
-                        onClick={() => setSelectedValue(value)}
+                        onClick={() => setSelectedValue(value as "manga" | "manhua" | "manhwa")}
                         className={`${value === selectedValue ? "bg-primary text-white" : "bg-transparent text-gray-400"} rounded-full transition duration-700 font-semibold hover:text-white hover:bg-transparent`}>
                         {title}
                     </Button>
