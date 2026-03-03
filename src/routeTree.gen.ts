@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PopularRouteImport } from './routes/popular'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UpdateIndexRouteImport } from './routes/update.index'
 import { Route as ReadMangaIdRouteImport } from './routes/read.$mangaId'
 import { Route as ChapterChapterIdRouteImport } from './routes/chapter.$chapterId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
+const PopularRoute = PopularRouteImport.update({
+  id: '/popular',
+  path: '/popular',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/popular': typeof PopularRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
   '/update/': typeof UpdateIndexRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/popular': typeof PopularRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
   '/update': typeof UpdateIndexRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/popular': typeof PopularRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
   '/update/': typeof UpdateIndexRoute
@@ -67,15 +76,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/popular'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
     | '/update/'
     | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chapter/$chapterId' | '/read/$mangaId' | '/update' | '/api/trpc/$'
+  to:
+    | '/'
+    | '/popular'
+    | '/chapter/$chapterId'
+    | '/read/$mangaId'
+    | '/update'
+    | '/api/trpc/$'
   id:
     | '__root__'
     | '/'
+    | '/popular'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
     | '/update/'
@@ -84,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PopularRoute: typeof PopularRoute
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   ReadMangaIdRoute: typeof ReadMangaIdRoute
   UpdateIndexRoute: typeof UpdateIndexRoute
@@ -92,6 +110,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/popular': {
+      id: '/popular'
+      path: '/popular'
+      fullPath: '/popular'
+      preLoaderRoute: typeof PopularRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -132,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PopularRoute: PopularRoute,
   ChapterChapterIdRoute: ChapterChapterIdRoute,
   ReadMangaIdRoute: ReadMangaIdRoute,
   UpdateIndexRoute: UpdateIndexRoute,
