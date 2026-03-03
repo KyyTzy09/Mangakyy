@@ -1,10 +1,10 @@
-import LatestCard from '@/features/manga/latestCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
-import type { ComicType, UpdateComic } from '@/shared/interfaces'
+import type { UpdateComic } from '@/shared/interfaces'
 import { useNavigate } from '@tanstack/react-router'
 import { LucideTimer } from 'lucide-react'
 import React from 'react'
+import LatestCard from '@/features/manga/components/cards/LatestCard'
 
 interface Props {
     latest: UpdateComic[]

@@ -1,8 +1,8 @@
-import CarouselSection from '@/features/index/sections/carouselSection'
+import CarouselSection from '@/features/manga/components/sections/CarouselSection'
 import { createFileRoute } from '@tanstack/react-router'
-import RecommendationSection from '@/features/index/sections/recommendationSection'
-import PopularSection from '@/features/index/sections/popularSection'
-import LatestSection from '@/features/index/sections/latestSection'
+import RecommendationSection from '@/features/manga/components/sections/RecommendationSection'
+import PopularSection from '@/features/manga/components/sections/PopularSection'
+import LatestSection from '@/features/manga/components/sections/LatestSection'
 import { getPopularManga, getRecommendationManga, getUpdateManga } from '@/api/server/manga'
 import type { ComicType } from '@/shared/interfaces'
 
