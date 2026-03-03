@@ -25,8 +25,8 @@ export class ShinigamiService {
         return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?page=1&page_size=24&genre_include=${genre}&genre_include_mode=or&genre_exclude_mode=or&sort=latest&sort_order=desc` })
     }
 
-    public async getPopularComic(page: number = 1, pageSize: number = 16) {
-        return await apiClient<APIResponse<PopularComic[]>>({ url: `/manga/top?filter=all_time&page=${page}&page_size=${pageSize}` })
+    public async getPopularComic(filter: "daily" | "weekly" | "all_time" = "all_time", page: number = 1, pageSize: number = 16) {
+        return await apiClient<APIResponse<PopularComic[]>>({ url: `/manga/top?filter=${filter}&page=${page}&page_size=${pageSize}` })
     }
 
     public async getComicDetail(comicId: string) {

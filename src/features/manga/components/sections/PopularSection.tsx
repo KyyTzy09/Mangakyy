@@ -3,7 +3,9 @@ import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import type { ComicType, PopularComic } from '@/shared/interfaces'
 import { Flame } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { useGetPopularManga } from '../../hooks/query'
+import RecommendationCardSkeleton from '../RecommendationCardSkeleton'
 
 interface Props {
     popular: PopularComic[]
@@ -25,7 +27,8 @@ const popularButton = [
 ]
 
 export default function PopularSection({ popular }: Props) {
-    const [selectedType, setSelectedType] = useState<{ title: string, value: string }>({ title: "Harian", value: "daily" })
+    const [selectedType, setSelectedType] = useState<{ title: string, value: "daily" | "weekly" | "all_time" }>({ title: "Harian", value: "daily" })
+    const { data, isPending, refetch } = useGetPopularManga(selectedType.value, popular)
 
     return (
         <section className='flex flex-col w-full h-full text-white gap-5'>
@@ -39,7 +42,9 @@ export default function PopularSection({ popular }: Props) {
                         return (
                             <Button
                                 key={i}
-                                onClick={() => setSelectedType({ title, value })}
+                                onClick={() => {
+                                    setSelectedType({ title, value: value as "daily" | "weekly" | "all_time" })
+                                }}
                                 className={`${selectedType.value === value ? "bg-primary" : "bg-transparent text-gray-400"}  hover:bg-blue-400 rounded-full transition duration-700 font-semibold`}>
                                 {title}
                             </Button>
@@ -48,12 +53,12 @@ export default function PopularSection({ popular }: Props) {
                 </div>
             </header>
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-3'>
-                {popular?.map((data, i) => {
+                {!isPending ? data?.map((data, i) => {
                     return (
                         <RecommendationCard data={data as ComicType} index={i} key={i} />
                     )
-                })}
+                }) : <RecommendationCardSkeleton count={10} />}
             </div>
-        </section>
+        </section >
     )
 }
