@@ -11,10 +11,13 @@ interface Props {
 export default function PaginationSection({ currentPage, setCurrentPage, totalPage }: Props) {
     const paginations = getPagination(currentPage, totalPage || 1)
     return (
-        <section className='flex items-center justify-center w-full gap-4'>
+        <section className='flex items-center justify-center w-full gap-2 text-[10px] md:text-sm'>
             <Button
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage(p => p - 1)}
+                onClick={() => {
+                    setCurrentPage(p => p - 1)
+                    scrollTo({ top: 0, behavior: "smooth" })
+                }}
             >
                 {"<"}
             </Button>
@@ -22,18 +25,21 @@ export default function PaginationSection({ currentPage, setCurrentPage, totalPa
                 {paginations.map((page) =>
                     page === "..." ? (
                         <Button
-                            className={`text-white w-10 flex items-center justify-center border border-gray-500 rounded-md bg-transparent hover:text-white transition`}
+                            className={`text-white w-8 text-[10px] md:text-sm md:w-10 flex items-center justify-center border border-gray-500 rounded-md bg-transparent hover:text-white transition`}
                         >
                             ...
                         </Button>
                     ) : (
                         <Button
                             key={page}
-                            onClick={() => setCurrentPage(Number(page))}
+                            onClick={() => {
+                                setCurrentPage(Number(page))
+                                scrollTo({ top: 0, behavior: "smooth" })
+                            }}
                             className={`${page === currentPage
                                 ? "px-3 py-1 bg-primary"
                                 : "px-3 py-1 bg-transparent"
-                                } text-white w-10 flex items-center justify-center border border-gray-500 rounded-md hover:bg-primary hover:text-white transition`}
+                                } text-white w-8 text-[10px] md:text-sm md:w-10 flex items-center justify-center border border-gray-500 rounded-md hover:bg-primary hover:text-white transition`}
                         >
                             {page}
                         </Button>
@@ -42,7 +48,10 @@ export default function PaginationSection({ currentPage, setCurrentPage, totalPa
             </div>
             <Button
                 disabled={currentPage === totalPage}
-                onClick={() => setCurrentPage(p => p + 1)}
+                onClick={() => {
+                    setCurrentPage(p => p + 1)
+                    scrollTo({ top: 0, behavior: "smooth" })
+                }}
             >
                 {">"}
             </Button>

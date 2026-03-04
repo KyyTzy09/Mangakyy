@@ -13,11 +13,11 @@ export const useGetRecommendationManga = (format: "manga" | "manhua" | "manhwa",
     })
 }
 
-export const useGetPopularManga = (type: "daily" | "weekly" | "all_time", initialData?: PopularComic[], page?: number) => {
+export const useGetPopularManga = (type: "daily" | "weekly" | "all_time", initialData?: PopularComic[], page?: number, pageSize?: number) => {
     return useQuery({
         queryKey: ["popular-manga", type || "all_time", page],
         queryFn: async () => {
-            const data = await trpcClient.manga.getPopularComic.query({ type })
+            const data = await trpcClient.manga.getPopularComic.query({ type, page, pageSize })
             return data?.data
         },
         initialData: initialData,
