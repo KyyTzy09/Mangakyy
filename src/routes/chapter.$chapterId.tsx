@@ -92,7 +92,7 @@ function RouteComponent() {
 
   return (
     <div className='text-white flex flex-col items-center justify-start w-full h-full min-h-screen font-primary gap-3'>
-      <header className="w-full flex items-center justify-between py-4 max-w-3xl">
+      <header className="w-full flex items-center justify-between p-4 max-w-3xl">
         <Button
           onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: detail?.data.prev_chapter_id! } })}
           className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
@@ -116,7 +116,7 @@ function RouteComponent() {
       </header>
       <Separator className='bg-gray-500' />
       {/* View */}
-      <div className='flex w-full py-2 max-w-3xl'>
+      <div className='flex w-full p-4 max-w-3xl'>
         <Button
           onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: detail?.data.manga_id! } })}
           className='hover:bg-blue-400'
@@ -132,7 +132,7 @@ function RouteComponent() {
           )
         })}
       </section>
-      <footer className="w-full flex items-center justify-between py-4 max-w-3xl">
+      <section className="w-full flex items-center justify-between p-4 max-w-3xl">
         <Button
           onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: detail?.data.prev_chapter_id! } })}
           className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
@@ -153,7 +153,7 @@ function RouteComponent() {
         >
           {detail?.data.next_chapter_id ? `Ch. ${detail?.data.next_chapter_number} →` : "Chapter Terakhir"}
         </Button>
-      </footer>
+      </section>
     </div>
   )
 }

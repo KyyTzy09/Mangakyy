@@ -212,23 +212,6 @@ export default function RouteComponent() {
           })}
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-slate-800 py-12 text-center">
-        <div className="text-blue-400 font-bold text-lg mb-2">
-          ManhwaReader
-        </div>
-        <p className="text-slate-500 text-sm mb-4">
-          Your premium destination for the latest and highest quality manhwa
-          translations.
-        </p>
-        <div className="flex justify-center gap-6 text-sm text-slate-500">
-          <span>Terms</span>
-          <span>Privacy</span>
-          <span>Discord</span>
-          <span>Contact</span>
-        </div>
-      </footer>
     </main>
   )
 }

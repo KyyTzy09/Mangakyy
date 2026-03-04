@@ -42,11 +42,11 @@ export default function RecommendationCard({ data, index }: Props) {
                     </div>
                 </div>
                 <div className='flex w-full items-center justify-between text-gray-400'>
-                    <Label className='flex items-center justify-start gap-1 text-[12px] sm:text-[13px]'>
+                    <Label className='flex items-center justify-start gap-1 text-[10px] sm:text-[13px]'>
                         <Timer className='w-3 h-3 sm:w-4 sm:h-4 text-primary' />
                         {data.release_year}
                     </Label>
-                    <Label className='flex items-center justify-between text-[12px] sm:text-[13px]'>
+                    <Label className='flex items-center justify-between text-[10px] sm:text-[13px]'>
                         {formatRelativeTime(new Date(data.latest_chapter_time))}
                     </Label>
                 </div>

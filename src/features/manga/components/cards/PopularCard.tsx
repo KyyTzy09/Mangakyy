@@ -25,7 +25,7 @@ export default function PopularCard({ data: { title, manga_id: mangaId, cover_im
             transition={{ delay: index * 0.1 }}
             className='group relative flex flex-col items-center justify-start w-full h-auto bg-[#232323] overflow-hidden rounded-md gap-2'>
             <div className='relative w-full h-50 sm:h-56 md:h-65'>
-                <img src={cover_image_url || defaultImage} alt='no-image' className='text-white flex items-center justify-center w-full h-full overflow-hidden rounded-md bg-gray-800 object-cover' />
+                <img src={cover_image_url || defaultImage} alt='no-image' className='group-hover:scale-105 text-white flex items-center justify-center w-full h-full overflow-hidden rounded-md bg-gray-800 object-cover transition duration-700' />
                 <Label className='bg-linear-to-br from-transparent to-blue-600 text-sm backdrop-blur-sm px-2 py-1 absolute top-0 left-0 flex items-center justify-center gap-1 text-white rounded-br-sm'>
                     {status === 1 ? "Ongoing" : "Completed"}
                 </Label>

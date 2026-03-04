@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PopularRouteImport } from './routes/popular'
+import { Route as GenreRouteImport } from './routes/genre'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UpdateIndexRouteImport } from './routes/update.index'
 import { Route as ReadMangaIdRouteImport } from './routes/read.$mangaId'
@@ -19,6 +20,11 @@ import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 const PopularRoute = PopularRouteImport.update({
   id: '/popular',
   path: '/popular',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GenreRoute = GenreRouteImport.update({
+  id: '/genre',
+  path: '/genre',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,6 +55,7 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/genre': typeof GenreRoute
   '/popular': typeof PopularRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/genre': typeof GenreRoute
   '/popular': typeof PopularRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/genre': typeof GenreRoute
   '/popular': typeof PopularRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/genre'
     | '/popular'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/genre'
     | '/popular'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/genre'
     | '/popular'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
@@ -101,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GenreRoute: typeof GenreRoute
   PopularRoute: typeof PopularRoute
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   ReadMangaIdRoute: typeof ReadMangaIdRoute
@@ -115,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/popular'
       fullPath: '/popular'
       preLoaderRoute: typeof PopularRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/genre': {
+      id: '/genre'
+      path: '/genre'
+      fullPath: '/genre'
+      preLoaderRoute: typeof GenreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -157,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GenreRoute: GenreRoute,
   PopularRoute: PopularRoute,
   ChapterChapterIdRoute: ChapterChapterIdRoute,
   ReadMangaIdRoute: ReadMangaIdRoute,
