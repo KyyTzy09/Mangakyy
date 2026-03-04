@@ -1,4 +1,4 @@
-import axios, { isAxiosError, type AxiosRequestConfig } from "axios"
+import axios, { type AxiosRequestConfig } from "axios"
 import { getScraperHeaders } from "./headerApi"
 
 const baseurl = "https://api.shngm.io/v1"

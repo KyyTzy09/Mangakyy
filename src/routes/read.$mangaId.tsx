@@ -142,7 +142,6 @@ export default function RouteComponent() {
                 src={detail?.data.cover_image_url}
                 alt="cover"
                 className="rounded-xl shadow-2xl w-[180px] sm:w-[220px] md:w-[240px]" />
-
               <Button
                 onClick={() => navigate({ to: "/chapter/$chapterId", params: { chapterId: detail?.data.latest_chapter_id! } })}
                 className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">

@@ -4,9 +4,9 @@ import { Label } from '@/shared/shadcn/label'
 import type { ComicType } from '@/shared/interfaces'
 import { TrendingUp } from 'lucide-react'
 import { useState } from 'react'
-import Selector from '@/shared/components/selector'
 import { useGetRecommendationManga } from '../../hooks/MangaQuery'
 import RecommendationCardSkeleton from '../RecommendationCardSkeleton'
+import Selector from '@/shared/components/reusable/selector'
 
 interface Props {
     recommendation: ComicType[]

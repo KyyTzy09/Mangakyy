@@ -19,7 +19,7 @@ export function formatRelativeTime(input: Date | string, withYear?: boolean): st
     }
 
     // kurang dari 1 jam
-    if (diffMinutes < 60) {
+    if (diffMinutes <= 60) {
         return `${diffMinutes} menit lalu`;
     }
 
@@ -29,12 +29,12 @@ export function formatRelativeTime(input: Date | string, withYear?: boolean): st
         now.getMonth() === date.getMonth() &&
         now.getDate() === date.getDate();
 
-    if (isSameDay) {
+    if (diffMinutes > 60 && isSameDay || diffMinutes > 60 && diffHours <= 48) {
         return `${diffHours} jam lalu`;
     }
 
     // ≤ 14 hari
-    if (diffDays <= 14) {
+    if (diffDays >= 2 && diffDays <= 14) {
         return `${diffDays} hari lalu`;
     }
 

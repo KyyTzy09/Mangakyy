@@ -11,7 +11,7 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import type { TRPCRouter } from '@/integrations/trpc/router'
 import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
-import Navbar from '@/shared/components/navbar'
+import Navbar from '@/shared/components/layouts/navbar'
 import { Activity } from 'react'
 
 interface MyRouterContext {
