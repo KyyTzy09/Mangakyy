@@ -47,7 +47,7 @@ export default function PaginationSection({ currentPage, setCurrentPage, totalPa
                 )}
             </div>
             <Button
-                disabled={currentPage === totalPage}
+                disabled={currentPage === totalPage || !totalPage}
                 onClick={() => {
                     setCurrentPage(p => p + 1)
                     scrollTo({ top: 0, behavior: "smooth" })

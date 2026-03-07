@@ -5,7 +5,7 @@ import type { ComicType } from '@/shared/interfaces'
 import { TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import { useGetRecommendationManga } from '../../hooks/MangaQuery'
-import RecommendationCardSkeleton from '../RecommendationCardSkeleton'
+import RecommendationCardSkeleton from '../skeletons/RecommendationCardSkeleton'
 import Selector from '@/shared/components/reusable/selector'
 
 interface Props {

@@ -5,7 +5,7 @@ import type { ComicType, PopularComic } from '@/shared/interfaces'
 import { Flame } from 'lucide-react'
 import { useState } from 'react'
 import { useGetPopularManga } from '../../hooks/MangaQuery'
-import RecommendationCardSkeleton from '../RecommendationCardSkeleton'
+import RecommendationCardSkeleton from '../skeletons/RecommendationCardSkeleton'
 
 interface Props {
     popular: PopularComic[]

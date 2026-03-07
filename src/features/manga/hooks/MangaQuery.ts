@@ -1,5 +1,5 @@
 import { trpcClient } from "@/integrations/tanstack-query/root-provider"
-import type { ComicType, PopularComic } from "@/shared/interfaces"
+import type { APIResponse, ComicType, PopularComic } from "@/shared/interfaces"
 import { useQuery } from "@tanstack/react-query"
 
 export const useGetRecommendationManga = (format: "manga" | "manhua" | "manhwa", initialData?: ComicType[], page?: number) => {
@@ -21,5 +21,15 @@ export const useGetPopularManga = (type: "daily" | "weekly" | "all_time", initia
             return data?.data
         },
         initialData: initialData,
+    })
+}
+
+export const useGetMangaByGenre = (initialData: APIResponse<ComicType[]>, query: string, genres: string[], page?: number) => {
+    return useQuery({
+        queryKey: ["genres-manga", genres, query, page],
+        queryFn: async () => {
+            return await trpcClient.manga.getComicByGenres.query({ query, genres, page })
+        },
+        placeholderData: (prev) => prev ?? initialData
     })
 }
