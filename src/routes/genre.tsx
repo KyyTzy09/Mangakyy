@@ -44,16 +44,29 @@ function RouteComponent() {
         <GenreListSection selectedGenres={selectedGenres} setSelectedGenres={setSelectedGenres} data={genres?.data || []} />
       </aside>
       <main className='flex flex-col items-center justify-start w-full md:w-3/4 min-h-screen bg-black/20 backdrop-blur-sm border-gray-200/50 border rounded-md p-3 px-3 md:px-5 gap-5'>
-        <section className='flex items-center justify-between w-full'>
-          <div className='flex text-gray-400 items-center justify-between w-40 md:w-60 h-full rounded-md bg-gray-600/20 backdrop-blur-sm pl-2 gap-1'>
+        <section className='flex flex-col items-center justify-between w-full gap-2'>
+          <div className="hidden md:flex items-center justify-between w-full">
+            <div className='flex text-gray-400 items-center justify-between w-40 md:w-60 h-full rounded-md bg-gray-600/20 backdrop-blur-sm pl-2 gap-1'>
+              <Button className='flex items-center justify-center w-5 h-full rounded-md bg-transparent hover:bg-transparent text-white px-0'>
+                <Search className='w-4 h-4' />
+              </Button>
+              <div className='flex items-center justify-start w-[95%] h-10'>
+                <Input onChange={(e) => setQuery(e.target.value)} placeholder="Cari Komik" className="w-full h-full aria-selected:ring-0 focus-visible:ring-0 border-0 pl-1 text-[12px] md:text-sm" />
+              </div>
+            </div>
+            <CardLayoutSwitcher value={cardLayout} onChange={setCardLayout} />
+          </div>
+          <div className='flex w-full'>
+            <CardLayoutSwitcher value={cardLayout} onChange={setCardLayout} />
+          </div>
+          <div className='flex md:hidden text-gray-400 items-center justify-between w-full h-full rounded-md bg-gray-600/20 backdrop-blur-sm pl-2 gap-1'>
             <Button className='flex items-center justify-center w-5 h-full rounded-md bg-transparent hover:bg-transparent text-white px-0'>
               <Search className='w-4 h-4' />
             </Button>
-            <div className='flex items-center justify-start w-[95%] h-10'>
+            <div className='flex items-center justify-start w-full h-10'>
               <Input onChange={(e) => setQuery(e.target.value)} placeholder="Cari Komik" className="w-full h-full aria-selected:ring-0 focus-visible:ring-0 border-0 pl-1 text-[12px] md:text-sm" />
             </div>
           </div>
-          <CardLayoutSwitcher value={cardLayout} onChange={setCardLayout} />
         </section>
         {/* Genre */}
         <Activity mode={selectedGenres.length > 0 ? "visible" : "hidden"}>
