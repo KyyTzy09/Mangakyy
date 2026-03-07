@@ -24,7 +24,7 @@ export default function Navbar() {
     const hideNavbar = location.pathname.startsWith("/chapter")
     return (
         <Activity mode={hideNavbar ? "hidden" : "visible"}>
-            <header className='fixed top-0 w-full h-18 z-100 bg-black/20 backdrop-blur-sm p-4 border-b border-gray-500'>
+            <header className='fixed top-0 w-full h-18 z-40 bg-black/20 backdrop-blur-sm p-4 border-b border-gray-500'>
                 <div className='flex w-full h-full items-center justify-between px-5'>
                     <section className='w-1/2 flex items-center gap-6'>
                         <div className='text-xl'>

@@ -1,6 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { Compass, Home, Library, Search, Star, Timer } from 'lucide-react'
-import React from 'react'
 
 const navbarItems = [
     {

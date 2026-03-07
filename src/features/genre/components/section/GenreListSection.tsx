@@ -3,7 +3,7 @@ import { Badge } from '@/shared/shadcn/badge'
 import { Button } from '@/shared/shadcn/button'
 import { Input } from '@/shared/shadcn/input'
 import { Label } from '@/shared/shadcn/label'
-import { Search } from 'lucide-react'
+import { ChevronDown, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useSelectGenre } from '../../hooks/useSelectGenre'
 
@@ -22,6 +22,7 @@ interface Props {
  * <GenreListSection data={[{name: "Adventure"}, {name: "Romance"}]} />
  */
 export default function GenreListSection({ data, selectedGenres, setSelectedGenres }: Props) {
+    const [open, setOpen] = useState(true)
     const { isSelectedGenre, selectGenres } = useSelectGenre(selectedGenres, setSelectedGenres)
     const [search, setSearch] = useState<string>("")
     const filteredData = data.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
@@ -31,32 +32,60 @@ export default function GenreListSection({ data, selectedGenres, setSelectedGenr
     }
 
     return (
-        <section className='flex flex-col items-start justify-center w-full gap-2 bg-bl'>
-            <div className='flex items-center justify-between w-full'>
-                <Label className='text-[14px]'>Genre</Label>
+        <section className="flex flex-col w-full gap-3">
+            {/* TITLE */}
+            <div
+                onClick={() => setOpen(!open)}
+                className="flex items-center justify-between cursor-pointer select-none"
+            >
+                <Label className="text-sm font-semibold">Genre</Label>
+
+                <ChevronDown
+                    className={`
+            w-4 h-4 text-gray-400 transition-transform duration-300
+            ${open ? "rotate-180" : ""}
+          `}
+                />
             </div>
-            <div className='flex text-gray-400 items-center justify-between w-full h-full rounded-md bg-gray-600/20 backdrop-blur-sm pl-2 gap-2'>
-                <div className='flex items-center justify-start w-[80%] gap-2'>
-                    <Input onChange={handleSearchGenre} placeholder="Cari Genre" className='w-[70%] h-full aria-selected:ring-0 focus-visible:ring-0 border-0' />
+
+            {/* CONTENT */}
+            <div
+                className={`
+        flex flex-col gap-3
+        transition-all duration-300
+        ${open ? "opacity-100 max-h-100" : "opacity-0 max-h-0 overflow-hidden"}
+        `}
+            >
+
+                {/* SEARCH */}
+                <div className="flex items-center w-full h-10 rounded-lg bg-white/5 border border-white/10 px-2">
+                    <Input
+                        onChange={handleSearchGenre}
+                        placeholder="Search Genre"
+                        className="flex-1 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+
+                    <Search className="w-4 h-4 text-gray-400" />
                 </div>
-                <Button className='flex items-center justify-center w-10 h-full rounded-md bg-primary text-white px-2'>
-                    <Search className='w-4 h-4' />
-                </Button>
-            </div>
-            <div className='flex flex-wrap items-center justify-start w-full gap-2 max-h-32 overflow-y-auto'>
-                {filteredData?.map(({ name, slug }, i) => (
-                    <Badge
-                        key={i}
-                        onClick={() => selectGenres(name, slug)}
-                        className={`flex items-center justify-center h-10 rounded-md border cursor-pointer transition
-                                ${isSelectedGenre(slug)
-                                ? "border-primary bg-primary/20 text-white"
-                                : "border-gray-400 bg-gray-600/20 text-gray-200 hover:opacity-75"}`
-                        }
-                    >
-                        {name}
-                    </Badge>
-                ))}
+
+                {/* GENRE LIST */}
+                <div className="flex flex-wrap gap-2 max-h-50 overflow-y-auto pr-1">
+                    {filteredData?.map(({ name, slug }, i) => (
+                        <Badge
+                            key={i}
+                            onClick={() => selectGenres(name, slug)}
+                            className={`
+              px-3 py-1.5 rounded-md text-xs border cursor-pointer transition
+              ${isSelectedGenre(slug)
+                                    ? "border-primary bg-primary/20 text-white"
+                                    : "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10"}
+              `}
+                        >
+                            {name}
+                        </Badge>
+                    ))}
+                </div>
+
             </div>
         </section>
     )
