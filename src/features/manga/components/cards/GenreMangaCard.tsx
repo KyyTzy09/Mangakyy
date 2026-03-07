@@ -5,7 +5,7 @@ import { countryCodeToFlag } from '@/shared/utils/countryConverter'
 import { formatCompactNumber } from '@/shared/utils/formater'
 import { Link } from '@tanstack/react-router'
 import { Eye } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 
 interface Props {
     data: ComicType
@@ -14,7 +14,6 @@ interface Props {
 
 export default function GenreMangaCard({ data, index }: Props) {
     return (
-        <AnimatePresence>
             <Link to='/read/$mangaId' params={{ mangaId: data.manga_id }}>
                 <motion.div
                     initial={{ translateY: 10 }}
@@ -42,7 +41,7 @@ export default function GenreMangaCard({ data, index }: Props) {
                                 {data.description}
                             </p>
                             <div className='flex flex-wrap items-center justify-center w-full gap-2'>
-                                {data.taxonomy.Genre.slice(0, 3).map((genre, i) => (
+                                {data?.taxonomy?.Genre.slice(0, 3).map((genre, i) => (
                                     <Badge
                                         key={i}
                                         className='flex items-center justify-center h-10 rounded-md border cursor-pointer transition
@@ -76,6 +75,5 @@ export default function GenreMangaCard({ data, index }: Props) {
                     </div>
                 </motion.div>
             </Link>
-        </AnimatePresence>
     )
 }
