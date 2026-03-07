@@ -160,11 +160,11 @@ export default function RouteComponent() {
                 ))}
               </div>
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-center md:text-start">
                 {detail?.data.title}
               </h1>
               {/* Stats */}
-              <div className="flex gap-6 text-sm text-slate-300 mb-6 flex-wrap">
+              <div className="flex justify-center md:justify-start items-center gap-6 text-sm text-slate-300 mb-6 flex-wrap">
                 <Stat Icon={Star} color="text-yellow-400">
                   {detail?.data.user_rate}
                 </Stat>

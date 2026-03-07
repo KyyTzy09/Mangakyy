@@ -17,7 +17,7 @@ export default function RecommendationCardSkeleton({ count }: Props) {
                     exit={{ translateY: 10 }}
                     transition={{ delay: index * 0.05 }}
                     className='group flex flex-col w-full h-auto font-primary text-white bg-black/30 gap-3 p-2 rounded-sm animate-pulse'>
-                    <div className='relative w-full h-65 overflow-hidden rounded-md bg-gray-800' />
+                    <div className='relative w-full h-48 sm:h-52 md:h-65 overflow-hidden rounded-md bg-gray-800' />
                     <div className='flex flex-col w-full font-semibold gap-1'>
                         <div className='h-4 w-3/4 bg-gray-700 rounded-sm' />
                         <div className='h-3 w-1/2 bg-gray-700 rounded-sm' />

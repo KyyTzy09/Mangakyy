@@ -24,9 +24,9 @@ export default function ChapterList({ chapterId, image, title, time, index }: Pr
             className="group flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 transition p-4 rounded-xl mb-2 cursor-pointer">
             <div className="flex gap-4 items-center">
                 <img
-                    src={image}
-                    alt={defaultImage}
-                    className="w- h-14 rounded-lg object-cover"
+                    src={image || defaultImage}
+                    alt={"No-image"}
+                    className="flex items-center justify-center w-auto h-14 rounded-lg object-cover bg-gray-600"
                 />
                 <div>
                     <div className="font-medium">

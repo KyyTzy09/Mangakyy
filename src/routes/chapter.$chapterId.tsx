@@ -60,6 +60,10 @@ export const Route = createFileRoute('/chapter/$chapterId')({
           content: data?.meta.title,
         },
         {
+          property: "og:image",
+          content: data?.meta.image,
+        },
+        {
           property: "og:type",
           content: "website",
         },
@@ -67,7 +71,10 @@ export const Route = createFileRoute('/chapter/$chapterId')({
           property: "og:site_name",
           content: "Mangakyy",
         },
-
+        {
+          property: "og:url",
+          content: "https://mangakyy.com",
+        },
         // Twitter card
         {
           name: "twitter:card",
@@ -76,6 +83,10 @@ export const Route = createFileRoute('/chapter/$chapterId')({
         {
           name: "twitter:title",
           content: data?.meta.title,
+        },
+        {
+          name: "twitter:image",
+          content: data?.meta.image,
         },
         {
           name: "twitter:description",

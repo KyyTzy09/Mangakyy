@@ -56,7 +56,7 @@ export default function LatestCard({ data, index }: Props) {
 
                 {/* content */}
                 <div className="flex flex-col flex-1 gap-2">
-                    <h3 className="text-lg font-semibold text-white group-hover:text-primary transition">
+                    <h3 className="text-lg line-clamp-2 font-semibold text-white group-hover:text-primary transition">
                         {title}
                     </h3>
 
@@ -96,15 +96,14 @@ export default function LatestCard({ data, index }: Props) {
                         ))}
                     </div>
                     {/* footer */}
-                    <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
-
+                    <div className="flex items-center justify-between mt-2 text-[10px] sm:text-xs text-gray-400">
                         <div className="flex items-center gap-1 text-primary">
-                            <Globe size={14} />
-                            {displayCountryName(country)}
+                            <Globe className='w-3 h-3 sm:w-4 sm:h-4' />
+                            {displayCountryName(country.toUpperCase())}
                         </div>
 
                         <div className="flex items-center gap-1">
-                            <Clock size={14} />
+                            <Clock className='w-3 h-3 sm:w-4 sm:h-4' />
                             {formatRelativeTime(updatedAgo)}
                         </div>
 

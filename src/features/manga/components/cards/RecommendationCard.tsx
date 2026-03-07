@@ -21,7 +21,7 @@ export default function RecommendationCard({ data, index }: Props) {
                 transition={{ delay: index * 0.1 }}
                 key={data.manga_id}
                 className='group flex flex-col w-full h-auto font-primary text-white bg-black gap-3 p-2 rounded-sm'>
-                <div className='relative w-full h-52 md:h-60 lg:h-65 overflow-hidden rounded-md'>
+                <div className='relative w-full h-48 sm:52 md:h-60 lg:h-65 overflow-hidden rounded-md'>
                     <img src={data.cover_image_url} alt="No-image" className='w-full h-full bg-primary object-cover group-hover:scale-105 group-hover:-translate-y-3 transition duration-700' />
                     <div className='absolute flex flex-col items-center justify-between top-0 right-0 w-full h-full bg-linear-to-b from-transparent to-black p-1'>
                         <div className='flex w-full items-center justify-between'>

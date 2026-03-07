@@ -49,9 +49,9 @@ export default function CarouselSection({ recommendations }: Props) {
     };
 
     return (
-        <div className="relative w-full">
+        <div className="relative flex flex-col w-full gap-2">
             {/* animated area */}
-            <div className="relative h-[230px] md:h-[380px] lg:h-[420px] overflow-hidden rounded-2xl bg-zinc-900">
+            <div className="relative h-[230px] md:h-[380px] lg:h-[420px] overflow-hidden rounded-2xl bg-zinc-900 mb-1 sm:mb-0">
                 <AnimatePresence mode="wait" custom={direction}>
                     <motion.div
                         key={index}
@@ -117,10 +117,8 @@ export default function CarouselSection({ recommendations }: Props) {
                                 </div>
                             </div>
                         </div>
-
                     </motion.div>
                 </AnimatePresence>
-
             </div>
 
             {/* dots (OUTSIDE motion div, jadi gak ikut geser) */}

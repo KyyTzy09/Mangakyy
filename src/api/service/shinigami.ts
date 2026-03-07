@@ -20,9 +20,12 @@ export class ShinigamiService {
         });
     }
 
+    public async getComicGenre(genre: string, page: number = 1, pageSize: number = 19) {
+        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?page=${page}&page_size=${pageSize}&genre_include=${genre}&genre_include_mode=or&genre_exclude_mode=or&sort=latest&sort_order=desc` })
+    }
 
-    public async getComicGenre(genre: string) {
-        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?page=1&page_size=24&genre_include=${genre}&genre_include_mode=or&genre_exclude_mode=or&sort=latest&sort_order=desc` })
+    public async getComicSearch(query: string, page: number = 1, pageSize: number = 19) {
+        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?q=${query}&page=${page}&page_size=${pageSize}&sort=latest&sort_order=desc` })
     }
 
     public async getPopularComic(filter: "daily" | "weekly" | "all_time" = "all_time", page: number = 1, pageSize: number = 16) {
@@ -32,14 +35,13 @@ export class ShinigamiService {
     public async getComicDetail(comicId: string) {
         return await apiClient<APIResponse<ComicType>>({ url: `/manga/detail/${comicId}` })
     }
+
     public async getChapterList(comicId: string, page: number = 1, pageSize: number = 24) {
         return await apiClient<APIResponse<ChapterList[]>>({ url: `/chapter/${comicId}/list?page=${page}&page_size=${pageSize}&sort_by=chapter_number&sort_order=desc` })
-
     }
 
     public async getChapterDetail(chapterId: string) {
         return await apiClient<APIResponse<ChapterDetail>>({ url: `/chapter/detail/${chapterId}` })
-
     }
 }
 

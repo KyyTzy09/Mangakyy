@@ -50,7 +50,7 @@ export default function PopularSection({ popular }: Props) {
                     })}
                 </div>
             </header>
-            <div className='grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-1 md:gap-3'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-1 md:gap-3'>
                 {!isPending ? data?.map((data, i) => {
                     return (
                         <RecommendationCard data={data as ComicType} index={i} key={i} />
