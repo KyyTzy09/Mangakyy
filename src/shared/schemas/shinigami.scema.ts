@@ -24,3 +24,10 @@ export const getChapterListSchema = z.object({
 export const getChapterDetailSchema = z.object({
     chapterId: z.string()
 })
+
+export const getComicByGenreSchema = z.object({
+    query: z.string().optional(),
+    genres: z.array(z.string()).optional(),
+    page: z.number().optional() || 1,
+    pageSize: z.number().optional() || 10
+})

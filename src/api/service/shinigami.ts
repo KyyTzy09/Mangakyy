@@ -20,10 +20,11 @@ export class ShinigamiService {
         });
     }
 
-    public async getComicGenre(genre: string, page: number = 1, pageSize: number = 19) {
-        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?page=${page}&page_size=${pageSize}&genre_include=${genre}&genre_include_mode=or&genre_exclude_mode=or&sort=latest&sort_order=desc` })
+    public async getComicGenre(query: string = "", genres: string[], page: number = 1, pageSize: number = 19) {
+        const genre = genres.join(",")
+        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?page=${page}&page_size=${pageSize}&genre_include=${genre}&genre_include_mode=or&genre_exclude_mode=or&sort=latest&sort_order=desc&q=${query}` })
     }
-
+    // https://api.shngm.io/v1/manga/list?page=1&page_size=24&genre_include_mode=or&genre_exclude_mode=or&sort=latest&sort_order=desc&q=tes
     public async getComicSearch(query: string, page: number = 1, pageSize: number = 19) {
         return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?q=${query}&page=${page}&page_size=${pageSize}&sort=latest&sort_order=desc` })
     }
