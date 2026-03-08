@@ -10,8 +10,8 @@ import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { displayComicType } from '@/shared/utils/countryConverter'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Play, Star } from 'lucide-react'
+import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
+import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Home, Play, Star } from 'lucide-react'
 import type React from 'react'
 import { useState } from 'react'
 
@@ -118,16 +118,23 @@ export default function RouteComponent() {
   ]
 
   const navigate = useNavigate()
+  const router = useRouter()
   return (
     <main className="flex flex-col items-center justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20">
       <section className="w-full relative overflow-hidden">
-        <header className='relative z-10 max-w-7xl mx-auto px-6 pt-5'>
+        <header className='relative flex items-center justify-between w-full z-10 max-w-7xl mx-auto px-6 pt-5'>
           <Button
-            onClick={() => navigate({ to: "/" })}
+            onClick={() => router.history.back()}
             className='hover:bg-blue-400'
           >
             <ArrowLeft className='flex items-center justify-center font-primary' />
             Kembali
+          </Button>
+          <Button
+            onClick={() => navigate({ to: "/" })}
+            className='hover:bg-blue-400 rounded-full w-10 h-10'
+          >
+            <Home className='flex items-center justify-center font-primary' />
           </Button>
         </header>
         {/* BACKGROUND IMAGE */}

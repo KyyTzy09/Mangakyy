@@ -3,8 +3,8 @@ import { getMangaDetail } from '@/api/server/manga'
 import { defaultImage } from '@/shared/dummy/image'
 import { Button } from '@/shared/shadcn/button'
 import { Separator } from '@/shared/shadcn/separator'
-import { createFileRoute } from '@tanstack/react-router'
-import { ArrowLeft } from 'lucide-react'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { ArrowLeft, Book } from 'lucide-react'
 
 export const Route = createFileRoute('/chapter/$chapterId')({
   component: RouteComponent,
@@ -99,6 +99,7 @@ export const Route = createFileRoute('/chapter/$chapterId')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
+  const router = useRouter()
   const { detail } = Route.useLoaderData()
 
   return (
@@ -127,13 +128,19 @@ function RouteComponent() {
       </header>
       <Separator className='bg-gray-500' />
       {/* View */}
-      <div className='flex w-full p-4 max-w-3xl'>
+      <div className='relative flex items-center justify-between w-full z-10 max-w-3xl p-4'>
         <Button
-          onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: detail?.data.manga_id! } })}
+          onClick={() => router.history.back()}
           className='hover:bg-blue-400'
         >
           <ArrowLeft className='flex items-center justify-center font-primary' />
           Kembali
+        </Button>
+        <Button
+          onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: detail?.data.manga_id || "" } })}
+          className='hover:bg-blue-400 rounded-full w-10 h-10'
+        >
+          <Book className='flex items-center justify-center font-primary' />
         </Button>
       </div>
       <section className='flex flex-col w-full max-w-3xl overflow-hidden'>
@@ -165,6 +172,6 @@ function RouteComponent() {
           {detail?.data.next_chapter_id ? `Ch. ${detail?.data.next_chapter_number} →` : "Chapter Terakhir"}
         </Button>
       </section>
-    </div>
+    </div >
   )
 }
