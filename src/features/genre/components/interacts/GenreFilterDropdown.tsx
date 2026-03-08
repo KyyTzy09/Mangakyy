@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import GenreListSection from '../section/GenreListSection'
 import { Button } from '@/shared/shadcn/button'
 import type { TaxonomyItem } from '@/shared/interfaces'
-import { Activity, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 interface Props {
     genres: TaxonomyItem[]
     isOpen: boolean

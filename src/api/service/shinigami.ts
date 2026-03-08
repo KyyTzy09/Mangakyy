@@ -37,9 +37,14 @@ export class ShinigamiService {
         return await apiClient<APIResponse<ComicType>>({ url: `/manga/detail/${comicId}` })
     }
 
-    public async getChapterList(comicId: string, page: number = 1, pageSize: number = 24) {
-        return await apiClient<APIResponse<ChapterList[]>>({ url: `/chapter/${comicId}/list?page=${page}&page_size=${pageSize}&sort_by=chapter_number&sort_order=desc` })
+    public async getChapterList(comicId: string, page: number = 1, pageSize: number = 24, sort_order: "asc" | "desc" = "desc") {
+        return await apiClient<APIResponse<ChapterList[]>>({ url: `/chapter/${comicId}/list?page=${page}&page_size=${pageSize}&sort_by=chapter_number&sort_order=${sort_order}` })
     }
+
+    public async getSearchChapter(comicId: string, page: number = 1, pageSize: number = 24, sort_order: "asc" | "desc" = "desc", query: string = "") {
+        return await apiClient<APIResponse<ChapterList[]>>({ url: `/chapter/${comicId}/list?page=${page}&page_size=${pageSize}&sort_by=chapter_number&sort_order=${sort_order}&search=${Number(query)}` })
+    }
+    // https://api.shngm.io/v1/chapter/3a22fb56-e358-4ced-a7b1-79acde9d6910/list?page=1&page_size=24&sort_by=chapter_number&sort_order=desc&search=10
 
     public async getChapterDetail(chapterId: string) {
         return await apiClient<APIResponse<ChapterDetail>>({ url: `/chapter/detail/${chapterId}` })

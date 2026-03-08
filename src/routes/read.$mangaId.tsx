@@ -1,16 +1,19 @@
 import { getChapterList } from '@/api/server/chapter'
 import { getMangaDetail } from '@/api/server/manga'
 import ChapterList from '@/features/chapter/components/cards/chapterList'
+import ChapterPagination from '@/features/chapter/components/ChapterPagination'
+import ChapterListDropdown from '@/features/chapter/components/interacts/ChapterListDropdown'
+import { useGetChapterList } from '@/features/chapter/hooks/chapterQuery'
 import Stat from '@/features/manga/components/cards/DetailStatCard'
 import Tag from '@/features/manga/components/cards/DetailTagCard'
-import type { ComicDetail } from '@/shared/interfaces'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { displayComicType } from '@/shared/utils/countryConverter'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, Eye, Play, Star } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Play, Star } from 'lucide-react'
 import type React from 'react'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/read/$mangaId')({
   component: RouteComponent,
@@ -93,6 +96,11 @@ export const Route = createFileRoute('/read/$mangaId')({
 
 export default function RouteComponent() {
   const { detail, chapters } = Route.useLoaderData()
+  const [open, setOpen] = useState(false)
+  const [page, setPage] = useState(1)
+
+  const { data: chapterList } = useGetChapterList(chapters!, detail?.data.manga_id!, page)
+
   const infoCardData = [
     {
       title: "Chapter",
@@ -207,11 +215,18 @@ export default function RouteComponent() {
         </header>
         <Separator className='w-full bg-primary' />
         <div className='flex flex-col items-center justify-center w-full h-full'>
-          {chapters?.data?.map(({ chapter_id, chapter_number, thumbnail_image_url, release_date }, i) => {
+          {chapterList?.data?.map(({ chapter_id, chapter_number, thumbnail_image_url, release_date }, i) => {
             return <ChapterList chapterId={chapter_id} index={i} image={thumbnail_image_url} title={`Chapter ${chapter_number}`} time={new Date(release_date)} />
           })}
         </div>
       </section>
+      <ChapterPagination page={page} setPage={setPage} chapters={chapterList} setOpen={setOpen} />
+      <ChapterListDropdown
+        mangaId={detail?.data.manga_id || ""}
+        chapters={chapters?.data!}
+        isOpen={open}
+        setIsOpen={setOpen}
+      />
     </main>
   )
 }

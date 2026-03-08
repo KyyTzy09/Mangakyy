@@ -18,7 +18,10 @@ export const getComicDetailSchema = z.object({
 
 export const getChapterListSchema = z.object({
     mangaId: z.string(),
+    sort_order: z.enum(["asc", "desc"]).optional(),
+    query: z.string().optional(),
     page: z.number().optional() || 1,
+    pageSize: z.number().optional() || 10
 })
 
 export const getChapterDetailSchema = z.object({

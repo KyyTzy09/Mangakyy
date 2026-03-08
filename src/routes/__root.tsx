@@ -103,7 +103,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-black/95 min-h-screen">
+      <body className="bg-black/95 min-h-screen pb-16 md:pb-0">
         <Navbar />
         <TanStackQueryProvider>
           {children}
