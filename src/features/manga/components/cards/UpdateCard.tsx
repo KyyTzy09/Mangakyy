@@ -14,7 +14,7 @@ interface Props {
 export default function MangaUpdateCard({ data, index }: Props) {
     const navigate = useNavigate()
     return (
-        <motion.div
+        <motion.article
             initial={{ translateY: 10 }}
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
@@ -55,6 +55,6 @@ export default function MangaUpdateCard({ data, index }: Props) {
                     </Button>
                 </div>
             </div>
-        </motion.div>
+        </motion.article>
     )
 }

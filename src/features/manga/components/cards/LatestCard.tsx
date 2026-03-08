@@ -15,7 +15,7 @@ export default function LatestCard({ data, index }: Props) {
     const { manga_id, title, cover_image_url: cover, release_year: year, description, user_rate: rating, view_count: views, bookmark_count: saves, country_id: country, updated_at: updatedAgo, taxonomy: { Genre: genres } } = data
 
     return (
-        <motion.div
+        <motion.article
             initial={{ translateY: 10 }}
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
@@ -111,6 +111,6 @@ export default function LatestCard({ data, index }: Props) {
 
                 </div>
             </div>
-        </motion.div>
+        </motion.article>
     )
 }

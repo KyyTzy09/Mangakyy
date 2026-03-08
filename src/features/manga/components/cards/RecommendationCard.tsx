@@ -14,7 +14,7 @@ interface Props {
 export default function RecommendationCard({ data, index }: Props) {
     return (
         <Link to={`/read/$mangaId`} params={{ mangaId: data.manga_id }} >
-            <motion.div
+            <motion.article
                 initial={{ translateY: 10 }}
                 animate={{ translateY: 0 }}
                 exit={{ translateY: 10 }}
@@ -50,7 +50,7 @@ export default function RecommendationCard({ data, index }: Props) {
                         {formatRelativeTime(new Date(data.latest_chapter_time))}
                     </Label>
                 </div>
-            </motion.div>
+            </motion.article>
         </Link >
     )
 }

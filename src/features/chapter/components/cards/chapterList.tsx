@@ -18,7 +18,7 @@ interface Props {
 export default function ChapterList({ chapterId, image, title, time, index, chapterNumber, mangaId }: Props) {
     const navigate = useNavigate()
     return (
-        <motion.div
+        <motion.article
             initial={{ translateY: 10 }}
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
@@ -48,6 +48,6 @@ export default function ChapterList({ chapterId, image, title, time, index, chap
             <Button className="text-slate-400 group-hover:text-white hover:bg-blue-400">
                 Baca
             </Button>
-        </motion.div>
+        </motion.article>
     )
 }

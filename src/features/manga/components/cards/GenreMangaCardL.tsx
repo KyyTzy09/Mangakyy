@@ -13,7 +13,7 @@ interface Props {
 export default function GenreMangaCardL({ data, index }: Props) {
     return (
         <Link to="/read/$mangaId" params={{ mangaId: data.manga_id }}>
-            <motion.div
+            <motion.article
                 initial={{ translateY: 10 }}
                 animate={{ translateY: 0 }}
                 exit={{ translateY: 10 }}
@@ -77,7 +77,7 @@ export default function GenreMangaCardL({ data, index }: Props) {
                     </p>
 
                 </div>
-            </motion.div>
+            </motion.article>
         </Link>
     )
 }

@@ -1,0 +1,54 @@
+
+import { shinigamiService } from '@/api/service/shinigami'
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/sitemap.txt')({
+    server: {
+        handlers: {
+            GET: async () => {
+                const res = await shinigamiService.getPopularComic("all_time", 1, 24)
+                const comics = res?.data
+
+                const comicUrls = comics?.map((comic) => `
+  <url>
+    <loc>https://mangakyy.com/detail/${comic.manga_id}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+  </url>
+`).join('')
+
+                const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://mangakyy.com/</loc>
+  </url>
+  <url>
+    <loc>https://mangakyy.com/explore</loc>
+  </url>
+  
+  <url>
+    <loc>https://mangakyy.com/update</loc>
+  </url>
+
+  <url>
+    <loc>https://mangakyy.com/series</loc>
+  </url>
+
+  <url>
+    <loc>https://mangakyy.com/popular</loc>
+  </url>
+
+  ${comicUrls}
+
+</urlset>`
+
+                return new Response(xml, {
+                    headers: {
+                        "Content-Type": "application/xml",
+                        "Cache-Control": "public, max-age=3600"
+                    }
+                })
+            },
+        },
+    },
+})

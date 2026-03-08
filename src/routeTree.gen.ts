@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpdateRouteImport } from './routes/update'
+import { Route as SitemapDottxtRouteImport } from './routes/sitemap[.]txt'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PopularRouteImport } from './routes/popular'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as ExploreRouteImport } from './routes/explore'
@@ -21,6 +23,16 @@ import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 const UpdateRoute = UpdateRouteImport.update({
   id: '/update',
   path: '/update',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDottxtRoute = SitemapDottxtRouteImport.update({
+  id: '/sitemap.txt',
+  path: '/sitemap.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PopularRoute = PopularRouteImport.update({
@@ -64,6 +76,8 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.txt': typeof SitemapDottxtRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
@@ -74,6 +88,8 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.txt': typeof SitemapDottxtRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
@@ -85,6 +101,8 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.txt': typeof SitemapDottxtRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
@@ -97,6 +115,8 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/popular'
+    | '/robots.txt'
+    | '/sitemap.txt'
     | '/update'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
@@ -107,6 +127,8 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/popular'
+    | '/robots.txt'
+    | '/sitemap.txt'
     | '/update'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
@@ -117,6 +139,8 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/popular'
+    | '/robots.txt'
+    | '/sitemap.txt'
     | '/update'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
@@ -128,6 +152,8 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   HomeRoute: typeof HomeRoute
   PopularRoute: typeof PopularRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDottxtRoute: typeof SitemapDottxtRoute
   UpdateRoute: typeof UpdateRoute
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   ReadMangaIdRoute: typeof ReadMangaIdRoute
@@ -141,6 +167,20 @@ declare module '@tanstack/react-router' {
       path: '/update'
       fullPath: '/update'
       preLoaderRoute: typeof UpdateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.txt': {
+      id: '/sitemap.txt'
+      path: '/sitemap.txt'
+      fullPath: '/sitemap.txt'
+      preLoaderRoute: typeof SitemapDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/popular': {
@@ -200,6 +240,8 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   HomeRoute: HomeRoute,
   PopularRoute: PopularRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDottxtRoute: SitemapDottxtRoute,
   UpdateRoute: UpdateRoute,
   ChapterChapterIdRoute: ChapterChapterIdRoute,
   ReadMangaIdRoute: ReadMangaIdRoute,

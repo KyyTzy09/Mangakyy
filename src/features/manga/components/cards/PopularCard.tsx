@@ -17,7 +17,7 @@ interface Props {
 export default function PopularCard({ data: { title, manga_id: mangaId, cover_image_url, status, country_id, release_year, user_rate, description, latest_chapter_id: chapterId, latest_chapter_number, latest_chapter_time }, index }: Props) {
     const navigate = useNavigate()
     return (
-        <motion.div
+        <motion.article
             initial={{ translateY: 10 }}
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
@@ -74,6 +74,6 @@ export default function PopularCard({ data: { title, manga_id: mangaId, cover_im
                     </Button>
                 </section>
             </div>
-        </motion.div >
+        </motion.article >
     )
 }

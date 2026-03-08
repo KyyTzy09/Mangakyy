@@ -14,6 +14,7 @@ import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import Navbar from '@/shared/components/layouts/navbar'
 import { Activity } from 'react'
 import SmallNavbar from '@/shared/components/layouts/SmallNavbar'
+import Footer from '@/shared/components/layouts/footer'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -120,6 +121,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             ]}
           />
         </TanStackQueryProvider>
+        <Footer />
         <SmallNavbar />
         <Scripts />
       </body>
