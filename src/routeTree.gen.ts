@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpdateRouteImport } from './routes/update'
-import { Route as SitemapDottxtRouteImport } from './routes/sitemap[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PopularRouteImport } from './routes/popular'
 import { Route as HomeRouteImport } from './routes/home'
@@ -25,9 +25,9 @@ const UpdateRoute = UpdateRouteImport.update({
   path: '/update',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDottxtRoute = SitemapDottxtRouteImport.update({
-  id: '/sitemap.txt',
-  path: '/sitemap.txt',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -77,7 +77,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
   '/robots.txt': typeof RobotsDottxtRoute
-  '/sitemap.txt': typeof SitemapDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/detail/$mangaId': typeof DetailMangaIdRoute
@@ -89,7 +89,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
   '/robots.txt': typeof RobotsDottxtRoute
-  '/sitemap.txt': typeof SitemapDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/detail/$mangaId': typeof DetailMangaIdRoute
@@ -102,7 +102,7 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
   '/robots.txt': typeof RobotsDottxtRoute
-  '/sitemap.txt': typeof SitemapDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/detail/$mangaId': typeof DetailMangaIdRoute
@@ -116,7 +116,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/popular'
     | '/robots.txt'
-    | '/sitemap.txt'
+    | '/sitemap.xml'
     | '/update'
     | '/chapter/$chapterId'
     | '/detail/$mangaId'
@@ -128,7 +128,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/popular'
     | '/robots.txt'
-    | '/sitemap.txt'
+    | '/sitemap.xml'
     | '/update'
     | '/chapter/$chapterId'
     | '/detail/$mangaId'
@@ -140,7 +140,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/popular'
     | '/robots.txt'
-    | '/sitemap.txt'
+    | '/sitemap.xml'
     | '/update'
     | '/chapter/$chapterId'
     | '/detail/$mangaId'
@@ -153,7 +153,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   PopularRoute: typeof PopularRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
-  SitemapDottxtRoute: typeof SitemapDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UpdateRoute: typeof UpdateRoute
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   DetailMangaIdRoute: typeof DetailMangaIdRoute
@@ -169,11 +169,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpdateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sitemap.txt': {
-      id: '/sitemap.txt'
-      path: '/sitemap.txt'
-      fullPath: '/sitemap.txt'
-      preLoaderRoute: typeof SitemapDottxtRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -241,7 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   PopularRoute: PopularRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
-  SitemapDottxtRoute: SitemapDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   UpdateRoute: UpdateRoute,
   ChapterChapterIdRoute: ChapterChapterIdRoute,
   DetailMangaIdRoute: DetailMangaIdRoute,
