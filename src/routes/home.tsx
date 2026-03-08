@@ -103,7 +103,7 @@ export const Route = createFileRoute('/home')({
 function RouteComponent() {
     const { recommendation, popular, update } = Route.useLoaderData()
     return (
-        <div className='font-primary flex flex-col w-full min-h-screen px-2 md:px-20 pt-16 md:pt-20'>
+        <div className='font-primary flex flex-col w-full min-h-screen px-2 md:px-20 pt-16 md:pt-20 pb-16 md:pb-0'>
             <div className='flex flex-col w-full h-full gap-10 bg-linear-to-b from-transparent via-black to-primary px-2 sm:px-5 py-14 overflow-hidden'>
                 <div className='w-full'>
                     <CarouselSection recommendations={recommendation?.data || []} />

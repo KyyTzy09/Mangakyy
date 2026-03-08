@@ -30,5 +30,7 @@ export function saveChapterHistory(data: {
 }
 
 export function getChapterHistory(): ChapterHistory[] {
-    return JSON.parse(localStorage.getItem("chapter_history") || "[]")
+    if (typeof window === "undefined") return []
+    const history = localStorage.getItem("chapter_history")
+    return history ? JSON.parse(history) : []
 }

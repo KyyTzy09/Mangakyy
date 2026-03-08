@@ -11,11 +11,11 @@ import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { displayComicType } from '@/shared/utils/countryConverter'
-import { getChapterHistory } from '@/shared/utils/history'
+import { getChapterHistory, type ChapterHistory } from '@/shared/utils/history'
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
-import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Home, Play, Star } from 'lucide-react'
+import { ArrowLeft, Eye, Home, Play, Star } from 'lucide-react'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/detail/$mangaId')({
   component: RouteComponent,
@@ -115,6 +115,7 @@ export const Route = createFileRoute('/detail/$mangaId')({
 
 export default function RouteComponent() {
   const { detail, chapters } = Route.useLoaderData()
+  const [history, setHistory] = useState<ChapterHistory | null>(null)
   const [open, setOpen] = useState(false)
   const [page, setPage] = useState(1)
 
@@ -123,12 +124,12 @@ export default function RouteComponent() {
   const infoCardData = [
     {
       title: "Chapter",
-      value: detail?.data.latest_chapter_number,
+      value: detail?.data?.latest_chapter_number,
 
     },
     {
       title: "Status",
-      value: detail?.data.status === 1 ? "Ongoing" : "Completed"
+      value: detail?.data?.status === 1 ? "Ongoing" : detail?.data?.status === 2 ? "Hiatus" : "Completed"
     },
     {
       title: "Type",
@@ -138,8 +139,12 @@ export default function RouteComponent() {
 
   const navigate = useNavigate()
   const router = useRouter()
-  const histories = getChapterHistory()
-  const history = histories.find((history) => history.mangaId === detail?.data.manga_id)
+
+  useEffect(() => {
+    const histories = getChapterHistory()
+    const h = histories?.find((history) => history?.mangaId === detail?.data?.manga_id)
+    setHistory(h || null)
+  }, [detail?.data?.manga_id])
 
   return (
     <main className="flex flex-col items-center justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20">
@@ -162,7 +167,7 @@ export default function RouteComponent() {
         {/* BACKGROUND IMAGE */}
         <div className="absolute inset-0 z-0">
           <img
-            src={detail?.data.cover_image_url}
+            src={detail?.data?.cover_image_url}
             alt="bg"
             className="w-full h-full object-cover blur-md scale-110 opacity-70"
           />
@@ -176,12 +181,12 @@ export default function RouteComponent() {
             {/* COVER */}
             <div className="flex flex-col items-center justify-center shrink-0 gap-4">
               <img
-                src={detail?.data.cover_image_url}
+                src={detail?.data?.cover_image_url}
                 alt="cover"
                 className="rounded-xl shadow-2xl w-[180px] sm:w-[220px] md:w-[240px]" />
 
               <Button
-                onClick={() => navigate({ to: "/chapter/$chapterId", params: { chapterId: detail?.data.latest_chapter_id! } })}
+                onClick={() => navigate({ to: "/chapter/$chapterId", params: { chapterId: detail?.data?.latest_chapter_id || "" } })}
                 className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
                 <Play className="w-5 h-5" />
                 Baca Chapter Terbaru
@@ -192,21 +197,21 @@ export default function RouteComponent() {
             <div className="flex-1">
               {/* Tags */}
               <div className="flex gap-2 mb-3 flex-wrap items-center justify-center md:justify-start">
-                {detail?.data.taxonomy.Genre.map(({ name }, i) => (
+                {detail?.data?.taxonomy?.Genre?.map(({ name }, i) => (
                   <Tag key={i}>{name}</Tag>
                 ))}
               </div>
               {/* Title */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-center md:text-start">
-                {detail?.data.title}
+                {detail?.data?.title}
               </h1>
               {/* Stats */}
               <div className="flex justify-center md:justify-start items-center gap-6 text-sm text-slate-300 mb-6 flex-wrap">
                 <Stat Icon={Star} color="text-yellow-400">
-                  {detail?.data.user_rate}
+                  {detail?.data?.user_rate}
                 </Stat>
                 <Stat Icon={Eye} color="text-green-400">
-                  {detail?.data.view_count} Views
+                  {detail?.data?.view_count} Views
                 </Stat>
               </div>
 
@@ -225,7 +230,7 @@ export default function RouteComponent() {
                   Sinopsis
                 </h3>
                 <p className="text-slate-300 leading-relaxed">
-                  {detail?.data.description}
+                  {detail?.data?.description}
                 </p>
               </div>
             </div>
@@ -252,8 +257,8 @@ export default function RouteComponent() {
       </section>
       <ChapterPagination page={page} setPage={setPage} chapters={chapterList} setOpen={setOpen} />
       <ChapterListDropdown
-        mangaId={detail?.data.manga_id || ""}
-        chapters={chapters?.data!}
+        mangaId={detail?.data?.manga_id || ""}
+        chapters={chapters?.data || []}
         isOpen={open}
         setIsOpen={setOpen}
       />

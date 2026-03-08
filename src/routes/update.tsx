@@ -115,7 +115,7 @@ function RouteComponent() {
   const { data } = Route.useLoaderData()
   const { data: update, isPending } = useGetUpdateManga(data!, selectedType, page)
   return (
-    <div className='flex items-start justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20 md:pt-24 p-2 gap-2'>
+    <div className='flex items-start justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20 md:pt-24 p-2 gap-2 pb-16 md:pb-0'>
       <aside className='hidden md:flex flex-col w-70 h-fit max-h-[85vh] sticky top-24 bg-black/20 backdrop-blur-xl border border-white/10 rounded-xl p-4 gap-5 overflow-y-auto'>
         <div className='flex flex-col items-center justify-start w-full gap-2'>
           <Label className="text-sm font-semibold">Genre</Label>

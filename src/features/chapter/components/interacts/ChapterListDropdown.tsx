@@ -23,7 +23,7 @@ export default function ChapterListDropdown({ mangaId, isOpen, setIsOpen }: Prop
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfiniteChapter(mangaId)
     const { data: searchResult } = useSearchChapter(mangaId, debounce)
     const isSearch = search.length > 0
-    const chapters = isSearch ? searchResult?.data : data?.pages.flatMap(page => page?.data) ?? []
+    const chapters = isSearch ? searchResult?.data : data?.pages?.flatMap(page => page?.data) ?? []
 
     return (
         <AnimatePresence>

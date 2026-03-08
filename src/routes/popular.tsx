@@ -104,7 +104,7 @@ function RouteComponent() {
 
     const { data, isPending } = useGetPopularManga("all_time", popular?.data, currentPage, 20)
     return (
-        <div className='font-primary flex flex-col w-full min-h-screen px-6 py-24 gap-5'>
+        <div className='font-primary flex flex-col w-full min-h-screen px-6 py-24 gap-5 pb-16 md:pb-0'>
             <header className='flex flex-col md:flex-row items-center justify-between w-full gap-2'>
                 <Label className='text-white font-semibold text-2xl'>
                     <Flame className='w-6 h-6 text-primary' />
