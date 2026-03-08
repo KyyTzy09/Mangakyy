@@ -1,7 +1,6 @@
 import { Button } from '@/shared/shadcn/button'
-import { Input } from '@/shared/shadcn/input'
 import { Link, useLocation } from '@tanstack/react-router'
-import { Search, Timer } from 'lucide-react'
+import { Timer } from 'lucide-react'
 import { Activity } from 'react'
 
 export default function Navbar() {
@@ -48,21 +47,9 @@ export default function Navbar() {
                         </div>
                     </section>
                     <section className='w-1/2 h-full flex items-center justify-end text-white gap-5'>
-                        <div className='hidden md:flex text-gray-400 items-center justify-between w-75 h-full rounded-full bg-gray-600/20 backdrop-blur-sm pl-2 gap-2'>
-                            <div className='flex items-center justify-start w-[80%] gap-2'>
-                                <Search className='w-4 h-4' />
-                                <Input placeholder="Cari komik" className='w-[70%] h-full aria-selected:ring-0 focus-visible:ring-0 border-0' />
-                            </div>
-                            <Button className='flex items-center justify-center w-10 h-full rounded-full bg-primary text-white'>
-                                <Search className='w-4 h-4' />
-                            </Button>
-                        </div>
                         <div className='flex items-center justify-center w-auto h-full gap-2'>
-                            <Button className='flex items-center justify-center w-10 h-full rounded-full bg-transparent text-white'>
-                                <Timer className='w-4 h-4' />
-                            </Button>
                             <Button className='flex items-center justify-center w-10 h-full rounded-full bg-primary text-white'>
-                                <Search className='w-4 h-4' />
+                                <Timer className='w-4 h-4' />
                             </Button>
                         </div>
                     </section>

@@ -19,7 +19,7 @@ export default function GenreMangaCardL({ data, index }: Props) {
                 exit={{ translateY: 10 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.02 }}
-                className="group flex gap-4 w-full h-50 p-3 rounded-xl bg-[#161616] hover:bg-[#1d1d1d] transition overflow-hidden"
+                className="group flex gap-4 w-full h-50 p-3 rounded-xl bg-linear-to-br from-[#0f172a] via-[#0b1220] to-[#090f1a] hover:bg-[#1d1d1d] transition overflow-hidden"
             >
                 {/* COVER */}
                 <div className="relative w-24 sm:w-28 md:w-32 shrink-0 overflow-hidden rounded-md">

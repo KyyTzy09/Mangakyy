@@ -33,7 +33,7 @@ export default function ChapterListDropdown({ mangaId, isOpen, setIsOpen }: Prop
                         initial={{ y: 200, opacity: 0 }}
                         animate={{ translateY: 0, opacity: 1 }}
                         exit={{ y: 200, opacity: 0 }}
-                        className='fixed top-0 bottom-0 md:top-[20%] md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[40%] max-h-[90vh] flex flex-col items-center justify-between z-[100] bg-[#111]/90 backdrop-blur-xl p-5 gap-5 overflow-hidden rounded-md'>
+                        className='fixed top-0 md:top-[20%] md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full h-screen md:w-[40%] max-h-[90vh] flex flex-col items-center justify-between z-[100] bg-[#111]/90 backdrop-blur-xl p-5 gap-5 overflow-hidden rounded-md'>
                         <div className='flex flex-col w-full items-center justify-start gap-5'>
                             <section className='flex items-center justify-between w-full gap-2'>
                                 <Label className="text-lg font-semibold">Chapter</Label>
@@ -68,6 +68,8 @@ export default function ChapterListDropdown({ mangaId, isOpen, setIsOpen }: Prop
                                         image={data?.thumbnail_image_url || defaultImage}
                                         title={`Chapter ${data?.chapter_number}`}
                                         time={new Date(data?.release_date!)}
+                                        mangaId={mangaId}
+                                        chapterNumber={data?.chapter_number}
                                     />
                                 ))}
                                 <div

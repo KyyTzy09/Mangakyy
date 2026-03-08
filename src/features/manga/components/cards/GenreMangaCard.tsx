@@ -20,7 +20,7 @@ export default function GenreMangaCard({ data, index }: Props) {
                 animate={{ translateY: 0 }}
                 exit={{ translateY: 10 }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative flex flex-col w-full h-full bg-[#232323] rounded-md overflow-hidden text-sm cursor-pointer">
+                className="group relative flex flex-col w-full h-full bg-linear-to-br from-[#0f172a] via-[#0b1220] to-[#090f1a] rounded-md overflow-hidden text-sm cursor-pointer">
                 <div className="absolute top-0 right-1 text-xl z-10">
                     {countryCodeToFlag(data.country_id)}
                 </div>

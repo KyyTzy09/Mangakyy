@@ -1,6 +1,7 @@
 import { defaultImage } from '@/shared/dummy/image'
 import { Button } from '@/shared/shadcn/button'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
+import { saveChapterHistory } from '@/shared/utils/history'
 import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 
@@ -10,9 +11,11 @@ interface Props {
     title: string
     time: Date
     index: number
+    mangaId?: string
+    chapterNumber?: number
 }
 
-export default function ChapterList({ chapterId, image, title, time, index }: Props) {
+export default function ChapterList({ chapterId, image, title, time, index, chapterNumber, mangaId }: Props) {
     const navigate = useNavigate()
     return (
         <motion.div
@@ -20,7 +23,10 @@ export default function ChapterList({ chapterId, image, title, time, index }: Pr
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
             transition={{ delay: index * 0.1 }}
-            onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId } })}
+            onClick={() => {
+                navigate({ to: `/chapter/$chapterId`, params: { chapterId } })
+                saveChapterHistory({ mangaId: mangaId!, chapterId, chapterNumber: chapterNumber! })
+            }}
             className="group flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 transition p-4 rounded-xl mb-2 cursor-pointer">
             <div className="flex gap-4 items-center">
                 <img

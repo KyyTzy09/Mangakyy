@@ -1,5 +1,6 @@
 import { getChapterList } from '@/api/server/chapter'
 import { getMangaDetail } from '@/api/server/manga'
+import ChapterHistoryCard from '@/features/chapter/components/cards/ChapterHistoryCard'
 import ChapterList from '@/features/chapter/components/cards/chapterList'
 import ChapterPagination from '@/features/chapter/components/ChapterPagination'
 import ChapterListDropdown from '@/features/chapter/components/interacts/ChapterListDropdown'
@@ -10,6 +11,7 @@ import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { displayComicType } from '@/shared/utils/countryConverter'
+import { getChapterHistory } from '@/shared/utils/history'
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Home, Play, Star } from 'lucide-react'
 import type React from 'react'
@@ -18,9 +20,11 @@ import { useState } from 'react'
 export const Route = createFileRoute('/read/$mangaId')({
   component: RouteComponent,
   loader: async ({ params }) => {
+    const detail = await getMangaDetail({ data: { mangaId: params.mangaId } })
     return {
-      detail: await getMangaDetail({ data: { mangaId: params.mangaId } }),
-      chapters: await getChapterList({ data: { mangaId: params.mangaId, page: 1 } })
+      detail,
+      chapters: await getChapterList({ data: { mangaId: params.mangaId, page: 1 } }),
+      meta: { title: `${detail?.data.title}`, description: detail?.data.description, image: detail?.data.cover_image_url }
     }
   },
   head: async ({ loaderData }) => {
@@ -35,12 +39,12 @@ export const Route = createFileRoute('/read/$mangaId')({
           content: "width=device-width, initial-scale=1",
         },
         {
-          title: `${data?.detail?.data.title}`,
+          title: `${data?.meta.title}`,
         },
         {
           name: "description",
           content:
-            `${data?.detail?.data.description}`,
+            `${data?.meta.description}`,
         },
         {
           name: "keywords",
@@ -67,6 +71,10 @@ export const Route = createFileRoute('/read/$mangaId')({
             "Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.",
         },
         {
+          property: "og:image",
+          content: `${data?.meta.image}`,
+        },
+        {
           property: "og:type",
           content: "website",
         },
@@ -74,7 +82,10 @@ export const Route = createFileRoute('/read/$mangaId')({
           property: "og:site_name",
           content: "Mangakyy",
         },
-
+        {
+          property: "og:url",
+          content: "https://mangakyy.com",
+        },
         // Twitter card
         {
           name: "twitter:card",
@@ -89,6 +100,14 @@ export const Route = createFileRoute('/read/$mangaId')({
           content:
             "Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.",
         },
+        {
+          name: "twitter:image",
+          content: `${data?.meta.image}`,
+        },
+        {
+          name: "twitter:url",
+          content: "https://mangakyy.com",
+        }
       ]
     }
   },
@@ -119,6 +138,9 @@ export default function RouteComponent() {
 
   const navigate = useNavigate()
   const router = useRouter()
+  const histories = getChapterHistory()
+  const history = histories.find((history) => history.mangaId === detail?.data.manga_id)
+
   return (
     <main className="flex flex-col items-center justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20">
       <section className="w-full relative overflow-hidden">
@@ -222,8 +244,9 @@ export default function RouteComponent() {
         </header>
         <Separator className='w-full bg-primary' />
         <div className='flex flex-col items-center justify-center w-full h-full'>
+          {history && <ChapterHistoryCard history={history} />}
           {chapterList?.data?.map(({ chapter_id, chapter_number, thumbnail_image_url, release_date }, i) => {
-            return <ChapterList chapterId={chapter_id} index={i} image={thumbnail_image_url} title={`Chapter ${chapter_number}`} time={new Date(release_date)} />
+            return <ChapterList chapterId={chapter_id} index={i} image={thumbnail_image_url} title={`Chapter ${chapter_number}`} time={new Date(release_date)} mangaId={detail?.data.manga_id} chapterNumber={chapter_number} />
           })}
         </div>
       </section>
