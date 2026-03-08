@@ -64,7 +64,7 @@ export const Route = createFileRoute('/popular')({
             },
             {
                 property: "og:url",
-                content: "https://mangakyy.com/popular",
+                content: "https://mangakyy.my.id/popular",
             },
 
             // Twitter card
@@ -87,7 +87,7 @@ export const Route = createFileRoute('/popular')({
             },
             {
                 name: "twitter:url",
-                content: "https://mangakyy.com/popular",
+                content: "https://mangakyy.my.id/popular",
             }
         ]
     }),

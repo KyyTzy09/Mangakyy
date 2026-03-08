@@ -7,7 +7,7 @@ export const Route = createFileRoute('/robots.txt')({
                 const robots = `User-agent: *
 Allow: /
 
-Sitemap: https://mangakyy.com/sitemap.xml`
+Sitemap: https://mangakyy.my.id/sitemap.xml`
                 return new Response(robots, {
                     headers: {
                         'Content-Type': "text/plain"

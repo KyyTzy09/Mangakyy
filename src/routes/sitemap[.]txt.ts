@@ -11,7 +11,7 @@ export const Route = createFileRoute('/sitemap.txt')({
 
                 const comicUrls = comics?.map((comic) => `
   <url>
-    <loc>https://mangakyy.com/detail/${comic.manga_id}</loc>
+    <loc>https://mangakyy.my.id/detail/${comic.manga_id}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </url>
 `).join('')
@@ -20,22 +20,22 @@ export const Route = createFileRoute('/sitemap.txt')({
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://mangakyy.com/</loc>
+    <loc>https://mangakyy.my.id/</loc>
   </url>
   <url>
-    <loc>https://mangakyy.com/explore</loc>
+    <loc>https://mangakyy.my.id/explore</loc>
   </url>
   
   <url>
-    <loc>https://mangakyy.com/update</loc>
+    <loc>https://mangakyy.my.id/update</loc>
   </url>
 
   <url>
-    <loc>https://mangakyy.com/series</loc>
+    <loc>https://mangakyy.my.id/series</loc>
   </url>
 
   <url>
-    <loc>https://mangakyy.com/popular</loc>
+    <loc>https://mangakyy.my.id/popular</loc>
   </url>
 
   ${comicUrls}

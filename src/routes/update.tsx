@@ -66,7 +66,7 @@ export const Route = createFileRoute('/update')({
       },
       {
         property: "og:url",
-        content: "https://mangakyy.com/update",
+        content: "https://mangakyy.my.id/update",
       },
 
       // Twitter card
@@ -89,7 +89,7 @@ export const Route = createFileRoute('/update')({
       },
       {
         name: "twitter:url",
-        content: "https://mangakyy.com/update",
+        content: "https://mangakyy.my.id/update",
       }
     ]
   }),

@@ -84,7 +84,7 @@ export const Route = createFileRoute('/detail/$mangaId')({
         },
         {
           property: "og:url",
-          content: `https://mangakyy.com/detail/${data?.detail?.data.manga_id}`,
+          content: `https://mangakyy.my.id/detail/${data?.detail?.data.manga_id}`,
         },
         // Twitter card
         {
@@ -106,7 +106,7 @@ export const Route = createFileRoute('/detail/$mangaId')({
         },
         {
           name: "twitter:url",
-          content: `https://mangakyy.com/detail/${data?.detail?.data.manga_id}`,
+          content: `https://mangakyy.my.id/detail/${data?.detail?.data.manga_id}`,
         }
       ]
     }
