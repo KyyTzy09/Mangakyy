@@ -8,13 +8,13 @@ export default function Navbar() {
 
     const menus = [{
         title: "Home",
-        link: "/"
+        link: "/home"
     }, {
         title: "Populer",
         link: "/popular",
     }, {
-        title: "Genre",
-        link: "/genre"
+        title: "Explore",
+        link: "/explore"
     }, {
         title: "Update",
         link: "/update"
@@ -44,13 +44,6 @@ export default function Navbar() {
                                     </Link>
                                 )
                             })}
-                        </div>
-                    </section>
-                    <section className='w-1/2 h-full flex items-center justify-end text-white gap-5'>
-                        <div className='flex items-center justify-center w-auto h-full gap-2'>
-                            <Button className='flex items-center justify-center w-10 h-full rounded-full bg-primary text-white'>
-                                <Timer className='w-4 h-4' />
-                            </Button>
                         </div>
                     </section>
                 </div>

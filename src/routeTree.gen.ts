@@ -9,32 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UpdateRouteImport } from './routes/update'
 import { Route as PopularRouteImport } from './routes/popular'
-import { Route as GenreRouteImport } from './routes/genre'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UpdateIndexRouteImport } from './routes/update.index'
 import { Route as ReadMangaIdRouteImport } from './routes/read.$mangaId'
 import { Route as ChapterChapterIdRouteImport } from './routes/chapter.$chapterId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
+const UpdateRoute = UpdateRouteImport.update({
+  id: '/update',
+  path: '/update',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PopularRoute = PopularRouteImport.update({
   id: '/popular',
   path: '/popular',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GenreRoute = GenreRouteImport.update({
-  id: '/genre',
-  path: '/genre',
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreRoute = ExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UpdateIndexRoute = UpdateIndexRouteImport.update({
-  id: '/update/',
-  path: '/update/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReadMangaIdRoute = ReadMangaIdRouteImport.update({
@@ -55,74 +61,88 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/genre': typeof GenreRoute
+  '/explore': typeof ExploreRoute
+  '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
+  '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
-  '/update/': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/genre': typeof GenreRoute
+  '/explore': typeof ExploreRoute
+  '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
+  '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
-  '/update': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/genre': typeof GenreRoute
+  '/explore': typeof ExploreRoute
+  '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
+  '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/read/$mangaId': typeof ReadMangaIdRoute
-  '/update/': typeof UpdateIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/genre'
+    | '/explore'
+    | '/home'
     | '/popular'
+    | '/update'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
-    | '/update/'
     | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/genre'
+    | '/explore'
+    | '/home'
     | '/popular'
+    | '/update'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
-    | '/update'
     | '/api/trpc/$'
   id:
     | '__root__'
     | '/'
-    | '/genre'
+    | '/explore'
+    | '/home'
     | '/popular'
+    | '/update'
     | '/chapter/$chapterId'
     | '/read/$mangaId'
-    | '/update/'
     | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  GenreRoute: typeof GenreRoute
+  ExploreRoute: typeof ExploreRoute
+  HomeRoute: typeof HomeRoute
   PopularRoute: typeof PopularRoute
+  UpdateRoute: typeof UpdateRoute
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   ReadMangaIdRoute: typeof ReadMangaIdRoute
-  UpdateIndexRoute: typeof UpdateIndexRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/update': {
+      id: '/update'
+      path: '/update'
+      fullPath: '/update'
+      preLoaderRoute: typeof UpdateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/popular': {
       id: '/popular'
       path: '/popular'
@@ -130,11 +150,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PopularRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/genre': {
-      id: '/genre'
-      path: '/genre'
-      fullPath: '/genre'
-      preLoaderRoute: typeof GenreRouteImport
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore': {
+      id: '/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -142,13 +169,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/update/': {
-      id: '/update/'
-      path: '/update'
-      fullPath: '/update/'
-      preLoaderRoute: typeof UpdateIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/read/$mangaId': {
@@ -177,11 +197,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  GenreRoute: GenreRoute,
+  ExploreRoute: ExploreRoute,
+  HomeRoute: HomeRoute,
   PopularRoute: PopularRoute,
+  UpdateRoute: UpdateRoute,
   ChapterChapterIdRoute: ChapterChapterIdRoute,
   ReadMangaIdRoute: ReadMangaIdRoute,
-  UpdateIndexRoute: UpdateIndexRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport

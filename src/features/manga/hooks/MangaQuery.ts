@@ -1,5 +1,5 @@
 import { trpcClient } from "@/integrations/tanstack-query/root-provider"
-import type { APIResponse, ComicType, PopularComic } from "@/shared/interfaces"
+import type { APIResponse, ComicType, PopularComic, UpdateComic } from "@/shared/interfaces"
 import { useQuery } from "@tanstack/react-query"
 
 export const useGetRecommendationManga = (format: "manga" | "manhua" | "manhwa", initialData?: ComicType[], page?: number) => {
@@ -29,6 +29,16 @@ export const useGetMangaByGenre = (initialData: APIResponse<ComicType[]>, query:
         queryKey: ["genres-manga", genres, query, page],
         queryFn: async () => {
             return await trpcClient.manga.getComicByGenres.query({ query, genres, page })
+        },
+        placeholderData: (prev) => prev ?? initialData
+    })
+}
+
+export const useGetUpdateManga = (initialData: APIResponse<UpdateComic[]>, type: "mirror" | "project", page?: number, pageSize?: number) => {
+    return useQuery({
+        queryKey: ["update-manga", type, page],
+        queryFn: async () => {
+            return await trpcClient.manga.getUpdateComic.query({ type, page, pageSize })
         },
         placeholderData: (prev) => prev ?? initialData
     })

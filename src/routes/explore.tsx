@@ -14,7 +14,7 @@ import GenreMangaCardL from '@/features/manga/components/cards/GenreMangaCardL'
 import GenreSearchSection from '@/features/genre/components/section/GenreSearchSection'
 import GenreFilterDropdown from '@/features/genre/components/interacts/GenreFilterDropdown'
 
-export const Route = createFileRoute('/genre')({
+export const Route = createFileRoute('/explore')({
   component: RouteComponent,
   loader: async () => {
     return {

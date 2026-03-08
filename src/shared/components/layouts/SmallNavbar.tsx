@@ -1,14 +1,14 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Compass, Home, Library, Search, Star, Timer } from 'lucide-react'
+import { Home, Search, Star, Timer } from 'lucide-react'
 
 const navbarItems = [
     {
-        to: "/",
+        to: "/home",
         icon: <Home size={22} />,
         label: "Home"
     },
     {
-        to: "/genre",
+        to: "/explore",
         icon: <Search size={22} />,
         label: "Explore"
     },
@@ -22,11 +22,6 @@ const navbarItems = [
         icon: <Timer size={22} />,
         label: "Update"
     },
-    {
-        to: "/library",
-        icon: <Library size={22} />,
-        label: "History"
-    },
 ]
 
 export default function SmallNavbar() {
@@ -35,8 +30,9 @@ export default function SmallNavbar() {
         <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
             <div className="flex items-center justify-around h-16 px-2 
       bg-black/80 backdrop-blur-lg border-t border-white/10">
-                {navbarItems.map(({ to, icon, label }, index) => (
+                {navbarItems.map(({ to, icon, label }, i) => (
                     <Link
+                        key={i}
                         to={to}
                         className={`
                                 ${location.pathname === to

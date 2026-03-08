@@ -153,7 +153,7 @@ export default function RouteComponent() {
             Kembali
           </Button>
           <Button
-            onClick={() => navigate({ to: "/" })}
+            onClick={() => navigate({ to: "/home" })}
             className='hover:bg-blue-400 rounded-full w-10 h-10'
           >
             <Home className='flex items-center justify-center font-primary' />

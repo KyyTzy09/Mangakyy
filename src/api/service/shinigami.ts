@@ -6,7 +6,7 @@ export class ShinigamiService {
         return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?format=${format}&page=${page}&page_size=${pageSize}&is_recommended=true&sort=latest&sort_order=desc`, method: "get" })
     }
 
-    public async getComicUpdate(type: string, page: number = 1, pageSize: number = 19) {
+    public async getComicUpdate(type: "mirror" | "project", page: number = 1, pageSize: number = 19) {
         return await apiClient<APIResponse<UpdateComic[]>>({ url: `/manga/list?type=${type}&page=${page}&page_size=${pageSize}&is_update=true&sort=latest&sort_order=desc` })
     }
 
