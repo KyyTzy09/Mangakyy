@@ -17,7 +17,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Home, Play, Star } from 'luc
 import type React from 'react'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/read/$mangaId')({
+export const Route = createFileRoute('/detail/$mangaId')({
   component: RouteComponent,
   loader: async ({ params }) => {
     const detail = await getMangaDetail({ data: { mangaId: params.mangaId } })
@@ -39,7 +39,7 @@ export const Route = createFileRoute('/read/$mangaId')({
           content: "width=device-width, initial-scale=1",
         },
         {
-          title: `${data?.meta.title}`,
+          title: `${data?.meta.title} - MangaKyy`,
         },
         {
           name: "description",
@@ -63,7 +63,7 @@ export const Route = createFileRoute('/read/$mangaId')({
         // Open Graph (buat preview Discord, Facebook, dll)
         {
           property: "og:title",
-          content: `${data?.detail?.data.title}`,
+          content: `${data?.meta.title} - MangaKyy`,
         },
         {
           property: "og:description",
@@ -84,7 +84,7 @@ export const Route = createFileRoute('/read/$mangaId')({
         },
         {
           property: "og:url",
-          content: "https://mangakyy.com",
+          content: `https://mangakyy.com/detail/${data?.detail?.data.manga_id}`,
         },
         // Twitter card
         {
@@ -93,7 +93,7 @@ export const Route = createFileRoute('/read/$mangaId')({
         },
         {
           name: "twitter:title",
-          content: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis",
+          content: `${data?.meta.title} - MangaKyy`,
         },
         {
           name: "twitter:description",
@@ -106,7 +106,7 @@ export const Route = createFileRoute('/read/$mangaId')({
         },
         {
           name: "twitter:url",
-          content: "https://mangakyy.com",
+          content: `https://mangakyy.com/detail/${data?.detail?.data.manga_id}`,
         }
       ]
     }

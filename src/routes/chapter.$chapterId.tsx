@@ -29,7 +29,7 @@ export const Route = createFileRoute('/chapter/$chapterId')({
           content: "width=device-width, initial-scale=1",
         },
         {
-          title: data?.meta.title,
+          title: `${data?.meta.title} - MangaKyy`,
         },
         {
           name: "description",
@@ -53,11 +53,11 @@ export const Route = createFileRoute('/chapter/$chapterId')({
         // Open Graph (buat preview Discord, Facebook, dll)
         {
           property: "og:title",
-          content: data?.meta.title,
+          content: `${data?.meta.title} - Mangakyy`,
         },
         {
           property: "og:description",
-          content: data?.meta.title,
+          content: data?.meta.description,
         },
         {
           property: "og:image",
@@ -73,7 +73,7 @@ export const Route = createFileRoute('/chapter/$chapterId')({
         },
         {
           property: "og:url",
-          content: "https://mangakyy.com",
+          content: `https://mangakyy.com/chapter/${data?.detail?.data.chapter_id}`,
         },
         // Twitter card
         {
@@ -82,7 +82,7 @@ export const Route = createFileRoute('/chapter/$chapterId')({
         },
         {
           name: "twitter:title",
-          content: data?.meta.title,
+          content: `${data?.meta.title} - MangaKyy`,
         },
         {
           name: "twitter:image",
@@ -92,6 +92,10 @@ export const Route = createFileRoute('/chapter/$chapterId')({
           name: "twitter:description",
           content: data?.meta.description,
         },
+        {
+          name: "twitter:url",
+          content: `https://mangakyy.com/chapter/${data?.detail?.data.chapter_id}`,
+        }
       ]
     }
   }
@@ -137,7 +141,7 @@ function RouteComponent() {
           Kembali
         </Button>
         <Button
-          onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: detail?.data.manga_id || "" } })}
+          onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId: detail?.data.manga_id || "" } })}
           className='hover:bg-blue-400 rounded-full w-10 h-10'
         >
           <Book className='flex items-center justify-center font-primary' />

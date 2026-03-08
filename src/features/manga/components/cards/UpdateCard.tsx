@@ -18,7 +18,7 @@ export default function MangaUpdateCard({ data, index }: Props) {
             initial={{ translateY: 10 }}
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
-            onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: data.manga_id } })}
+            onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId: data.manga_id } })}
             transition={{ delay: index * 0.1 }}
             className='group w-full h-full border border-gray-400/60 rounded-sm overflow-hidden cursor-pointer'>
             <div className="relative w-full h-60 sm:h-64 md:h-60 overflow-hidden">
@@ -47,7 +47,7 @@ export default function MangaUpdateCard({ data, index }: Props) {
                     <Button
                         onClick={(e) => {
                             e.stopPropagation()
-                            navigate({ to: "/read/$mangaId", params: { mangaId: data.manga_id } })
+                            navigate({ to: "/detail/$mangaId", params: { mangaId: data.manga_id } })
                         }}
                         className='w-full text-start bg-primary/20 border border-primary/70 hover:bg-gray-800 text-sm py-2 px-3 rounded-md'>
                         <Eye />

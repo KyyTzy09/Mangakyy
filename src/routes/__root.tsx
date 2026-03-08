@@ -72,6 +72,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         property: "og:site_name",
         content: "Mangakyy",
       },
+      {
+        property: "og:image",
+        content: "/mangakyy-logo.png"
+      },
+      {
+        property: "og:url",
+        content: "https://mangakyy.com",
+      },
 
       // Twitter card
       {
@@ -87,6 +95,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content:
           "Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.",
       },
+      {
+        name: "twitter:image",
+        content: "/mangakyy-logo.png"
+      },
+      {
+        name: "twitter:url",
+        content: "https://mangakyy.com",
+      }
     ],
     links: [
       {

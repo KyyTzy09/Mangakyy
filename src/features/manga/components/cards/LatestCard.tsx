@@ -20,7 +20,7 @@ export default function LatestCard({ data, index }: Props) {
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
             transition={{ delay: index * 0.1 }}
-            onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId: manga_id } })}
+            onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId: manga_id } })}
             className="group relative w-full min-h-full max-w-md"
         >
             {/* glow border */}

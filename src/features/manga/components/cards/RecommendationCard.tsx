@@ -13,7 +13,7 @@ interface Props {
 
 export default function RecommendationCard({ data, index }: Props) {
     return (
-        <Link to={`/read/$mangaId`} params={{ mangaId: data.manga_id }} >
+        <Link to={`/detail/$mangaId`} params={{ mangaId: data.manga_id }} >
             <motion.article
                 initial={{ translateY: 10 }}
                 animate={{ translateY: 0 }}

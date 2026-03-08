@@ -3,16 +3,96 @@ import MangaUpdateCard from '@/features/manga/components/cards/UpdateCard'
 import UpdateCardSkeleton from '@/features/manga/components/skeletons/UpdateCardSkeleton'
 import { useGetUpdateManga } from '@/features/manga/hooks/MangaQuery'
 import PaginationSection from '@/shared/components/reusable/pagination'
-import { Badge } from '@/shared/shadcn/badge'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
-import { formatRelativeTime } from '@/shared/utils/dateConverter'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Book, BookOpen, Eye, Timer } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { Timer } from 'lucide-react'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/update')({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      {
+        title: "Update - Mangakyy",
+      },
+      {
+        name: "description",
+        content:
+          "Mangakyy adalah platform untuk membaca manga, manhwa, dan manhua gratis dengan update cepat dan koleksi lengkap. Temukan berbagai genre seperti action, romance, fantasy, dan banyak lagi dengan kualitas terbaik.",
+      },
+      {
+        name: "keywords",
+        content:
+          "manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy",
+      },
+      {
+        name: "author",
+        content: "Mangakyy",
+      },
+      {
+        name: "robots",
+        content: "index, follow",
+      },
+
+      // Open Graph (buat preview Discord, Facebook, dll)
+      {
+        property: "og:title",
+        content: "Update - Mangakyy",
+      },
+      {
+        property: "og:description",
+        content:
+          "Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.",
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        property: "og:site_name",
+        content: "Mangakyy",
+      },
+      {
+        property: "og:image",
+        content: "/mangakyy-logo.png"
+      },
+      {
+        property: "og:url",
+        content: "https://mangakyy.com/update",
+      },
+
+      // Twitter card
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        name: "twitter:title",
+        content: "Update - Mangakyy",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.",
+      },
+      {
+        name: "twitter:image",
+        content: "/mangakyy-logo.png"
+      },
+      {
+        name: "twitter:url",
+        content: "https://mangakyy.com/update",
+      }
+    ]
+  }),
   loader: async () => ({
     data: await getUpdateManga({ data: { type: "mirror", page: 1, pageSize: 17 } })
   })
@@ -34,8 +114,6 @@ function RouteComponent() {
   const [page, setPage] = useState<number>(1)
   const { data } = Route.useLoaderData()
   const { data: update, isPending } = useGetUpdateManga(data!, selectedType, page)
-
-  const navigate = useNavigate()
   return (
     <div className='flex items-start justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20 md:pt-24 p-2 gap-2'>
       <aside className='hidden md:flex flex-col w-70 h-fit max-h-[85vh] sticky top-24 bg-black/20 backdrop-blur-xl border border-white/10 rounded-xl p-4 gap-5 overflow-y-auto'>

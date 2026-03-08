@@ -21,7 +21,7 @@ export default function PopularCard({ data: { title, manga_id: mangaId, cover_im
             initial={{ translateY: 10 }}
             animate={{ translateY: 0 }}
             exit={{ translateY: 10 }}
-            onClick={() => navigate({ to: "/read/$mangaId", params: { mangaId } })}
+            onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId } })}
             transition={{ delay: index * 0.1 }}
             className='group relative flex flex-col items-center justify-start w-full h-auto bg-linear-to-br from-[#0f172a] via-[#0b1220] to-[#090f1a] overflow-hidden rounded-md gap-2'>
             <div className='relative w-full h-50 sm:h-56 md:h-65'>

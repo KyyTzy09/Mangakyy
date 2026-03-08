@@ -16,7 +16,7 @@ import { Route as PopularRouteImport } from './routes/popular'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ReadMangaIdRouteImport } from './routes/read.$mangaId'
+import { Route as DetailMangaIdRouteImport } from './routes/detail.$mangaId'
 import { Route as ChapterChapterIdRouteImport } from './routes/chapter.$chapterId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
@@ -55,9 +55,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReadMangaIdRoute = ReadMangaIdRouteImport.update({
-  id: '/read/$mangaId',
-  path: '/read/$mangaId',
+const DetailMangaIdRoute = DetailMangaIdRouteImport.update({
+  id: '/detail/$mangaId',
+  path: '/detail/$mangaId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChapterChapterIdRoute = ChapterChapterIdRouteImport.update({
@@ -80,7 +80,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.txt': typeof SitemapDottxtRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
-  '/read/$mangaId': typeof ReadMangaIdRoute
+  '/detail/$mangaId': typeof DetailMangaIdRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
@@ -92,7 +92,7 @@ export interface FileRoutesByTo {
   '/sitemap.txt': typeof SitemapDottxtRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
-  '/read/$mangaId': typeof ReadMangaIdRoute
+  '/detail/$mangaId': typeof DetailMangaIdRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesById {
@@ -105,7 +105,7 @@ export interface FileRoutesById {
   '/sitemap.txt': typeof SitemapDottxtRoute
   '/update': typeof UpdateRoute
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
-  '/read/$mangaId': typeof ReadMangaIdRoute
+  '/detail/$mangaId': typeof DetailMangaIdRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
@@ -119,7 +119,7 @@ export interface FileRouteTypes {
     | '/sitemap.txt'
     | '/update'
     | '/chapter/$chapterId'
-    | '/read/$mangaId'
+    | '/detail/$mangaId'
     | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -131,7 +131,7 @@ export interface FileRouteTypes {
     | '/sitemap.txt'
     | '/update'
     | '/chapter/$chapterId'
-    | '/read/$mangaId'
+    | '/detail/$mangaId'
     | '/api/trpc/$'
   id:
     | '__root__'
@@ -143,7 +143,7 @@ export interface FileRouteTypes {
     | '/sitemap.txt'
     | '/update'
     | '/chapter/$chapterId'
-    | '/read/$mangaId'
+    | '/detail/$mangaId'
     | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
@@ -156,7 +156,7 @@ export interface RootRouteChildren {
   SitemapDottxtRoute: typeof SitemapDottxtRoute
   UpdateRoute: typeof UpdateRoute
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
-  ReadMangaIdRoute: typeof ReadMangaIdRoute
+  DetailMangaIdRoute: typeof DetailMangaIdRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
@@ -211,11 +211,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/read/$mangaId': {
-      id: '/read/$mangaId'
-      path: '/read/$mangaId'
-      fullPath: '/read/$mangaId'
-      preLoaderRoute: typeof ReadMangaIdRouteImport
+    '/detail/$mangaId': {
+      id: '/detail/$mangaId'
+      path: '/detail/$mangaId'
+      fullPath: '/detail/$mangaId'
+      preLoaderRoute: typeof DetailMangaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chapter/$chapterId': {
@@ -244,7 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDottxtRoute: SitemapDottxtRoute,
   UpdateRoute: UpdateRoute,
   ChapterChapterIdRoute: ChapterChapterIdRoute,
-  ReadMangaIdRoute: ReadMangaIdRoute,
+  DetailMangaIdRoute: DetailMangaIdRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport
