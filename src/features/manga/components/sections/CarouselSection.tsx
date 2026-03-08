@@ -110,7 +110,7 @@ export default function CarouselSection({ recommendations }: Props) {
                                 </div>
                                 <div className="flex items-center justify-start w-full">
                                     <Button
-                                        onClick={() => navigate({ to: `/read/${slide?.manga_id}` })}
+                                        onClick={() => navigate({ to: `/detail/$mangaId`, params: { mangaId: slide?.manga_id! } })}
                                         className="w-auto bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl text-white font-medium">
                                         Read Now
                                     </Button>
@@ -136,6 +136,6 @@ export default function CarouselSection({ recommendations }: Props) {
                 ))}
             </div>
 
-        </div>
+        </div >
     );
 }
