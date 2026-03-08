@@ -1,4 +1,9 @@
-# MangaKyy - Platform Pembaca Manga
+<p align="center">
+  <a href="https://mangakyy.my.id" target="_blank">
+    <img src="https://mangakyy.my.id/mangakyy-logo.png" width="200" alt="Mangakyy-Logo" />
+  </a>
+</p>
+<h1 align="center">MangaKyy 📖 - Platform Baca Manga Gratis, Terbaru, Tercepat dan Tanpa Iklan</h1>
 
 ## 📖 Deskripsi
 
