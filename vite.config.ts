@@ -14,12 +14,7 @@ const config = defineConfig({
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
     tsconfigPaths({ projects: ['./tsconfig.json'] }),
     tailwindcss(),
-    tanstackStart({
-      prerender: {
-        enabled: true,
-        crawlLinks: false,
-      },
-    }),
+    tanstackStart(),
     viteReact(),
   ],
 })
