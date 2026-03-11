@@ -12,10 +12,12 @@ interface Props {
     time: Date
     index: number
     mangaId?: string
+    manga_title?: string
+    manga_image_url?: string
     chapterNumber?: number
 }
 
-export default function ChapterList({ chapterId, image, title, time, index, chapterNumber, mangaId }: Props) {
+export default function ChapterList({ chapterId, image, title, time, index, chapterNumber, mangaId , manga_image_url , manga_title}: Props) {
     const navigate = useNavigate()
     return (
         <motion.article
@@ -25,7 +27,7 @@ export default function ChapterList({ chapterId, image, title, time, index, chap
             transition={{ delay: index * 0.1 }}
             onClick={() => {
                 navigate({ to: `/chapter/$chapterId`, params: { chapterId } })
-                saveChapterHistory({ mangaId: mangaId!, chapterId, chapterNumber: chapterNumber! })
+                saveChapterHistory({ mangaId: mangaId!, chapterId, chapterNumber: chapterNumber!, manga_cover_url: manga_image_url!, manga_title: manga_title! })
             }}
             className="group flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 transition p-4 rounded-xl mb-2 cursor-pointer">
             <div className="flex gap-4 items-center">

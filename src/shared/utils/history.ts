@@ -1,4 +1,6 @@
 export interface ChapterHistory {
+    manga_cover_url: string
+    manga_title: string
     mangaId: string
     chapterId: string
     chapterNumber: number
@@ -9,6 +11,8 @@ export function saveChapterHistory(data: {
     mangaId: string
     chapterId: string
     chapterNumber: number
+    manga_cover_url: string
+    manga_title: string
 }) {
     const key = "chapter_history"
 
