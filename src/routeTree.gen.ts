@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PopularRouteImport } from './routes/popular'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DetailMangaIdRouteImport } from './routes/detail.$mangaId'
@@ -45,6 +46,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
@@ -74,6 +80,7 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
+  '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
+  '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
+  '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/explore'
+    | '/history'
     | '/home'
     | '/popular'
     | '/robots.txt'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/explore'
+    | '/history'
     | '/home'
     | '/popular'
     | '/robots.txt'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/explore'
+    | '/history'
     | '/home'
     | '/popular'
     | '/robots.txt'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExploreRoute: typeof ExploreRoute
+  HistoryRoute: typeof HistoryRoute
   HomeRoute: typeof HomeRoute
   PopularRoute: typeof PopularRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore': {
       id: '/explore'
       path: '/explore'
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExploreRoute: ExploreRoute,
+  HistoryRoute: HistoryRoute,
   HomeRoute: HomeRoute,
   PopularRoute: PopularRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,

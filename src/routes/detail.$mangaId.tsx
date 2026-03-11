@@ -11,7 +11,7 @@ import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { displayComicType } from '@/shared/utils/countryConverter'
-import { getChapterHistory, type ChapterHistory } from '@/shared/utils/history'
+import { getLatestChapterHistory, type NewChapterHistory } from '@/shared/utils/history'
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, Eye, Home, Play, Star } from 'lucide-react'
 import type React from 'react'
@@ -115,7 +115,7 @@ export const Route = createFileRoute('/detail/$mangaId')({
 
 export default function RouteComponent() {
   const { detail, chapters } = Route.useLoaderData()
-  const [history, setHistory] = useState<ChapterHistory | null>(null)
+  const [history, setHistory] = useState<NewChapterHistory | null>(null)
   const [open, setOpen] = useState(false)
   const [page, setPage] = useState(1)
 
@@ -141,9 +141,8 @@ export default function RouteComponent() {
   const router = useRouter()
 
   useEffect(() => {
-    const histories = getChapterHistory()
-    const h = histories?.find((history) => history?.mangaId === detail?.data?.manga_id)
-    setHistory(h || null)
+    const h = getLatestChapterHistory(detail?.data?.manga_id || "")
+    setHistory(h)
   }, [detail?.data?.manga_id])
 
   return (
@@ -250,14 +249,14 @@ export default function RouteComponent() {
         <Separator className='w-full bg-primary' />
         <div className='flex flex-col items-center justify-center w-full h-full'>
           {history && <ChapterHistoryCard history={history} />}
-          {chapterList?.data?.map(({ chapter_id, chapter_number, thumbnail_image_url, release_date }, i) => {
-            return <ChapterList chapterId={chapter_id} index={i} image={thumbnail_image_url} title={`Chapter ${chapter_number}`} time={new Date(release_date)} mangaId={detail?.data.manga_id} chapterNumber={chapter_number} />
+          {chapterList?.data?.map((chapter, i) => {
+            return <ChapterList key={i} index={i} chapter={chapter} comic={detail?.data!} />
           })}
         </div>
       </section>
       <ChapterPagination page={page} setPage={setPage} chapters={chapterList} setOpen={setOpen} />
       <ChapterListDropdown
-        mangaId={detail?.data?.manga_id || ""}
+        comic={detail?.data!}
         chapters={chapters?.data || []}
         isOpen={open}
         setIsOpen={setOpen}
@@ -270,7 +269,7 @@ export default function RouteComponent() {
 
 function InfoCard({ title, children }: { title: string, children: React.ReactNode }) {
   return (
-    <div className="bg-slate-800 px-4 py-3 rounded-xl min-w-[100px]">
+    <div className="bg-slate-800 px-4 py-3 rounded-xl min-w-25">
       <div className="text-xs text-slate-400">
         {title}
       </div>

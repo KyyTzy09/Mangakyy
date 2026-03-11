@@ -1,4 +1,4 @@
-import type { ChapterList as ChapterListType } from '@/shared/interfaces'
+import type { ChapterList as ChapterListType, ComicType } from '@/shared/interfaces'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { Loader2, X } from 'lucide-react'
@@ -11,17 +11,17 @@ import { Input } from '@/shared/shadcn/input'
 import { useDebounce } from '@/shared/hooks/useDebounce'
 
 interface Props {
-    mangaId: string
     chapters: ChapterListType[]
+    comic: ComicType
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function ChapterListDropdown({ mangaId, isOpen, setIsOpen }: Props) {
+export default function ChapterListDropdown({ comic, isOpen, setIsOpen }: Props) {
     const [search, setSearch] = React.useState<string>('')
     const debounce = useDebounce(search, 1000)
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfiniteChapter(mangaId)
-    const { data: searchResult } = useSearchChapter(mangaId, debounce)
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfiniteChapter(comic.manga_id)
+    const { data: searchResult } = useSearchChapter(comic.manga_id, debounce)
     const isSearch = search.length > 0
     const chapters = isSearch ? searchResult?.data : data?.pages?.flatMap(page => page?.data) ?? []
 
@@ -63,13 +63,9 @@ export default function ChapterListDropdown({ mangaId, isOpen, setIsOpen }: Prop
                                 {chapters?.map((data, i) => (
                                     <ChapterList
                                         key={data?.chapter_id}
-                                        chapterId={data?.chapter_id!}
                                         index={i}
-                                        image={data?.thumbnail_image_url || defaultImage}
-                                        title={`Chapter ${data?.chapter_number}`}
-                                        time={new Date(data?.release_date!)}
-                                        mangaId={mangaId}
-                                        chapterNumber={data?.chapter_number}
+                                        chapter={data!}
+                                        comic={comic}
                                     />
                                 ))}
                                 <div
