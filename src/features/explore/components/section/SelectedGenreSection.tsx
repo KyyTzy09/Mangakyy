@@ -1,13 +1,13 @@
-import type { TaxonomyItem } from '@/shared/interfaces'
+import type { SearchTaxonomyType, SearchType } from '@/shared/interfaces/search'
 import { Badge } from '@/shared/shadcn/badge'
 import { X } from 'lucide-react'
 import React from 'react'
 
 interface Props {
-    selectedGenres: TaxonomyItem[]
-    setSelectedGenres: React.Dispatch<React.SetStateAction<TaxonomyItem[]>>
+    selectedGenres: SearchTaxonomyType
+    setSelectedGenres: React.Dispatch<React.SetStateAction<SearchTaxonomyType>>
     unselectGenres: (slug: string) => void
-    isSelected: (slug: string) => boolean
+    isSelected: (slug: string, type: SearchType) => boolean
 }
 
 export default function SelectedGenreSection({ selectedGenres, unselectGenres, isSelected }: Props) {
@@ -19,7 +19,7 @@ export default function SelectedGenreSection({ selectedGenres, unselectGenres, i
                         key={i}
                         onClick={() => unselectGenres(slug)}
                         className={`flex items-center justify-center h-10 rounded-md border cursor-pointer transition
-                            ${isSelected(slug)
+                            ${isSelected(slug, "genre")
                                 ? "border-primary bg-primary/20 text-white"
                                 : "border-gray-400 bg-gray-600/20 text-gray-200 hover:opacity-75"}`
                         }

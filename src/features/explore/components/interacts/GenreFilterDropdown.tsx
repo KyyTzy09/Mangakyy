@@ -6,16 +6,17 @@ import GenreListSection from '../section/GenreListSection'
 import { Button } from '@/shared/shadcn/button'
 import type { TaxonomyItem } from '@/shared/interfaces'
 import { useEffect, useState } from 'react'
+import type { SearchTaxonomyType } from '@/shared/interfaces/search'
 interface Props {
     genres: TaxonomyItem[]
     isOpen: boolean
-    selectedGenres: TaxonomyItem[]
+    selectedGenres: SearchTaxonomyType
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setSelectedGenres: React.Dispatch<React.SetStateAction<TaxonomyItem[]>>
+    setSelectedGenres: React.Dispatch<React.SetStateAction<SearchTaxonomyType>>
 }
 
 export default function GenreFilterDropdown({ isOpen, setIsOpen, selectedGenres, setSelectedGenres, genres }: Props) {
-    const [tempSelectedGenres, setTempSelectedGenres] = useState<TaxonomyItem[]>([])
+    const [tempSelectedGenres, setTempSelectedGenres] = useState<SearchTaxonomyType>([])
     const handleFilter = () => {
         setSelectedGenres(tempSelectedGenres)
         setIsOpen(false)
@@ -24,7 +25,7 @@ export default function GenreFilterDropdown({ isOpen, setIsOpen, selectedGenres,
     useEffect(() => {
         setTempSelectedGenres(selectedGenres)
     }, [selectedGenres])
-    
+
     return (
         <AnimatePresence>
             {isOpen && (

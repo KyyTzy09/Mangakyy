@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getComicGenres } from '@/api/server/genre'
 import { getMangaByGenre } from '@/api/server/manga'
-import GenreListSection from '@/features/genre/components/section/GenreListSection'
-import SelectedGenreSection from '@/features/genre/components/section/SelectedGenreSection'
-import { useSelectGenre } from '@/features/genre/hooks/useSelectGenre'
+import GenreListSection from '@/features/explore/components/section/GenreListSection'
+import SelectedGenreSection from '@/features/explore/components/section/SelectedGenreSection'
+import { useSelectGenre } from '@/features/explore/hooks/useSelectGenre'
 import GenreMangaCard from '@/features/manga/components/cards/GenreMangaCard'
 import PaginationSection from '@/shared/components/reusable/pagination'
 import type { TaxonomyItem } from '@/shared/interfaces'
@@ -11,8 +11,9 @@ import { Activity, useState } from 'react'
 import { useGetMangaByGenre } from '@/features/manga/hooks/MangaQuery'
 import GenreMangaCardSkeleton from '@/features/manga/components/skeletons/GenreMangaCardSkeleton'
 import GenreMangaCardL from '@/features/manga/components/cards/GenreMangaCardL'
-import GenreSearchSection from '@/features/genre/components/section/GenreSearchSection'
-import GenreFilterDropdown from '@/features/genre/components/interacts/GenreFilterDropdown'
+import GenreSearchSection from '@/features/explore/components/section/GenreSearchSection'
+import GenreFilterDropdown from '@/features/explore/components/interacts/GenreFilterDropdown'
+import type { SearchTaxonomyType } from '@/shared/interfaces/search'
 
 export const Route = createFileRoute('/explore')({
   component: RouteComponent,
@@ -112,7 +113,7 @@ function RouteComponent() {
   const { genres, comics } = Route.useLoaderData()
 
   const [openFilter, setOpenFilter] = useState<boolean>(false)
-  const [selectedGenres, setSelectedGenres] = useState<TaxonomyItem[]>([])
+  const [selectedSearch, setSelectedSearch] = useState<SearchTaxonomyType>([])
   const [query, setQuery] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [cardLayout, setCardLayout] = useState<'grid' | 'list'>('grid')
@@ -120,12 +121,12 @@ function RouteComponent() {
   const { data: comicsData, isPending } = useGetMangaByGenre(
     comics!,
     query,
-    selectedGenres.map((g) => g.slug),
+    selectedSearch.map((g) => g.slug),
     currentPage,
   )
-  const { isSelectedGenre, unselectGenres } = useSelectGenre(
-    selectedGenres,
-    setSelectedGenres,
+  const { isSelected, unselectGenres } = useSelectGenre(
+    selectedSearch,
+    setSelectedSearch,
   )
   const totalPage = comicsData?.meta.total_page
 
@@ -133,8 +134,8 @@ function RouteComponent() {
     <div className="flex items-start justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20 md:pt-24 p-2 gap-2 pb-16 md:pb-0">
       <aside className="hidden md:flex flex-col w-70 h-fit max-h-[85vh] sticky top-24 bg-black/20 backdrop-blur-xl border border-white/10 rounded-xl p-4 gap-5 overflow-y-auto">
         <GenreListSection
-          selectedGenres={selectedGenres}
-          setSelectedGenres={setSelectedGenres}
+          selectedGenres={selectedSearch}
+          setSelectedGenres={setSelectedSearch}
           data={genres?.data || []}
         />
       </aside>
@@ -147,11 +148,11 @@ function RouteComponent() {
           setOpenFilter={setOpenFilter}
         />
         {/* Genre */}
-        <Activity mode={selectedGenres.length > 0 ? 'visible' : 'hidden'}>
+        <Activity mode={selectedSearch.length > 0 ? 'visible' : 'hidden'}>
           <SelectedGenreSection
-            isSelected={isSelectedGenre}
-            selectedGenres={selectedGenres}
-            setSelectedGenres={setSelectedGenres}
+            isSelected={isSelected}
+            selectedGenres={selectedSearch}
+            setSelectedGenres={setSelectedSearch}
             unselectGenres={unselectGenres}
           />
         </Activity>
@@ -198,8 +199,8 @@ function RouteComponent() {
       <GenreFilterDropdown
         isOpen={openFilter}
         setIsOpen={setOpenFilter}
-        selectedGenres={selectedGenres}
-        setSelectedGenres={setSelectedGenres}
+        selectedGenres={selectedSearch}
+        setSelectedGenres={setSelectedSearch}
         genres={genres?.data || []}
       />
     </div>

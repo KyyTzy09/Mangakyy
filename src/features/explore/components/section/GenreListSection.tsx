@@ -6,24 +6,25 @@ import { Label } from '@/shared/shadcn/label'
 import { ChevronDown, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useSelectGenre } from '../../hooks/useSelectGenre'
+import type { SearchTaxonomyType } from '@/shared/interfaces/search'
 
 interface Props {
     data: TaxonomyItem[]
-    selectedGenres: TaxonomyItem[]
-    setSelectedGenres: React.Dispatch<React.SetStateAction<TaxonomyItem[]>>
+    selectedGenres: SearchTaxonomyType
+    setSelectedGenres: React.Dispatch<React.SetStateAction<SearchTaxonomyType>>
 }
 
 /**
  * GenreListSection is a component that displays a list of genres
  * @param {Props} props - props object
- * @param {TaxonomyItem[]} props.data - list of taxonomy items
+ * @param {SearchTaxonomyType} props.data - list of taxonomy items
  * @returns {JSX.Element} - JSX element
  * @example
  * <GenreListSection data={[{name: "Adventure"}, {name: "Romance"}]} />
  */
 export default function GenreListSection({ data, selectedGenres, setSelectedGenres }: Props) {
     const [open, setOpen] = useState(true)
-    const { isSelectedGenre, selectGenres } = useSelectGenre(selectedGenres, setSelectedGenres)
+    const { isSelected, selectType } = useSelectGenre(selectedGenres, setSelectedGenres)
     const [search, setSearch] = useState<string>("")
     const filteredData = data.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
 
@@ -73,10 +74,10 @@ export default function GenreListSection({ data, selectedGenres, setSelectedGenr
                     {filteredData?.map(({ name, slug }, i) => (
                         <Badge
                             key={i}
-                            onClick={() => selectGenres(name, slug)}
+                            onClick={() => selectType(name, slug, "genre")}
                             className={`
               px-3 py-1.5 rounded-md text-xs border cursor-pointer transition
-              ${isSelectedGenre(slug)
+              ${isSelected(slug, "genre")
                                     ? "border-primary bg-primary/20 text-white"
                                     : "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10"}
               `}
