@@ -3,7 +3,6 @@ import { Label } from '@/shared/shadcn/label'
 import type { UpdateComic } from '@/shared/interfaces'
 import { useNavigate } from '@tanstack/react-router'
 import { LucideTimer } from 'lucide-react'
-import React from 'react'
 import LatestCard from '@/features/manga/components/cards/LatestCard'
 
 interface Props {

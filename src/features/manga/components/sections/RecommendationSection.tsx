@@ -1,5 +1,4 @@
 import RecommendationCard from '@/features/manga/components/cards/RecommendationCard'
-import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import type { ComicType } from '@/shared/interfaces'
 import { TrendingUp } from 'lucide-react'
@@ -43,7 +42,7 @@ export default function RecommendationSection({ recommendation }: Props) {
             <div className='grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-1 md:gap-3'>
                 {!isPending ? data?.map((data, i) => {
                     return (
-                        <RecommendationCard data={data as ComicType} index={i} key={i} />
+                        <RecommendationCard data={data} index={i} key={i} />
                     )
                 }) : <RecommendationCardSkeleton count={10} />}
             </div>

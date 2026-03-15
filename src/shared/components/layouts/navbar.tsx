@@ -46,8 +46,14 @@ export default function Navbar() {
                             })}
                         </div>
                     </section>
+                    <div className='w-1/2 flex items-center justify-end gap-4'>
+                        <Link to="/history" className='flex items-center justify-center gap-1 text-sm px-3 bg-primary hover:bg-primary/50 border-gray-500 text-white rounded-sm py-2'>
+                            <Timer className='w-4 h-4 mr-1' />
+                            History
+                        </Link>
+                    </div>
                 </div>
             </header>
-        </Activity>
+        </Activity >
     )
 }

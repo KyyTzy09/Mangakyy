@@ -7,11 +7,13 @@ import ChapterListDropdown from '@/features/chapter/components/interacts/Chapter
 import { useGetChapterList } from '@/features/chapter/hooks/chapterQuery'
 import Stat from '@/features/manga/components/cards/DetailStatCard'
 import Tag from '@/features/manga/components/cards/DetailTagCard'
+import type { ComicType } from '@/shared/interfaces'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { displayComicType } from '@/shared/utils/countryConverter'
-import { getLatestChapterHistory, type NewChapterHistory } from '@/shared/utils/history'
+import type { NewChapterHistory } from '@/shared/utils/history'
+import { getLatestChapterHistory } from '@/shared/utils/history'
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, Eye, Home, Play, Star } from 'lucide-react'
 import type React from 'react'
@@ -23,8 +25,14 @@ export const Route = createFileRoute('/detail/$mangaId')({
     const detail = await getMangaDetail({ data: { mangaId: params.mangaId } })
     return {
       detail,
-      chapters: await getChapterList({ data: { mangaId: params.mangaId, page: 1 } }),
-      meta: { title: `${detail?.data.title}`, description: detail?.data.description, image: detail?.data.cover_image_url }
+      chapters: await getChapterList({
+        data: { mangaId: params.mangaId, page: 1 },
+      }),
+      meta: {
+        title: `${detail?.data.title}`,
+        description: detail?.data.description,
+        image: detail?.data.cover_image_url,
+      },
     }
   },
   head: async ({ loaderData }) => {
@@ -32,83 +40,82 @@ export const Route = createFileRoute('/detail/$mangaId')({
     return {
       meta: [
         {
-          charSet: "utf-8",
+          charSet: 'utf-8',
         },
         {
-          name: "viewport",
-          content: "width=device-width, initial-scale=1",
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1',
         },
         {
           title: `${data?.meta.title} - MangaKyy`,
         },
         {
-          name: "description",
+          name: 'description',
+          content: `${data?.meta.description}`,
+        },
+        {
+          name: 'keywords',
           content:
-            `${data?.meta.description}`,
+            'manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy',
         },
         {
-          name: "keywords",
-          content:
-            "manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy",
+          name: 'author',
+          content: 'Mangakyy',
         },
         {
-          name: "author",
-          content: "Mangakyy",
-        },
-        {
-          name: "robots",
-          content: "index, follow",
+          name: 'robots',
+          content: 'index, follow',
         },
 
         // Open Graph (buat preview Discord, Facebook, dll)
         {
-          property: "og:title",
+          property: 'og:title',
           content: `${data?.meta.title} - MangaKyy`,
         },
         {
-          property: "og:description",
+          property: 'og:description',
           content:
-            "Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.",
+            'Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.',
         },
         {
-          property: "og:image",
+          property: 'og:image',
           content: `${data?.meta.image}`,
         },
         {
-          property: "og:type",
-          content: "website",
+          property: 'og:type',
+          content: 'website',
         },
         {
-          property: "og:site_name",
-          content: "Mangakyy",
+          property: 'og:site_name',
+          content: 'Mangakyy',
         },
         {
-          property: "og:url",
+          property: 'og:url',
           content: `https://mangakyy.my.id/detail/${data?.detail?.data.manga_id}`,
         },
         // Twitter card
         {
-          name: "twitter:card",
-          content: "summary_large_image",
+          name: 'twitter:card',
+          content: 'summary_large_image',
         },
         {
-          name: "twitter:title",
+          name: 'twitter:title',
           content: `${data?.meta.title} - MangaKyy`,
         },
         {
-          name: "twitter:description",
+          name: 'twitter:description',
           content:
-            "Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.",
+            'Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.',
         },
         {
-          name: "twitter:image",
+          name: 'twitter:image',
           content: `${data?.meta.image}`,
         },
         {
-          name: "twitter:url",
+          name: 'twitter:url',
           content: `https://mangakyy.my.id/detail/${data?.detail?.data.manga_id}`,
-        }
-      ]
+        },
+      ],
     }
   },
 })
@@ -119,48 +126,56 @@ export default function RouteComponent() {
   const [open, setOpen] = useState(false)
   const [page, setPage] = useState(1)
 
-  const { data: chapterList } = useGetChapterList(chapters!, detail?.data.manga_id!, page)
+  const { data: chapterList } = useGetChapterList(
+    chapters!,
+    detail?.data.manga_id || '',
+    page,
+  )
 
   const infoCardData = [
     {
-      title: "Chapter",
+      title: 'Chapter',
       value: detail?.data?.latest_chapter_number,
-
     },
     {
-      title: "Status",
-      value: detail?.data?.status === 1 ? "Ongoing" : detail?.data?.status === 2 ? "Hiatus" : "Completed"
+      title: 'Status',
+      value:
+        detail?.data?.status === 1
+          ? 'Ongoing'
+          : detail?.data?.status === 2
+            ? 'Hiatus'
+            : 'Completed',
     },
     {
-      title: "Type",
-      value: displayComicType(detail?.data?.country_id || "")
-    }
+      title: 'Type',
+      value: displayComicType(detail?.data?.country_id || ''),
+    },
   ]
 
   const navigate = useNavigate()
   const router = useRouter()
 
   useEffect(() => {
-    const h = getLatestChapterHistory(detail?.data?.manga_id || "")
+    const h = getLatestChapterHistory(detail?.data?.manga_id || '')
     setHistory(h)
   }, [detail?.data?.manga_id])
 
   return (
     <main className="flex flex-col items-center justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20">
       <section className="w-full relative overflow-hidden">
-        <header className='relative flex items-center justify-between w-full z-10 max-w-7xl mx-auto px-6 pt-5'>
+        <header className="relative flex items-center justify-between w-full z-10 max-w-7xl mx-auto px-6 pt-5">
           <Button
             onClick={() => router.history.back()}
-            className='hover:bg-blue-400'
+            className="hover:bg-blue-400"
           >
-            <ArrowLeft className='flex items-center justify-center font-primary' />
+            <ArrowLeft className="flex items-center justify-center font-primary" />
             Kembali
           </Button>
           <Button
-            onClick={() => navigate({ to: "/home" })}
-            className='hover:bg-blue-400 rounded-full w-10 h-10'
+            onClick={() => navigate({ to: '/home' })}
+            className="hover:bg-blue-400 rounded-full w-10 h-10"
           >
-            <Home className='flex items-center justify-center font-primary' />
+            <Home className="flex items-center justify-center font-primary" />
           </Button>
         </header>
         {/* BACKGROUND IMAGE */}
@@ -182,11 +197,20 @@ export default function RouteComponent() {
               <img
                 src={detail?.data?.cover_image_url}
                 alt="cover"
-                className="rounded-xl shadow-2xl w-[180px] sm:w-[220px] md:w-[240px]" />
+                className="rounded-xl shadow-2xl w-[180px] sm:w-[220px] md:w-[240px]"
+              />
 
               <Button
-                onClick={() => navigate({ to: "/chapter/$chapterId", params: { chapterId: detail?.data?.latest_chapter_id || "" } })}
-                className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                onClick={() =>
+                  navigate({
+                    to: '/chapter/$chapterId',
+                    params: {
+                      chapterId: detail?.data?.latest_chapter_id || '',
+                    },
+                  })
+                }
+                className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
+              >
                 <Play className="w-5 h-5" />
                 Baca Chapter Terbaru
               </Button>
@@ -225,9 +249,7 @@ export default function RouteComponent() {
 
               {/* Synopsis */}
               <div className="max-w-[700px]">
-                <h3 className="font-semibold mb-2">
-                  Sinopsis
-                </h3>
+                <h3 className="font-semibold mb-2">Sinopsis</h3>
                 <p className="text-slate-300 leading-relaxed">
                   {detail?.data?.description}
                 </p>
@@ -238,25 +260,36 @@ export default function RouteComponent() {
       </section>
 
       {/* Chapter */}
-      <section className='flex flex-col w-full max-w-7xl min-h-screen items-center justify-start p-8 gap-5'>
-        <header className='flex items-center justify-between w-full'>
-          <Label className='text-white font-semibold text-xl'>
+      <section className="flex flex-col w-full max-w-7xl min-h-screen items-center justify-start p-8 gap-5">
+        <header className="flex items-center justify-between w-full">
+          <Label className="text-white font-semibold text-xl">
             Chapter List
           </Label>
-          <div className=''>
-          </div>
+          <div className=""></div>
         </header>
-        <Separator className='w-full bg-primary' />
-        <div className='flex flex-col items-center justify-center w-full h-full'>
+        <Separator className="w-full bg-primary" />
+        <div className="flex flex-col items-center justify-center w-full h-full">
           {history && <ChapterHistoryCard history={history} />}
           {chapterList?.data?.map((chapter, i) => {
-            return <ChapterList key={i} index={i} chapter={chapter} comic={detail?.data!} />
+            return (
+              <ChapterList
+                key={i}
+                index={i}
+                chapter={chapter}
+                comic={detail?.data as ComicType}
+              />
+            )
           })}
         </div>
       </section>
-      <ChapterPagination page={page} setPage={setPage} chapters={chapterList} setOpen={setOpen} />
+      <ChapterPagination
+        page={page}
+        setPage={setPage}
+        chapters={chapterList}
+        setOpen={setOpen}
+      />
       <ChapterListDropdown
-        comic={detail?.data!}
+        comic={detail?.data as ComicType}
         chapters={chapters?.data || []}
         isOpen={open}
         setIsOpen={setOpen}
@@ -267,15 +300,17 @@ export default function RouteComponent() {
 
 /* COMPONENTS */
 
-function InfoCard({ title, children }: { title: string, children: React.ReactNode }) {
+function InfoCard({
+  title,
+  children,
+}: {
+  title: string
+  children: React.ReactNode
+}) {
   return (
     <div className="bg-slate-800 px-4 py-3 rounded-xl min-w-25">
-      <div className="text-xs text-slate-400">
-        {title}
-      </div>
-      <div className="font-semibold">
-        {children}
-      </div>
+      <div className="text-xs text-slate-400">{title}</div>
+      <div className="font-semibold">{children}</div>
     </div>
   )
 }

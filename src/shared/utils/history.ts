@@ -64,6 +64,20 @@ export function getNewChapterHistories(): NewComicHistory[] {
     return histories ? JSON.parse(histories) : []
 }
 
+export function clearNewChapterHistories() {
+    localStorage.removeItem(KEY)
+    return
+}
+
+export function getHistoryByComicId(comicId: string): NewComicHistory | null {
+    const histories = getNewChapterHistories()
+    const history = histories.find(
+        (item) => item.comic_id === comicId
+    )
+
+    return history || null
+}
+
 export function saveNewComicHistory(
     comic: Omit<NewComicHistory, "chapters" | "last_read_at">,
     chapter: NewChapterHistory
@@ -74,12 +88,19 @@ export function saveNewComicHistory(
         (item) => item.comic_id === comic.comic_id
     )
 
+    const now = new Date()
+
     // manga belum ada di history
     if (index === -1) {
         const newHistory: NewComicHistory = {
             ...comic,
-            chapters: [chapter],
-            last_read_at: new Date()
+            chapters: [
+                {
+                    ...chapter,
+                    last_read_at: now,
+                },
+            ],
+            last_read_at: now,
         }
 
         histories.unshift(newHistory)
@@ -89,16 +110,23 @@ export function saveNewComicHistory(
 
     const history = histories[index]
 
-    const chapterExists = history.chapters.some(
+    const chapterIndex = history.chapters.findIndex(
         (c) => c.chapter_id === chapter.chapter_id
     )
 
-    // kalau chapter belum pernah dibaca
-    if (!chapterExists) {
-        history.chapters.push(chapter)
+    // kalau chapter baru
+    if (chapterIndex === -1) {
+        history.chapters.push({
+            ...chapter,
+            last_read_at: now,
+        })
+    } else {
+        // kalau chapter sudah ada → update waktu baca
+        history.chapters[chapterIndex].last_read_at = now
     }
 
-    history.last_read_at = new Date()
+    // update waktu terakhir baca manga
+    history.last_read_at = now
 
     histories[index] = history
 

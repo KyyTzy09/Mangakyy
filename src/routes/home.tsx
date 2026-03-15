@@ -111,7 +111,7 @@ function RouteComponent() {
                 <div className='flex flex-col items-start justify-between lg:flex-row w-full h-auto gap-5'>
                     <div className='flex flex-col w-[100%] lg:w-[68%] min-h-screen gap-5'>
                         <RecommendationSection recommendation={recommendation?.data as ComicType[]} />
-                        <PopularSection popular={popular?.data!} />
+                        <PopularSection popular={popular?.data as ComicType[]} />
                     </div>
                     <div className=' lg:w-[32%] h-full bg-[#232323] text-white rounded-md'>
                         <LatestSection latest={update?.data || []} />
