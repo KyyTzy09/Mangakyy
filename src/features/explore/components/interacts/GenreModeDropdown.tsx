@@ -27,7 +27,11 @@ export default function GenreModeDropdown({ genreMode, setGenreMode, mode }: Pro
           <ChevronDown className={`${open ? 'rotate-0' : 'rotate-180'} w-4 h-4 ml-2 transition duration-500`} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='flex flex-col w-61.25 text-gray-400 bg-black/70 backdrop-blur-md border-gray-400 gap-1'>
+      <DropdownMenuContent
+        className="flex flex-col 
+  w-(--radix-dropdown-menu-trigger-width)
+  text-gray-400 bg-black/70 backdrop-blur-md border-gray-400 gap-1 z-70"
+      >
         {genreModeOptions.map((option) => (
           <DropdownMenuItem
             key={option.value}

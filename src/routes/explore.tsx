@@ -230,9 +230,13 @@ function RouteComponent() {
       <GenreFilterDropdown
         isOpen={openFilter}
         setIsOpen={setOpenFilter}
-        selectedGenres={selectedSearch}
-        setSelectedGenres={setSelectedSearch}
         genres={genres?.data || []}
+        selectedSearch={selectedSearch}
+        setSelectedSearch={setSelectedSearch}
+        inclusionMode={inclusionMode}
+        exclusionMode={exclusionMode}
+        setInclusionMode={setInclusionMode}
+        setExclusionMode={setExclusionMode}
       />
     </div>
   )
