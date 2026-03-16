@@ -37,6 +37,8 @@ export const getChapterDetailSchema = z.object({
 export const getComicByGenreSchema = z.object({
     query: z.string().optional(),
     genres: z.array(z.string()).optional(),
+    inclusion: z.enum(["or", "and"]).optional() || "or",
+    exclusion: z.enum(["or", "and"]).optional() || "or",
     page: z.number().optional() || 1,
     pageSize: z.number().optional() || 10
 })

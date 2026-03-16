@@ -16,6 +16,6 @@ export const mangaRouter = createTRPCRouter({
         return await shinigamiService.getComicDetail(input.mangaId)
     }),
     getComicByGenres: publicProcedure.input(getComicByGenreSchema).query(async ({ input }) => {
-        return await shinigamiService.getComicGenre(input.query, input.genres!, input.page, input.pageSize)
+        return await shinigamiService.getComicGenre(input.query, input.genres!, input.inclusion, input.exclusion, input.page, input.pageSize)
     })
 })

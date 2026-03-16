@@ -6,14 +6,13 @@ import SelectedGenreSection from '@/features/explore/components/section/Selected
 import { useSelectGenre } from '@/features/explore/hooks/useSelectGenre'
 import GenreMangaCard from '@/features/manga/components/cards/GenreMangaCard'
 import PaginationSection from '@/shared/components/reusable/pagination'
-import type { TaxonomyItem } from '@/shared/interfaces'
-import { Activity, useState } from 'react'
+import { Activity } from 'react'
 import { useGetMangaByGenre } from '@/features/manga/hooks/MangaQuery'
 import GenreMangaCardSkeleton from '@/features/manga/components/skeletons/GenreMangaCardSkeleton'
 import GenreMangaCardL from '@/features/manga/components/cards/GenreMangaCardL'
 import GenreSearchSection from '@/features/explore/components/section/GenreSearchSection'
 import GenreFilterDropdown from '@/features/explore/components/interacts/GenreFilterDropdown'
-import type { SearchTaxonomyType } from '@/shared/interfaces/search'
+import { useExplore } from '@/features/explore/hooks/useExplore'
 
 export const Route = createFileRoute('/explore')({
   component: RouteComponent,
@@ -112,18 +111,32 @@ export const Route = createFileRoute('/explore')({
 function RouteComponent() {
   const { genres, comics } = Route.useLoaderData()
 
-  const [openFilter, setOpenFilter] = useState<boolean>(false)
-  const [selectedSearch, setSelectedSearch] = useState<SearchTaxonomyType>([])
-  const [query, setQuery] = useState<string>('')
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [cardLayout, setCardLayout] = useState<'grid' | 'list'>('grid')
+  const {
+    openFilter,
+    setOpenFilter,
+    selectedSearch,
+    setSelectedSearch,
+    query,
+    setQuery,
+    currentPage,
+    setCurrentPage,
+    cardLayout,
+    setCardLayout,
+    inclusionMode,
+    setInclusionMode,
+    exclusionMode,
+    setExclusionMode,
+  } = useExplore()
 
   const { data: comicsData, isPending } = useGetMangaByGenre(
     comics!,
     query,
     selectedSearch.map((g) => g.slug),
+    inclusionMode.slug as "or" | "and",
+    exclusionMode.slug as "or" | "and",
     currentPage,
   )
+
   const { isSelected, unselectGenres } = useSelectGenre(
     selectedSearch,
     setSelectedSearch,
@@ -135,6 +148,10 @@ function RouteComponent() {
       <aside className="hidden md:flex flex-col w-70 h-fit max-h-[85vh] sticky top-24 bg-black/20 backdrop-blur-xl border border-white/10 rounded-xl p-4 gap-5 overflow-y-auto">
         <GenreListSection
           selectedGenres={selectedSearch}
+          inclusionMode={inclusionMode}
+          exclusionMode={exclusionMode}
+          setInclusionMode={setInclusionMode}
+          setExclusionMode={setExclusionMode}
           setSelectedGenres={setSelectedSearch}
           data={genres?.data || []}
         />

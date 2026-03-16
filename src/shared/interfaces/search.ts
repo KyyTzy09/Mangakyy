@@ -7,5 +7,4 @@ export interface SearchResult {
     name: string,
     type: SearchType,
     slug: string
-
 }

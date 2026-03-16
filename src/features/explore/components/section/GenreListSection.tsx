@@ -7,11 +7,17 @@ import { ChevronDown, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useSelectGenre } from '../../hooks/useSelectGenre'
 import type { SearchTaxonomyType } from '@/shared/interfaces/search'
+import GenreModeDropdown from '../interacts/GenreModeDropdown'
+import type { SelectedGenreMode } from '../../hooks/useGenreMode'
 
 interface Props {
     data: TaxonomyItem[]
     selectedGenres: SearchTaxonomyType
+    inclusionMode: SelectedGenreMode
+    exclusionMode: SelectedGenreMode
     setSelectedGenres: React.Dispatch<React.SetStateAction<SearchTaxonomyType>>
+    setInclusionMode: React.Dispatch<React.SetStateAction<SelectedGenreMode>>
+    setExclusionMode: React.Dispatch<React.SetStateAction<SelectedGenreMode>>
 }
 
 /**
@@ -22,7 +28,7 @@ interface Props {
  * @example
  * <GenreListSection data={[{name: "Adventure"}, {name: "Romance"}]} />
  */
-export default function GenreListSection({ data, selectedGenres, setSelectedGenres }: Props) {
+export default function GenreListSection({ data, selectedGenres, setSelectedGenres, exclusionMode, inclusionMode, setExclusionMode, setInclusionMode }: Props) {
     const [open, setOpen] = useState(true)
     const { isSelected, selectType } = useSelectGenre(selectedGenres, setSelectedGenres)
     const [search, setSearch] = useState<string>("")
@@ -86,7 +92,16 @@ export default function GenreListSection({ data, selectedGenres, setSelectedGenr
                         </Badge>
                     ))}
                 </div>
-
+                <div className='flex flex-col w-full gap-2 text-gray-400'>
+                    <section className='flex flex-col w-full gap-1 '>
+                        <Label className='text-sm font-semibold'>Inclusion Mode</Label>
+                        <GenreModeDropdown genreMode={inclusionMode} setGenreMode={setInclusionMode} mode='include' />
+                    </section>
+                    <section className='flex flex-col w-full gap-1 '>
+                        <Label className='text-sm font-semibold'>Exclusion Mode</Label>
+                        <GenreModeDropdown genreMode={exclusionMode} setGenreMode={setExclusionMode} mode='exclude' />
+                    </section>
+                </div>
             </div>
         </section>
     )
