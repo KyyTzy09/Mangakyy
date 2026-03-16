@@ -140,7 +140,10 @@ function RouteComponent() {
   const { data: comicsData, isPending } = useGetMangaByGenre(
     comics!,
     query,
-    selectedSearch.map((g) => g.slug),
+    selectedGenres,
+    selectedFormats,
+    selectedTypes,
+    selectedStatus,
     inclusionMode.slug as "or" | "and",
     exclusionMode.slug as "or" | "and",
     currentPage,

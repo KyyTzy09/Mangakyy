@@ -20,9 +20,12 @@ export class ShinigamiService {
         });
     }
 
-    public async getComicGenre(query: string = "", genres: string[], inclusion: "or" | "and" = "or", exclusion: "or" | "and" = "or", page: number = 1, pageSize: number = 19) {
+    public async getComicGenre(query: string = "", genres: string[], statuses: string[] = [], formates: string[] = [], types: string[] = [], inclusion: "or" | "and" = "or", exclusion: "or" | "and" = "or", page: number = 1, pageSize: number = 19) {
         const genre = genres.join(",")
-        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?page=${page}&page_size=${pageSize}&genre_include=${genre}&genre_include_mode=${inclusion}&genre_exclude_mode=${exclusion}&sort=latest&sort_order=desc&q=${query}` })
+        const status = statuses.join(",")
+        const format = formates.join(",")
+        const type = types.join(",")
+        return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?page=${page}&page_size=${pageSize}&genre_include=${genre}&status=${status}&format=${format}&type=${type}&genre_include_mode=${inclusion}&genre_exclude_mode=${exclusion}&sort=latest&sort_order=desc&q=${query}` })
     }
     // https://api.shngm.io/v1/manga/list?page=1&page_size=24&genre_include_mode=or&genre_exclude_mode=or&sort=latest&sort_order=desc&q=tes
     public async getComicSearch(query: string, page: number = 1, pageSize: number = 19) {

@@ -24,11 +24,11 @@ export const useGetPopularManga = (type: "daily" | "weekly" | "all_time", initia
     })
 }
 
-export const useGetMangaByGenre = (initialData: APIResponse<ComicType[]>, query: string, genres: string[], inclusion: "or" | "and", exclusion: "or" | "and", page?: number) => {
+export const useGetMangaByGenre = (initialData: APIResponse<ComicType[]>, query: string, genres: string[], formats: string[], types: string[], status: string[], inclusion: "or" | "and", exclusion: "or" | "and", page?: number) => {
     return useQuery({
-        queryKey: ["genres-manga", genres, query, inclusion, exclusion, page],
+        queryKey: ["genres-manga", genres, query, status, formats, types, inclusion, exclusion, page],
         queryFn: async () => {
-            return await trpcClient.manga.getComicByGenres.query({ query, genres, inclusion, exclusion, page })
+            return await trpcClient.manga.getComicByGenres.query({ query, genres, format: formats, type: types, status, inclusion, exclusion, page })
         },
         placeholderData: (prev) => prev ?? initialData
     })
