@@ -14,12 +14,12 @@ export default function SelectedGenreSection({ selectedGenres, unselectGenres, i
     return (
         <section className='flex flex-row w-full'>
             <div className='flex flex-wrap items-center justify-start w-full gap-2 max-h-32 overflow-y-auto'>
-                {selectedGenres?.map(({ name, slug }, i) => (
+                {selectedGenres?.map(({ name, slug, type }, i) => (
                     <Badge
                         key={i}
                         onClick={() => unselectGenres(slug)}
                         className={`flex items-center justify-center h-10 rounded-md border cursor-pointer transition
-                            ${isSelected(slug, "genre")
+                            ${isSelected(slug, type)
                                 ? "border-primary bg-primary/20 text-white"
                                 : "border-gray-400 bg-gray-600/20 text-gray-200 hover:opacity-75"}`
                         }

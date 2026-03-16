@@ -1,5 +1,5 @@
 
-export type SearchType = "genre" | "include" | "exclude" | "format" | "type" | "status"
+export type SearchType = "genre" | "format" | "type" | "status"
 
 export type SearchTaxonomyType = SearchResult[]
 

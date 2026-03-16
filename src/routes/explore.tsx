@@ -13,6 +13,10 @@ import GenreMangaCardL from '@/features/manga/components/cards/GenreMangaCardL'
 import GenreSearchSection from '@/features/explore/components/section/GenreSearchSection'
 import GenreFilterDropdown from '@/features/explore/components/interacts/GenreFilterDropdown'
 import { useExplore } from '@/features/explore/hooks/useExplore'
+import SelectFormatSection from '@/features/explore/components/section/SelectFormatSection'
+import SelectTypesection from '@/features/explore/components/section/SelectTypeSection'
+import SelectStatussection from '@/features/explore/components/section/SelectStatusSection'
+import ExploreSidebar from '@/features/explore/components/ExploreSidebar'
 
 export const Route = createFileRoute('/explore')({
   component: RouteComponent,
@@ -126,6 +130,11 @@ function RouteComponent() {
     setInclusionMode,
     exclusionMode,
     setExclusionMode,
+    selectedGenres,
+    selectedTypes,
+    selectedStatus,
+    selectedFormats
+
   } = useExplore()
 
   const { data: comicsData, isPending } = useGetMangaByGenre(
@@ -145,17 +154,16 @@ function RouteComponent() {
 
   return (
     <div className="flex items-start justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20 md:pt-24 p-2 gap-2 pb-16 md:pb-0">
-      <aside className="hidden md:flex flex-col w-70 h-fit max-h-[85vh] sticky top-24 bg-black/20 backdrop-blur-xl border border-white/10 rounded-xl p-4 gap-5 overflow-y-auto">
-        <GenreListSection
-          selectedGenres={selectedSearch}
-          inclusionMode={inclusionMode}
-          exclusionMode={exclusionMode}
-          setInclusionMode={setInclusionMode}
-          setExclusionMode={setExclusionMode}
-          setSelectedGenres={setSelectedSearch}
-          data={genres?.data || []}
-        />
-      </aside>
+      {/* Sidebar */}
+      <ExploreSidebar
+        genres={genres?.data || []}
+        selectedSearch={selectedSearch}
+        setSelectedSearch={setSelectedSearch}
+        inclusionMode={inclusionMode}
+        exclusionMode={exclusionMode}
+        setInclusionMode={setInclusionMode}
+        setExclusionMode={setExclusionMode}
+      />
       <main className="flex flex-col items-center justify-start w-full md:w-3/4 min-h-screen bg-black/20 backdrop-blur-sm border-gray-200/50 border rounded-md p-3 px-3 md:px-5 gap-5">
         {/* Search */}
         <GenreSearchSection
@@ -164,7 +172,8 @@ function RouteComponent() {
           setQuery={setQuery}
           setOpenFilter={setOpenFilter}
         />
-        {/* Genre */}
+
+        {/* Selected Items */}
         <Activity mode={selectedSearch.length > 0 ? 'visible' : 'hidden'}>
           <SelectedGenreSection
             isSelected={isSelected}
@@ -173,7 +182,8 @@ function RouteComponent() {
             unselectGenres={unselectGenres}
           />
         </Activity>
-        {/* manga */}
+
+        {/* Comic List */}
         <Activity
           mode={
             !isPending && (comicsData?.data?.length || 0) > 0
@@ -207,6 +217,7 @@ function RouteComponent() {
           </section>
         </Activity>
 
+        {/* Pagination */}
         <PaginationSection
           currentPage={currentPage || 0}
           setCurrentPage={setCurrentPage}

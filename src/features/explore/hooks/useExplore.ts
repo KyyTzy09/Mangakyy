@@ -11,6 +11,12 @@ export const useExplore = () => {
     const [inclusionMode, setInclusionMode] = useState<SelectedGenreMode>({ name: 'Or', slug: 'or', type: 'include' })
     const [exclusionMode, setExclusionMode] = useState<SelectedGenreMode>({ name: 'Or', slug: 'or', type: 'exclude' })
 
+
+    const selectedGenres = selectedSearch.filter((g) => g.type === "genre").map((g) => g.slug)
+    const selectedTypes = selectedSearch.filter((g) => g.type === "type").map((g) => g.slug)
+    const selectedStatus = selectedSearch.filter((g) => g.type === "status").map((g) => g.slug)
+    const selectedFormats = selectedSearch.filter((g) => g.type === "format").map((g) => g.slug)
+
     return {
         openFilter,
         setOpenFilter,
@@ -26,5 +32,9 @@ export const useExplore = () => {
         setInclusionMode,
         exclusionMode,
         setExclusionMode,
+        selectedGenres,
+        selectedTypes,
+        selectedStatus,
+        selectedFormats
     }
 }
