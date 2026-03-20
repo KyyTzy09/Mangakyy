@@ -20,7 +20,7 @@ export class ShinigamiService {
         });
     }
 
-    public async getComicGenre(query: string = "", genres: string[], statuses: string[] = [], formates: string[] = [], types: string[] = [], inclusion: "or" | "and" = "or", exclusion: "or" | "and" = "or", page: number = 1, pageSize: number = 19) {
+    public async getComicGenre(query: string = "", genres: string[] = [], statuses: string[] = [], formates: string[] = [], types: string[] = [], inclusion: "or" | "and" = "or", exclusion: "or" | "and" = "or", page: number = 1, pageSize: number = 19) {
         const genre = genres.join(",")
         const status = statuses.join(",")
         const format = formates.join(",")

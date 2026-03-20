@@ -41,7 +41,7 @@ export default function GenreMangaCard({ data, index }: Props) {
                             {data.description}
                         </p>
                         <div className='flex flex-wrap items-center justify-center w-full gap-2'>
-                            {data?.taxonomy?.Genre.slice(0, 3).map((genre, i) => (
+                            {data?.taxonomy?.Genre?.slice(0, 2).map((genre, i) => (
                                 <Badge
                                     key={i}
                                     className='flex items-center justify-center h-10 rounded-md border cursor-pointer transition
