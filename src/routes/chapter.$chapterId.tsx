@@ -1,10 +1,13 @@
 import { getChapterDetail } from '@/api/server/chapter'
 import { getMangaDetail } from '@/api/server/manga'
+import { useChapter } from '@/features/chapter/hooks/useChapter'
 import { defaultImage } from '@/shared/dummy/image'
 import { Button } from '@/shared/shadcn/button'
 import { Separator } from '@/shared/shadcn/separator'
+import { saveNewComicHistory } from '@/shared/utils/history'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, Book } from 'lucide-react'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute('/chapter/$chapterId')({
   component: RouteComponent,
@@ -104,30 +107,35 @@ export const Route = createFileRoute('/chapter/$chapterId')({
 function RouteComponent() {
   const navigate = Route.useNavigate()
   const router = useRouter()
-  const { detail } = Route.useLoaderData()
+  const { detail, manga } = Route.useLoaderData()
+
+  const comic = manga?.data
+  const chapter = detail?.data
+
+  useChapter({ chapterId: chapter?.chapter_id || "", chapter: chapter!, comic: comic! })
 
   return (
     <div className='text-white flex flex-col items-center justify-start w-full h-full min-h-screen font-primary gap-3'>
       <header className="w-full flex items-center justify-between p-4 max-w-3xl">
         <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: detail?.data.prev_chapter_id! } })}
+          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.prev_chapter_id! } })}
           className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={detail?.data.chapter_number === 1}
+          disabled={chapter?.chapter_number === 1}
         >
-          {detail?.data.chapter_number !== 1 ? `← Ch. ${detail?.data.prev_chapter_number}` : "Ch. 1"}
+          {chapter?.chapter_number !== 1 ? `← Ch. ${chapter?.prev_chapter_number}` : "Ch. 1"}
         </Button>
 
         <div className="text-center">
           <div className="text-sm text-zinc-400">Chapter</div>
-          <div className="text-lg font-semibold">{detail?.data.chapter_number}</div>
+          <div className="text-lg font-semibold">{chapter?.chapter_number}</div>
         </div>
 
         <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: detail?.data.next_chapter_id! } })}
+          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.next_chapter_id! } })}
           className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={!detail?.data.next_chapter_number}
+          disabled={!chapter?.next_chapter_number}
         >
-          {detail?.data.next_chapter_id ? `Ch. ${detail?.data.next_chapter_number} →` : "Chapter Terakhir"}
+          {chapter?.next_chapter_id ? `Ch. ${chapter?.next_chapter_number} →` : "Chapter Terakhir"}
         </Button>
       </header>
       <Separator className='bg-gray-500' />
@@ -141,39 +149,39 @@ function RouteComponent() {
           Kembali
         </Button>
         <Button
-          onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId: detail?.data.manga_id || "" } })}
+          onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId: chapter?.manga_id || "" } })}
           className='hover:bg-blue-400 rounded-full w-10 h-10'
         >
           <Book className='flex items-center justify-center font-primary' />
         </Button>
       </div>
       <section className='flex flex-col w-full max-w-3xl overflow-hidden'>
-        {detail?.data.chapter.data.map((url) => {
+        {chapter?.chapter.data.map((url, i) => {
           return (
-            <img src={`${detail?.data.base_url}/chapter/manga_${detail?.data.manga_id}/chapter_${detail.data.chapter_id}/${url}`} alt={defaultImage} className='flex w-full h-auto' />
+            <img key={i} src={`${chapter?.base_url}/chapter/manga_${chapter?.manga_id}/chapter_${chapter?.chapter_id}/${url}`} alt={defaultImage} className='flex w-full h-auto' />
           )
         })}
       </section>
       <section className="w-full flex items-center justify-between p-4 max-w-3xl">
         <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: detail?.data.prev_chapter_id! } })}
+          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.prev_chapter_id! } })}
           className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={detail?.data.chapter_number === 1}
+          disabled={chapter?.chapter_number === 1}
         >
-          {detail?.data.chapter_number !== 1 ? `← Ch. ${detail?.data.prev_chapter_number}` : "Ch. 1"}
+          {chapter?.chapter_number !== 1 ? `← Ch. ${chapter?.prev_chapter_number}` : "Ch. 1"}
         </Button>
 
         <div className="text-center">
           <div className="text-sm text-zinc-400">Chapter</div>
-          <div className="text-lg font-semibold">{detail?.data.chapter_number}</div>
+          <div className="text-lg font-semibold">{chapter?.chapter_number}</div>
         </div>
 
         <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: detail?.data.next_chapter_id! } })}
+          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.next_chapter_id! } })}
           className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={!detail?.data.next_chapter_number}
+          disabled={!chapter?.next_chapter_number}
         >
-          {detail?.data.next_chapter_id ? `Ch. ${detail?.data.next_chapter_number} →` : "Chapter Terakhir"}
+          {chapter?.next_chapter_id ? `Ch. ${chapter?.next_chapter_number} →` : "Chapter Terakhir"}
         </Button>
       </section>
     </div >

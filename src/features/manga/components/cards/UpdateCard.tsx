@@ -37,7 +37,7 @@ export default function MangaUpdateCard({ data, index }: Props) {
             {formatRelativeTime(data.updated_at)}
           </p>
           <div className="flex flex-row items-center justify-center gap-1">
-            {data.taxonomy.Genre.slice(0, 2).map(({ name }) => (
+            {data?.taxonomy?.Genre?.slice(0, 2)?.map(({ name }) => (
               <Badge className="bg-primary/20 border border-primary text-[10px] line-clamp-1">
                 {name}
               </Badge>
