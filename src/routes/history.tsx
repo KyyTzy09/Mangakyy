@@ -6,7 +6,7 @@ import type { NewComicHistory } from '@/shared/utils/history'
 import { getNewChapterHistories } from '@/shared/utils/history'
 import { createFileRoute } from '@tanstack/react-router'
 import { History } from 'lucide-react'
-import { Activity, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/history')({
   component: RouteComponent,

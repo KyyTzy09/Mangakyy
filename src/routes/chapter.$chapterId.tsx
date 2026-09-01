@@ -1,19 +1,18 @@
 import { getChapterDetail } from '@/api/server/chapter'
 import { getMangaDetail } from '@/api/server/manga'
 import { useChapter } from '@/features/chapter/hooks/useChapter'
+import { useChapterReader } from '@/features/chapter/hooks/useChapterReader'
+import FloatingTopBar from '@/features/chapter/components/reader/FloatingTopBar'
+import FloatingBottomBar from '@/features/chapter/components/reader/FloatingBottomBar'
+import ChapterEndSheet from '@/features/chapter/components/reader/ChapterEndSheet'
 import { defaultImage } from '@/shared/dummy/image'
-import { Button } from '@/shared/shadcn/button'
-import { Separator } from '@/shared/shadcn/separator'
-import { saveNewComicHistory } from '@/shared/utils/history'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { ArrowLeft, Book } from 'lucide-react'
-import { useEffect } from 'react'
 
 export const Route = createFileRoute('/chapter/$chapterId')({
   component: RouteComponent,
   loader: async ({ params }) => {
     const detail = await getChapterDetail({ data: { chapterId: params.chapterId } })
-    const manga = await getMangaDetail({ data: { mangaId: detail?.data.manga_id! } })
+    const manga = await getMangaDetail({ data: { mangaId: detail?.data.manga_id || "" } })
     return {
       detail,
       manga,
@@ -112,78 +111,95 @@ function RouteComponent() {
   const comic = manga?.data
   const chapter = detail?.data
 
+  // Simpan riwayat bacaan (existing logic — tidak berubah)
   useChapter({ chapterId: chapter?.chapter_id || "", chapter: chapter!, comic: comic! })
 
+  // Hook pusat untuk floating reader navigation
+  const {
+    isBarsVisible,
+    isAutoScrolling,
+    scrollSpeed,
+    isSpeedMode,
+    isChapterEnd,
+    tapProps,
+    toggleAutoScroll,
+    setScrollSpeed,
+    enterSpeedMode,
+    exitSpeedMode,
+    dismissChapterEnd,
+  } = useChapterReader()
+
+  // Handler navigasi chapter
+  const handlePrevChapter = () => {
+    if (chapter?.prev_chapter_id) {
+      navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter.prev_chapter_id } })
+    }
+  }
+
+  const handleNextChapter = () => {
+    if (chapter?.next_chapter_id) {
+      navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter.next_chapter_id } })
+    }
+  }
+
+  // Handler lanjut dari ChapterEndSheet
+  const handleContinueChapter = () => {
+    dismissChapterEnd()
+    if (chapter?.next_chapter_id) {
+      navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter.next_chapter_id } })
+    }
+  }
+
   return (
-    <div className='text-white flex flex-col items-center justify-start w-full h-full min-h-screen font-primary gap-3'>
-      <header className="w-full flex items-center justify-between p-4 max-w-3xl">
-        <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.prev_chapter_id! } })}
-          className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={chapter?.chapter_number === 1}
-        >
-          {chapter?.chapter_number !== 1 ? `← Ch. ${chapter?.prev_chapter_number}` : "Ch. 1"}
-        </Button>
+    <div
+      className='text-white flex flex-col items-center justify-start w-full h-full min-h-screen font-primary'
+      {...tapProps}
+    >
+      {/* Floating Top Bar */}
+      <FloatingTopBar
+        title={comic?.title || ""}
+        chapterNumber={chapter?.chapter_number || 0}
+        isVisible={isBarsVisible}
+        onBack={() => router.history.back()}
+      />
 
-        <div className="text-center">
-          <div className="text-sm text-zinc-400">Chapter</div>
-          <div className="text-lg font-semibold">{chapter?.chapter_number}</div>
-        </div>
-
-        <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.next_chapter_id! } })}
-          className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={!chapter?.next_chapter_number}
-        >
-          {chapter?.next_chapter_id ? `Ch. ${chapter?.next_chapter_number} →` : "Chapter Terakhir"}
-        </Button>
-      </header>
-      <Separator className='bg-gray-500' />
-      {/* View */}
-      <div className='relative flex items-center justify-between w-full z-10 max-w-3xl p-4'>
-        <Button
-          onClick={() => router.history.back()}
-          className='hover:bg-blue-400'
-        >
-          <ArrowLeft className='flex items-center justify-center font-primary' />
-          Kembali
-        </Button>
-        <Button
-          onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId: chapter?.manga_id || "" } })}
-          className='hover:bg-blue-400 rounded-full w-10 h-10'
-        >
-          <Book className='flex items-center justify-center font-primary' />
-        </Button>
-      </div>
+      {/* Gambar Chapter */}
       <section className='flex flex-col w-full max-w-3xl overflow-hidden'>
         {chapter?.chapter.data.map((url, i) => {
           return (
-            <img key={i} src={`${chapter?.base_url}/chapter/manga_${chapter?.manga_id}/chapter_${chapter?.chapter_id}/${url}`} alt={defaultImage} className='flex w-full h-auto' />
+            <img key={i} src={`${chapter?.base_url}/chapter/manga_${chapter?.manga_id}/chapter_${chapter?.chapter_id}/${url}`} alt={defaultImage} className='flex w-full h-auto select-none pointer-events-none' />
           )
         })}
       </section>
-      <section className="w-full flex items-center justify-between p-4 max-w-3xl">
-        <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.prev_chapter_id! } })}
-          className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={chapter?.chapter_number === 1}
-        >
-          {chapter?.chapter_number !== 1 ? `← Ch. ${chapter?.prev_chapter_number}` : "Ch. 1"}
-        </Button>
 
-        <div className="text-center">
-          <div className="text-sm text-zinc-400">Chapter</div>
-          <div className="text-lg font-semibold">{chapter?.chapter_number}</div>
-        </div>
+      {/* Floating Bottom Bar */}
+      <FloatingBottomBar
+        isVisible={isBarsVisible}
+        isSpeedMode={isSpeedMode}
+        isAutoScrolling={isAutoScrolling}
+        scrollSpeed={scrollSpeed}
+        prevChapterId={chapter?.prev_chapter_id || null}
+        prevChapterNumber={chapter?.prev_chapter_number || null}
+        nextChapterId={chapter?.next_chapter_id || null}
+        nextChapterNumber={chapter?.next_chapter_number || null}
+        onPrev={handlePrevChapter}
+        onNext={handleNextChapter}
+        onToggleAutoScroll={toggleAutoScroll}
+        onEnterSpeedMode={enterSpeedMode}
+        onExitSpeedMode={exitSpeedMode}
+        onSpeedChange={setScrollSpeed}
+      />
 
-        <Button
-          onClick={() => navigate({ to: `/chapter/$chapterId`, params: { chapterId: chapter?.next_chapter_id! } })}
-          className="px-4 py-2 rounded-md bg-primary text-white hover:bg-blue-400 transition"
-          disabled={!chapter?.next_chapter_number}
-        >
-          {chapter?.next_chapter_id ? `Ch. ${chapter?.next_chapter_number} →` : "Chapter Terakhir"}
-        </Button>
-      </section>
-    </div >
+      {/* Chapter End Sheet */}
+      <ChapterEndSheet
+        isVisible={isChapterEnd}
+        chapterNumber={chapter?.chapter_number || 0}
+        nextChapterId={chapter?.next_chapter_id || null}
+        nextChapterNumber={chapter?.next_chapter_number || null}
+        mangaId={chapter?.manga_id || ""}
+        onContinue={handleContinueChapter}
+        onDismiss={dismissChapterEnd}
+      />
+    </div>
   )
 }

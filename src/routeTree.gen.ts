@@ -9,47 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UpdateRouteImport } from './routes/update'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
-import { Route as PopularRouteImport } from './routes/popular'
-import { Route as HomeRouteImport } from './routes/home'
-import { Route as HistoryRouteImport } from './routes/history'
-import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as HistoryDetailMangaIdRouteImport } from './routes/history-detail.$mangaId'
-import { Route as DetailMangaIdRouteImport } from './routes/detail.$mangaId'
+import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as PopularRouteImport } from './routes/popular'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as UpdateRouteImport } from './routes/update'
 import { Route as ChapterChapterIdRouteImport } from './routes/chapter.$chapterId'
+import { Route as DetailMangaIdRouteImport } from './routes/detail.$mangaId'
+import { Route as HistoryDetailMangaIdRouteImport } from './routes/history-detail.$mangaId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
-const UpdateRoute = UpdateRouteImport.update({
-  id: '/update',
-  path: '/update',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
-  id: '/robots.txt',
-  path: '/robots.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PopularRoute = PopularRouteImport.update({
-  id: '/popular',
-  path: '/popular',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HomeRoute = HomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoryRoute = HistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -57,14 +32,39 @@ const ExploreRoute = ExploreRouteImport.update({
   path: '/explore',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HistoryDetailMangaIdRoute = HistoryDetailMangaIdRouteImport.update({
-  id: '/history-detail/$mangaId',
-  path: '/history-detail/$mangaId',
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PopularRoute = PopularRouteImport.update({
+  id: '/popular',
+  path: '/popular',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdateRoute = UpdateRouteImport.update({
+  id: '/update',
+  path: '/update',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChapterChapterIdRoute = ChapterChapterIdRouteImport.update({
+  id: '/chapter/$chapterId',
+  path: '/chapter/$chapterId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DetailMangaIdRoute = DetailMangaIdRouteImport.update({
@@ -72,9 +72,9 @@ const DetailMangaIdRoute = DetailMangaIdRouteImport.update({
   path: '/detail/$mangaId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChapterChapterIdRoute = ChapterChapterIdRouteImport.update({
-  id: '/chapter/$chapterId',
-  path: '/chapter/$chapterId',
+const HistoryDetailMangaIdRoute = HistoryDetailMangaIdRouteImport.update({
+  id: '/history-detail/$mangaId',
+  path: '/history-detail/$mangaId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
@@ -188,46 +188,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/update': {
-      id: '/update'
-      path: '/update'
-      fullPath: '/update'
-      preLoaderRoute: typeof UpdateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/robots.txt': {
-      id: '/robots.txt'
-      path: '/robots.txt'
-      fullPath: '/robots.txt'
-      preLoaderRoute: typeof RobotsDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/popular': {
-      id: '/popular'
-      path: '/popular'
-      fullPath: '/popular'
-      preLoaderRoute: typeof PopularRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/history': {
-      id: '/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof HistoryRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -237,18 +202,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/history-detail/$mangaId': {
-      id: '/history-detail/$mangaId'
-      path: '/history-detail/$mangaId'
-      fullPath: '/history-detail/$mangaId'
-      preLoaderRoute: typeof HistoryDetailMangaIdRouteImport
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/popular': {
+      id: '/popular'
+      path: '/popular'
+      fullPath: '/popular'
+      preLoaderRoute: typeof PopularRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/update': {
+      id: '/update'
+      path: '/update'
+      fullPath: '/update'
+      preLoaderRoute: typeof UpdateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chapter/$chapterId': {
+      id: '/chapter/$chapterId'
+      path: '/chapter/$chapterId'
+      fullPath: '/chapter/$chapterId'
+      preLoaderRoute: typeof ChapterChapterIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/detail/$mangaId': {
@@ -258,11 +258,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DetailMangaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chapter/$chapterId': {
-      id: '/chapter/$chapterId'
-      path: '/chapter/$chapterId'
-      fullPath: '/chapter/$chapterId'
-      preLoaderRoute: typeof ChapterChapterIdRouteImport
+    '/history-detail/$mangaId': {
+      id: '/history-detail/$mangaId'
+      path: '/history-detail/$mangaId'
+      fullPath: '/history-detail/$mangaId'
+      preLoaderRoute: typeof HistoryDetailMangaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/trpc/$': {
