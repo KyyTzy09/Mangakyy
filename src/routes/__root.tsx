@@ -1,24 +1,32 @@
 import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
+  DEFAULT_OG_IMAGE,
+  DEFAULT_TITLE,
+  SITE_NAME,
+  SITE_URL,
+  STANDARD_ROBOTS,
+  getWebsiteSchema,
+} from '@/shared/utils/seo'
+import type { QueryClient } from '@tanstack/react-query'
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-import appCss from '../styles.css?url'
-import type { QueryClient } from '@tanstack/react-query'
 import type { TRPCRouter } from '@/integrations/trpc/router'
 import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
-import Navbar from '@/shared/components/layouts/navbar'
-import { Activity } from 'react'
-import SmallNavbar from '@/shared/components/layouts/SmallNavbar'
 import Footer from '@/shared/components/layouts/footer'
+import Navbar from '@/shared/components/layouts/navbar'
+import SmallNavbar from '@/shared/components/layouts/SmallNavbar'
+import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
+import appCss from '../styles.css?url'
 
 interface MyRouterContext {
   queryClient: QueryClient
-
   trpc: TRPCOptionsProxy<TRPCRouter>
 }
 
@@ -26,88 +34,126 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: 'utf-8',
       },
       {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
       },
       {
-        title: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis & Terupdate",
+        name: 'theme-color',
+        content: '#0f172a',
       },
       {
-        name: "description",
-        content:
-          "Mangakyy adalah platform untuk membaca manga, manhwa, dan manhua gratis dengan update cepat dan koleksi lengkap. Temukan berbagai genre seperti action, romance, fantasy, dan banyak lagi dengan kualitas terbaik.",
+        title: DEFAULT_TITLE,
       },
       {
-        name: "keywords",
-        content:
-          "manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy",
+        name: 'description',
+        content: DEFAULT_DESCRIPTION,
       },
       {
-        name: "author",
-        content: "Mangakyy",
+        name: 'keywords',
+        content: DEFAULT_KEYWORDS,
       },
       {
-        name: "robots",
-        content: "index, follow",
+        name: 'author',
+        content: SITE_NAME,
+      },
+      {
+        name: 'robots',
+        content: STANDARD_ROBOTS,
+      },
+      {
+        name: 'application-name',
+        content: SITE_NAME,
+      },
+      {
+        name: 'apple-mobile-web-app-title',
+        content: SITE_NAME,
+      },
+      {
+        name: 'apple-mobile-web-app-capable',
+        content: 'yes',
       },
 
-      // Open Graph (buat preview Discord, Facebook, dll)
+      // Open Graph
       {
-        property: "og:title",
-        content: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis",
+        property: 'og:title',
+        content: DEFAULT_TITLE,
       },
       {
-        property: "og:description",
-        content:
-          "Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.",
+        property: 'og:description',
+        content: DEFAULT_DESCRIPTION,
       },
       {
-        property: "og:type",
-        content: "website",
+        property: 'og:type',
+        content: 'website',
       },
       {
-        property: "og:site_name",
-        content: "Mangakyy",
+        property: 'og:site_name',
+        content: SITE_NAME,
       },
       {
-        property: "og:image",
-        content: "/mangakyy-logo.png"
+        property: 'og:image',
+        content: DEFAULT_OG_IMAGE,
       },
       {
-        property: "og:url",
-        content: "https://mangakyy.com",
+        property: 'og:url',
+        content: SITE_URL,
+      },
+      {
+        property: 'og:locale',
+        content: 'id_ID',
       },
 
       // Twitter card
       {
-        name: "twitter:card",
-        content: "summary_large_image",
+        name: 'twitter:card',
+        content: 'summary_large_image',
       },
       {
-        name: "twitter:title",
-        content: "Mangakyy - Baca Manga, Manhwa, dan Manhua Gratis",
+        name: 'twitter:title',
+        content: DEFAULT_TITLE,
       },
       {
-        name: "twitter:description",
-        content:
-          "Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.",
+        name: 'twitter:description',
+        content: DEFAULT_DESCRIPTION,
       },
       {
-        name: "twitter:image",
-        content: "/mangakyy-logo.png"
+        name: 'twitter:image',
+        content: DEFAULT_OG_IMAGE,
       },
       {
-        name: "twitter:url",
-        content: "https://mangakyy.com",
-      }
+        name: 'twitter:url',
+        content: SITE_URL,
+      },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
+      },
+      {
+        rel: 'canonical',
+        href: `${SITE_URL}/`,
+      },
+      {
+        rel: 'icon',
+        href: '/favicon.ico',
+      },
+      {
+        rel: 'apple-touch-icon',
+        href: '/mangakyy-logo.png',
+      },
+      {
+        rel: 'manifest',
+        href: '/manifest.json',
+      },
+    ],
+    scripts: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify(getWebsiteSchema()),
       },
     ],
   }),
@@ -116,7 +162,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="id">
       <head>
         <HeadContent />
       </head>

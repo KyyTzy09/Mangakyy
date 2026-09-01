@@ -1,6 +1,13 @@
 import { getChapterDetail } from '@/api/server/chapter'
 import { getMangaDetail } from '@/api/server/manga'
 import ChapterPage from '@/pages/chapter'
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  SITE_URL,
+  STANDARD_ROBOTS,
+  getChapterSchema,
+} from '@/shared/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/chapter/$chapterId')({
@@ -16,14 +23,35 @@ export const Route = createFileRoute('/chapter/$chapterId')({
       detail,
       manga,
       meta: {
-        title: `${manga?.data.title}-Ch.${detail?.data?.chapter_number}`,
-        description: manga?.data.description,
-        image: manga?.data.cover_image_url,
+        title: `Baca ${manga?.data.title || 'Manga'} Chapter ${detail?.data?.chapter_number || ''} Bahasa Indonesia - ${SITE_NAME}`,
+        mangaTitle: manga?.data.title || 'Manga',
+        chapterNumber: detail?.data?.chapter_number || 0,
+        description: `Baca ${manga?.data.title} chapter ${detail?.data?.chapter_number} subtitle bahasa Indonesia kualitas HD dan gratis tanpa iklan di MangaKyy.`,
+        image: manga?.data.cover_image_url || DEFAULT_OG_IMAGE,
+        mangaId: detail?.data.manga_id,
+        chapterId: detail?.data.chapter_id,
+        releaseDate: detail?.data.release_date,
       },
     }
   },
-  head: async ({ loaderData }) => {
-    const data = loaderData
+  head: async ({ loaderData, params }) => {
+    const meta = loaderData?.meta
+    const chapterUrl = `${SITE_URL}/chapter/${params.chapterId}`
+    const mangaUrl = `${SITE_URL}/detail/${meta?.mangaId || ''}`
+    const pageTitle = meta?.title || `Baca Chapter - ${SITE_NAME}`
+    const pageDescription =
+      meta?.description || `Baca komik online gratis di ${SITE_NAME}.`
+    const pageImage = meta?.image || DEFAULT_OG_IMAGE
+
+    const chapterSchema = getChapterSchema({
+      mangaTitle: meta?.mangaTitle || 'Manga',
+      chapterNumber: meta?.chapterNumber || 0,
+      chapterUrl,
+      mangaUrl,
+      image: pageImage,
+      datePublished: meta?.releaseDate,
+    })
+
     return {
       meta: [
         {
@@ -34,71 +62,83 @@ export const Route = createFileRoute('/chapter/$chapterId')({
           content: 'width=device-width, initial-scale=1',
         },
         {
-          title: `${data?.meta.title} - MangaKyy`,
+          title: pageTitle,
         },
         {
           name: 'description',
-          content: `${data?.meta.description}`,
+          content: pageDescription,
         },
         {
           name: 'keywords',
-          content:
-            'manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy',
+          content: `baca ${meta?.mangaTitle} chapter ${meta?.chapterNumber}, ${meta?.mangaTitle} ch ${meta?.chapterNumber}, komik ${meta?.mangaTitle} chapter ${meta?.chapterNumber} bahasa indonesia, mangakyy`,
         },
         {
           name: 'author',
-          content: 'Mangakyy',
+          content: SITE_NAME,
         },
         {
           name: 'robots',
-          content: 'index, follow',
+          content: STANDARD_ROBOTS,
         },
 
-        // Open Graph (buat preview Discord, Facebook, dll)
+        // Open Graph
         {
           property: 'og:title',
-          content: `${data?.meta.title} - Mangakyy`,
+          content: pageTitle,
         },
         {
           property: 'og:description',
-          content: data?.meta.description,
+          content: pageDescription,
         },
         {
           property: 'og:image',
-          content: data?.meta.image,
+          content: pageImage,
         },
         {
           property: 'og:type',
-          content: 'website',
+          content: 'article',
         },
         {
           property: 'og:site_name',
-          content: 'Mangakyy',
+          content: SITE_NAME,
         },
         {
           property: 'og:url',
-          content: `https://mangakyy.com/chapter/${data?.detail?.data.chapter_id}`,
+          content: chapterUrl,
         },
+
         // Twitter card
         {
           name: 'twitter:card',
-          content: data?.meta.image,
+          content: 'summary_large_image',
         },
         {
           name: 'twitter:title',
-          content: `${data?.meta.title} - MangaKyy`,
+          content: pageTitle,
         },
         {
           name: 'twitter:image',
-          content: data?.meta.image,
+          content: pageImage,
         },
         {
           name: 'twitter:description',
-          content: data?.meta.description,
+          content: pageDescription,
         },
         {
           name: 'twitter:url',
-          content: `https://mangakyy.com/chapter/${data?.detail?.data.chapter_id}`,
+          content: chapterUrl,
+        },
+      ],
+      links: [
+        {
+          rel: 'canonical',
+          href: chapterUrl,
+        },
+      ],
+      scripts: [
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify(chapterSchema),
         },
       ],
     }

@@ -1,6 +1,17 @@
 import { getPopularManga } from '@/api/server/manga'
 import PopularPage from '@/pages/popular'
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  SITE_URL,
+  STANDARD_ROBOTS,
+} from '@/shared/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
+
+const POPULAR_TITLE =
+  'Manga & Manhwa Populer Terbanyak Dibaca - MangaKyy'
+const POPULAR_DESCRIPTION =
+  'Daftar komik manga, manhwa, dan manhua terpopuler dengan rating tertinggi dan paling banyak dibaca pembaca di MangaKyy.'
 
 export const Route = createFileRoute('/popular')({
   component: PopularPage,
@@ -14,36 +25,34 @@ export const Route = createFileRoute('/popular')({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Popular - Mangakyy',
+        title: POPULAR_TITLE,
       },
       {
         name: 'description',
-        content:
-          'Mangakyy adalah platform untuk membaca manga, manhwa, dan manhua gratis dengan update cepat dan koleksi lengkap. Temukan berbagai genre seperti action, romance, fantasy, dan banyak lagi dengan kualitas terbaik.',
+        content: POPULAR_DESCRIPTION,
       },
       {
         name: 'keywords',
         content:
-          'manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy',
+          'manga populer, manhwa terbaik, manhua populer, komik rating tertinggi, mangakyy populer',
       },
       {
         name: 'author',
-        content: 'Mangakyy',
+        content: SITE_NAME,
       },
       {
         name: 'robots',
-        content: 'index, follow',
+        content: STANDARD_ROBOTS,
       },
 
-      // Open Graph (buat preview Discord, Facebook, dll)
+      // Open Graph
       {
         property: 'og:title',
-        content: 'Popular - Mangakyy',
+        content: POPULAR_TITLE,
       },
       {
         property: 'og:description',
-        content:
-          'Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.',
+        content: POPULAR_DESCRIPTION,
       },
       {
         property: 'og:type',
@@ -51,15 +60,15 @@ export const Route = createFileRoute('/popular')({
       },
       {
         property: 'og:site_name',
-        content: 'Mangakyy',
+        content: SITE_NAME,
       },
       {
         property: 'og:image',
-        content: '/mangakyy-logo.png',
+        content: DEFAULT_OG_IMAGE,
       },
       {
         property: 'og:url',
-        content: 'https://mangakyy.my.id/popular',
+        content: `${SITE_URL}/popular`,
       },
 
       // Twitter card
@@ -69,20 +78,25 @@ export const Route = createFileRoute('/popular')({
       },
       {
         name: 'twitter:title',
-        content: 'Popular - Mangakyy',
+        content: POPULAR_TITLE,
       },
       {
         name: 'twitter:description',
-        content:
-          'Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.',
+        content: POPULAR_DESCRIPTION,
       },
       {
         name: 'twitter:image',
-        content: '/mangakyy-logo.png',
+        content: DEFAULT_OG_IMAGE,
       },
       {
         name: 'twitter:url',
-        content: 'https://mangakyy.my.id/popular',
+        content: `${SITE_URL}/popular`,
+      },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: `${SITE_URL}/popular`,
       },
     ],
   }),

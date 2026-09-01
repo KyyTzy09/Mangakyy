@@ -1,6 +1,17 @@
 import { getUpdateManga } from '@/api/server/manga'
 import UpdatePage from '@/pages/update'
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  SITE_URL,
+  STANDARD_ROBOTS,
+} from '@/shared/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
+
+const UPDATE_TITLE =
+  'Update Chapter Komik Terbaru Hari Ini - MangaKyy'
+const UPDATE_DESCRIPTION =
+  'Rilis chapter manga, manhwa, dan manhua terbaru hari ini dengan kecepatan update terbaik hanya di MangaKyy.'
 
 export const Route = createFileRoute('/update')({
   component: UpdatePage,
@@ -14,36 +25,34 @@ export const Route = createFileRoute('/update')({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Update - Mangakyy',
+        title: UPDATE_TITLE,
       },
       {
         name: 'description',
-        content:
-          'Mangakyy adalah platform untuk membaca manga, manhwa, dan manhua gratis dengan update cepat dan koleksi lengkap. Temukan berbagai genre seperti action, romance, fantasy, dan banyak lagi dengan kualitas terbaik.',
+        content: UPDATE_DESCRIPTION,
       },
       {
         name: 'keywords',
         content:
-          'manga, manhwa, manhua, baca manga online, manga gratis, manhwa gratis, manhua gratis, komik online, mangakyy',
+          'manga update hari ini, komik terbaru, chapter terbaru, rilis manhwa terbaru, mangakyy update',
       },
       {
         name: 'author',
-        content: 'Mangakyy',
+        content: SITE_NAME,
       },
       {
         name: 'robots',
-        content: 'index, follow',
+        content: STANDARD_ROBOTS,
       },
 
-      // Open Graph (buat preview Discord, Facebook, dll)
+      // Open Graph
       {
         property: 'og:title',
-        content: 'Update - Mangakyy',
+        content: UPDATE_TITLE,
       },
       {
         property: 'og:description',
-        content:
-          'Baca manga, manhwa, dan manhua gratis dengan update terbaru dan koleksi lengkap hanya di Mangakyy.',
+        content: UPDATE_DESCRIPTION,
       },
       {
         property: 'og:type',
@@ -51,15 +60,15 @@ export const Route = createFileRoute('/update')({
       },
       {
         property: 'og:site_name',
-        content: 'Mangakyy',
+        content: SITE_NAME,
       },
       {
         property: 'og:image',
-        content: '/mangakyy-logo.png',
+        content: DEFAULT_OG_IMAGE,
       },
       {
         property: 'og:url',
-        content: 'https://mangakyy.my.id/update',
+        content: `${SITE_URL}/update`,
       },
 
       // Twitter card
@@ -69,20 +78,25 @@ export const Route = createFileRoute('/update')({
       },
       {
         name: 'twitter:title',
-        content: 'Update - Mangakyy',
+        content: UPDATE_TITLE,
       },
       {
         name: 'twitter:description',
-        content:
-          'Platform baca manga, manhwa, dan manhua gratis dengan update cepat dan kualitas terbaik.',
+        content: UPDATE_DESCRIPTION,
       },
       {
         name: 'twitter:image',
-        content: '/mangakyy-logo.png',
+        content: DEFAULT_OG_IMAGE,
       },
       {
         name: 'twitter:url',
-        content: 'https://mangakyy.my.id/update',
+        content: `${SITE_URL}/update`,
+      },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: `${SITE_URL}/update`,
       },
     ],
   }),

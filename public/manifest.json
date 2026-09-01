@@ -1,25 +1,26 @@
 {
   "short_name": "MangaKyy",
-  "name": "Manga Kyy - Read Comics",
+  "name": "MangaKyy - Platform Baca Manga Online Tanpa Iklan",
+  "description": "Platform baca manga, manhwa, dan manhua online gratis bahasa Indonesia dengan update tercepat dan tanpa iklan.",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "mangakyy-logo.png",
+      "src": "/mangakyy-logo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "mangakyy-logo.png",
+      "src": "/mangakyy-logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0f172a",
+  "background_color": "#000000"
 }
