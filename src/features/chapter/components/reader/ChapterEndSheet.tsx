@@ -54,6 +54,9 @@ export default function ChapterEndSheet({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onPointerUp={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
             className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl bg-[#111]/95 backdrop-blur-xl z-[60] rounded-t-2xl p-6"
           >
             {/* Handle bar */}

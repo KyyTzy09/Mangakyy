@@ -23,6 +23,9 @@ export default function FloatingTopBar({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onPointerUp={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
           className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl bg-[#111]/90 backdrop-blur-xl z-50 rounded-b-xl p-4 text-white flex items-center justify-between"
         >
           <Button
