@@ -37,6 +37,18 @@ export default function ChapterPage() {
   } = useChapterReader()
 
   // Handler navigasi chapter
+  const handleBackToDetail = () => {
+    const mangaId = chapter?.manga_id || comic?.manga_id
+    if (mangaId) {
+      navigate({
+        to: '/detail/$mangaId',
+        params: { mangaId },
+      })
+    } else {
+      router.history.back()
+    }
+  }
+
   const handlePrevChapter = () => {
     if (chapter?.prev_chapter_id) {
       navigate({
@@ -76,7 +88,7 @@ export default function ChapterPage() {
         title={comic?.title || ''}
         chapterNumber={chapter?.chapter_number || 0}
         isVisible={isBarsVisible}
-        onBack={() => router.history.back()}
+        onBack={handleBackToDetail}
       />
 
       {/* Gambar Chapter */}

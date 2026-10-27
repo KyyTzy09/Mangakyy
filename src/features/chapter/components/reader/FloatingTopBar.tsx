@@ -30,14 +30,16 @@ export default function FloatingTopBar({
         >
           <Button
             onClick={onBack}
-            className="hover:bg-blue-400"
+            className="hover:bg-blue-400 cursor-pointer flex items-center gap-1.5"
+            title="Kembali ke Detail Manga"
           >
-            <ArrowLeft />
-            Kembali
+            <ArrowLeft className="w-4 h-4" />
+            <span>Detail Manga</span>
           </Button>
           <div
-            className="text-right truncate max-w-[60%] sm:max-w-[70%] font-medium text-sm sm:text-base"
-            title={`${title} - Ch. ${chapterNumber}`}
+            onClick={onBack}
+            className="text-right truncate max-w-[60%] sm:max-w-[70%] font-medium text-sm sm:text-base cursor-pointer hover:text-blue-400 transition-colors"
+            title={`Kembali ke Detail: ${title} - Ch. ${chapterNumber}`}
           >
             {title} - Ch. {chapterNumber}
           </div>

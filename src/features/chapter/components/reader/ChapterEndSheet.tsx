@@ -35,6 +35,17 @@ export default function ChapterEndSheet({
     }
   }
 
+  const handleSecondaryClick = () => {
+    if (hasNextChapter) {
+      navigate({
+        to: '/detail/$mangaId',
+        params: { mangaId },
+      })
+    } else {
+      onDismiss()
+    }
+  }
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -82,11 +93,21 @@ export default function ChapterEndSheet({
             {/* Secondary Action Button */}
             <Button
               variant="outline"
-              onClick={onDismiss}
+              onClick={handleSecondaryClick}
               className="w-full bg-transparent border border-gray-500 text-white hover:bg-gray-800 py-3 h-auto rounded-xl cursor-pointer"
             >
-              {hasNextChapter ? 'Kembali' : 'Tetap di Sini'}
+              {hasNextChapter ? 'Kembali ke Detail Manga' : 'Tetap di Sini'}
             </Button>
+
+            {hasNextChapter && (
+              <button
+                type="button"
+                onClick={onDismiss}
+                className="w-full text-center text-xs text-gray-400 hover:text-white mt-3 cursor-pointer transition-colors"
+              >
+                Tetap di Halaman Ini
+              </button>
+            )}
           </motion.div>
         </>
       )}
