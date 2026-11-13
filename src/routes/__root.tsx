@@ -181,10 +181,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-black/95 min-h-screen">
+      <body className="bg-black/95 min-h-screen flex flex-col">
         <Navbar />
         <TanStackQueryProvider>
-          {children}
+          <div className="flex-1 flex flex-col w-full">
+            {children}
+          </div>
           <PageTransitionLoader />
           <WelcomeScreen />
           <TanStackDevtools

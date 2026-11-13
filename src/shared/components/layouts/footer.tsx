@@ -25,7 +25,7 @@ export default function Footer() {
   return (
     <Activity mode={location.pathname.startsWith("/chapter") ? "hidden" : "visible"}>
       <footer
-        className={`w-full mt-2 bg-linear-to-br from-black via-primary/80 to-transparent text-white relative z-20 pb-16 md:pb-0`}>
+        className={`w-full mt-auto bg-linear-to-br from-black via-primary/80 to-transparent text-white relative z-20 pb-16 md:pb-0`}>
         <div className="flex flex-col w-full p-6 gap-4">
           <div className="md:flex md:justify-between">
             <div className="mb-5 md:mb-2">

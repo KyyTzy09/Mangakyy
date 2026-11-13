@@ -52,7 +52,7 @@ export default function ErrorDisplay({
   const errorStack = error instanceof Error ? error.stack : null
 
   return (
-    <main className="relative flex flex-col items-center justify-center min-h-[75vh] w-full max-w-4xl mx-auto px-4 py-16 text-center select-none overflow-hidden">
+    <main className="relative flex flex-col items-center justify-center min-h-screen w-full max-w-4xl mx-auto px-4 pt-20 pb-16 text-center select-none overflow-hidden">
       {/* Ambient Red Glow Backdrop */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-to-tr from-rose-600/15 via-red-500/10 to-amber-500/15 blur-3xl pointer-events-none" />
 
