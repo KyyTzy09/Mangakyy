@@ -68,7 +68,11 @@ export default function MascotProgressRing({
       {/* Ambient Pulsing Glow behind Mascot */}
       {showPulse && (
         <motion.div
-          className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-sky-500/15 to-purple-500/20 blur-xl pointer-events-none"
+          className={`absolute inset-0 rounded-full blur-xl pointer-events-none ${
+            type === 'error'
+              ? 'bg-gradient-to-tr from-rose-500/25 via-red-500/20 to-amber-500/20'
+              : 'bg-gradient-to-tr from-primary/20 via-sky-500/15 to-purple-500/20'
+          }`}
           animate={{
             scale: [0.92, 1.08, 0.92],
             opacity: [0.35, 0.7, 0.35],
@@ -84,16 +88,26 @@ export default function MascotProgressRing({
       {/* Circular Progress Ring SVG */}
       <svg
         className={`absolute inset-0 w-full h-full pointer-events-none ${
-          isIndeterminate ? 'animate-spin' : ''
+          isIndeterminate && type !== 'error' ? 'animate-spin' : ''
         }`}
-        style={isIndeterminate ? { animationDuration: '1.4s' } : undefined}
+        style={isIndeterminate && type !== 'error' ? { animationDuration: '1.4s' } : undefined}
         viewBox={`0 0 ${config.viewBoxSize} ${config.viewBoxSize}`}
       >
         <defs>
           <linearGradient id={`ring-gradient-${type}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="50%" stopColor="#1978e5" />
-            <stop offset="100%" stopColor="#a855f7" />
+            {type === 'error' ? (
+              <>
+                <stop offset="0%" stopColor="#fb7185" />
+                <stop offset="50%" stopColor="#f43f5e" />
+                <stop offset="100%" stopColor="#e11d48" />
+              </>
+            ) : (
+              <>
+                <stop offset="0%" stopColor="#38bdf8" />
+                <stop offset="50%" stopColor="#1978e5" />
+                <stop offset="100%" stopColor="#a855f7" />
+              </>
+            )}
           </linearGradient>
           <filter id={`ring-glow-${type}`} x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="3" result="blur" />
@@ -107,7 +121,7 @@ export default function MascotProgressRing({
           cy={center}
           r={config.radius}
           fill="none"
-          stroke="rgba(255, 255, 255, 0.08)"
+          stroke={type === 'error' ? 'rgba(244, 63, 94, 0.12)' : 'rgba(255, 255, 255, 0.08)'}
           strokeWidth={config.strokeWidth}
           className="transition-colors"
         />
@@ -118,7 +132,7 @@ export default function MascotProgressRing({
           cy={center}
           r={config.radius + config.strokeWidth + 3}
           fill="none"
-          stroke="rgba(56, 189, 248, 0.12)"
+          stroke={type === 'error' ? 'rgba(244, 63, 94, 0.2)' : 'rgba(56, 189, 248, 0.12)'}
           strokeWidth={1}
           strokeDasharray="4 6"
         />

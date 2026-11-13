@@ -23,6 +23,8 @@ import Navbar from '@/shared/components/layouts/navbar'
 import SmallNavbar from '@/shared/components/layouts/SmallNavbar'
 import WelcomeScreen from '@/shared/components/mascot/WelcomeScreen'
 import PageTransitionLoader from '@/shared/components/mascot/PageTransitionLoader'
+import NotFoundPage from '@/pages/error/NotFoundPage'
+import RootErrorPage from '@/pages/error/RootErrorPage'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
 import appCss from '../styles.css?url'
@@ -168,6 +170,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
+  errorComponent: RootErrorPage,
+  notFoundComponent: NotFoundPage,
   shellComponent: RootDocument,
 })
 

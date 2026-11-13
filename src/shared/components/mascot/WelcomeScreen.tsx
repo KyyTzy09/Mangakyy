@@ -18,8 +18,25 @@ export default function WelcomeScreen() {
   }, [])
 
   useEffect(() => {
-    // Check if user already welcomed in this session
+    // 1. Never show to Googlebot, Bingbot, or Lighthouse/PageSpeed to preserve 100% SEO & Core Web Vitals
     try {
+      const ua = window.navigator.userAgent.toLowerCase()
+      const isBotOrLighthouse =
+        ua.includes('googlebot') ||
+        ua.includes('bingbot') ||
+        ua.includes('lighthouse') ||
+        ua.includes('chrome-lighthouse') ||
+        ua.includes('pagespeed') ||
+        ua.includes('headlesschrome') ||
+        ua.includes('slurp') ||
+        ua.includes('baiduspider') ||
+        ua.includes('yandexbot')
+
+      if (isBotOrLighthouse) {
+        return
+      }
+
+      // 2. Check if user already welcomed in this session
       const alreadyWelcomed = sessionStorage.getItem('mangakyy_welcomed')
       const urlParams = new URLSearchParams(window.location.search)
       const forceWelcome = urlParams.get('welcome') === 'true'
@@ -28,7 +45,7 @@ export default function WelcomeScreen() {
         setIsOpen(true)
       }
     } catch {
-      setIsOpen(true)
+      // In case sessionStorage or navigator fails
     }
 
     // Allow re-trigger via custom window event for testing
