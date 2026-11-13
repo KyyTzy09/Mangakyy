@@ -21,6 +21,8 @@ import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import Footer from '@/shared/components/layouts/footer'
 import Navbar from '@/shared/components/layouts/navbar'
 import SmallNavbar from '@/shared/components/layouts/SmallNavbar'
+import WelcomeScreen from '@/shared/components/mascot/WelcomeScreen'
+import PageTransitionLoader from '@/shared/components/mascot/PageTransitionLoader'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
 import appCss from '../styles.css?url'
@@ -179,6 +181,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Navbar />
         <TanStackQueryProvider>
           {children}
+          <PageTransitionLoader />
+          <WelcomeScreen />
           <TanStackDevtools
             config={{
               position: 'bottom-right',
