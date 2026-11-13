@@ -95,6 +95,15 @@ export default function DetailPage() {
   const artists = comic?.taxonomy?.Artist || []
   const genres = comic?.taxonomy?.Genre || []
 
+  // Safe back navigation handler
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.history.back()
+    } else {
+      navigate({ to: '/' })
+    }
+  }
+
   // Read action target
   const handleStartRead = () => {
     const targetChapterId =
@@ -141,22 +150,26 @@ export default function DetailPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-[#080C14]/85 to-[#080C14]" />
         </div>
 
-        {/* Top Navigation Bar: Tombol Kembali & Home (Fitur Penting yang Selalu Muncul) */}
-        <header className="relative z-20 flex items-center justify-between w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-6 pb-2">
-          <Button
-            onClick={() => router.history.back()}
-            className="bg-slate-800/85 hover:bg-slate-700 text-white border border-white/10 px-4 py-2 rounded-xl flex items-center gap-2 transition cursor-pointer shadow-md"
+        {/* Top Navigation Bar: Tombol Kembali (Kiri) & Home (Kanan) */}
+        <header className="relative z-30 flex items-center justify-between w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-6 sm:pt-8 pb-3">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-900/85 hover:bg-slate-800 text-white border border-white/15 flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-95 backdrop-blur-md group"
+            title="Kembali"
+            aria-label="Kembali ke halaman sebelumnya"
           >
-            <ArrowLeft className="w-4 h-4 font-primary" />
-            <span>Kembali</span>
-          </Button>
-          <Button
+            <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
+          </button>
+          <button
+            type="button"
             onClick={() => navigate({ to: '/' })}
-            className="bg-slate-800/85 hover:bg-slate-700 text-white border border-white/10 rounded-full w-10 h-10 flex items-center justify-center transition cursor-pointer shadow-md"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-900/85 hover:bg-slate-800 text-white border border-white/15 flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-95 backdrop-blur-md group"
             title="Kembali ke Beranda"
+            aria-label="Kembali ke Beranda"
           >
-            <Home className="w-4 h-4 font-primary" />
-          </Button>
+            <Home className="w-5 h-5 transition-transform group-hover:scale-110" />
+          </button>
         </header>
 
         {/* Hero Content Container */}

@@ -19,7 +19,8 @@ export default function Navbar() {
         link: "/update"
     }]
 
-    const hideNavbar = location.pathname.startsWith("/chapter")
+    const hideNavbar =
+        location.pathname.startsWith("/chapter") || location.pathname.startsWith("/detail")
     return (
         <Activity mode={hideNavbar ? "hidden" : "visible"}>
             <header className='fixed top-0 w-full h-18 z-40 bg-black/20 backdrop-blur-sm p-4 border-b border-gray-500'>
