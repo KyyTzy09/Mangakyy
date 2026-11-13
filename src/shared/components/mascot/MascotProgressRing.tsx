@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 
 export interface MascotProgressRingProps {
-  type: 'welcome' | 'loading'
+  type: 'welcome' | 'loading' | 'error'
   progress?: number // 0 to 100 (for determinate mode)
   size?: 'sm' | 'md' | 'lg'
   showPulse?: boolean
@@ -47,8 +47,18 @@ export default function MascotProgressRing({
     ? circumference * 0.7
     : circumference - (Math.min(100, Math.max(0, progress)) / 100) * circumference
 
-  const mascotSrc = type === 'welcome' ? '/mascots/welcome.webp' : '/mascots/loading.webp'
-  const mascotAlt = type === 'welcome' ? 'MangaKyy Welcome Mascot' : 'MangaKyy Loading Mascot'
+  const mascotSrc =
+    type === 'welcome'
+      ? '/mascots/welcome.webp'
+      : type === 'error'
+        ? '/mascots/error.webp'
+        : '/mascots/loading.webp'
+  const mascotAlt =
+    type === 'welcome'
+      ? 'MangaKyy Welcome Mascot'
+      : type === 'error'
+        ? 'MangaKyy Error Mascot'
+        : 'MangaKyy Loading Mascot'
 
   return (
     <div
