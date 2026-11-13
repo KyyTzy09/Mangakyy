@@ -1,60 +1,68 @@
 import { Button } from '@/shared/shadcn/button'
 import { getPagination } from '@/shared/utils/pagination'
-import React from 'react'
 
 interface Props {
-    currentPage: number
-    setCurrentPage: React.Dispatch<React.SetStateAction<number>>
-    totalPage: number
+  currentPage: number
+  setCurrentPage: (page: number | ((prev: number) => number)) => void
+  totalPage: number
 }
 
-export default function PaginationSection({ currentPage, setCurrentPage, totalPage }: Props) {
-    const paginations = getPagination(currentPage, totalPage || 1)
-    return (
-        <section className='flex items-center justify-center w-full gap-2 text-[10px] md:text-sm'>
+export default function PaginationSection({
+  currentPage,
+  setCurrentPage,
+  totalPage,
+}: Props) {
+  const paginations = getPagination(currentPage, totalPage || 1)
+
+  const handlePageChange = (target: number | ((prev: number) => number)) => {
+    const newPage = typeof target === 'function' ? target(currentPage) : target
+    setCurrentPage(newPage)
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <section className="flex items-center justify-center w-full gap-2 text-[10px] md:text-sm">
+      <Button
+        disabled={currentPage <= 1}
+        onClick={() => handlePageChange((p) => p - 1)}
+        className="cursor-pointer disabled:cursor-not-allowed"
+      >
+        {'<'}
+      </Button>
+      <div className="flex gap-2">
+        {paginations.map((page, index) =>
+          page === '...' ? (
             <Button
-                disabled={currentPage === 1}
-                onClick={() => {
-                    setCurrentPage(p => p - 1)
-                    scrollTo({ top: 0, behavior: "smooth" })
-                }}
+              key={`ellipsis-${index}`}
+              disabled
+              className="text-white w-8 text-[10px] md:text-sm md:w-10 flex items-center justify-center border border-gray-500 rounded-md bg-transparent opacity-60"
             >
-                {"<"}
+              ...
             </Button>
-            <div className="flex gap-2">
-                {paginations.map((page) =>
-                    page === "..." ? (
-                        <Button
-                            className={`text-white w-8 text-[10px] md:text-sm md:w-10 flex items-center justify-center border border-gray-500 rounded-md bg-transparent hover:text-white transition`}
-                        >
-                            ...
-                        </Button>
-                    ) : (
-                        <Button
-                            key={page}
-                            onClick={() => {
-                                setCurrentPage(Number(page))
-                                scrollTo({ top: 0, behavior: "smooth" })
-                            }}
-                            className={`${page === currentPage
-                                ? "px-3 py-1 bg-primary"
-                                : "px-3 py-1 bg-transparent"
-                                } text-white w-8 text-[10px] md:text-sm md:w-10 flex items-center justify-center border border-gray-500 rounded-md hover:bg-primary hover:text-white transition`}
-                        >
-                            {page}
-                        </Button>
-                    )
-                )}
-            </div>
+          ) : (
             <Button
-                disabled={currentPage === totalPage || !totalPage}
-                onClick={() => {
-                    setCurrentPage(p => p + 1)
-                    scrollTo({ top: 0, behavior: "smooth" })
-                }}
+              key={page}
+              onClick={() => handlePageChange(Number(page))}
+              className={`${
+                page === currentPage
+                  ? 'px-3 py-1 bg-primary text-white font-semibold'
+                  : 'px-3 py-1 bg-transparent text-white'
+              } w-8 text-[10px] md:text-sm md:w-10 flex items-center justify-center border border-gray-500 rounded-md hover:bg-primary hover:text-white transition cursor-pointer`}
             >
-                {">"}
+              {page}
             </Button>
-        </section>
-    )
+          ),
+        )}
+      </div>
+      <Button
+        disabled={currentPage >= totalPage || !totalPage}
+        onClick={() => handlePageChange((p) => p + 1)}
+        className="cursor-pointer disabled:cursor-not-allowed"
+      >
+        {'>'}
+      </Button>
+    </section>
+  )
 }

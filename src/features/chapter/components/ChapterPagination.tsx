@@ -1,40 +1,52 @@
 import { Button } from '@/shared/shadcn/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import React from 'react'
 
 interface Props {
-    page: number
-    setPage: React.Dispatch<React.SetStateAction<number>>
-    chapters: any
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  page: number
+  setPage: (page: number | ((prev: number) => number)) => void
+  chapters: any
+  setOpen: (open: boolean | ((prev: boolean) => boolean)) => void
 }
 
-export default function ChapterPagination({ page, setPage, chapters, setOpen }: Props) {
-    return (
-        <section className='flex items-center justify-center w-full gap-4 pb-5'>
-            <Button
-                disabled={page === 1}
-                onClick={() => {
-                    setPage(page - 1)
-                    scrollTo({ top: 0, behavior: "smooth" })
-                }}
-                className='bg-transparent border border-primary/90'>
-                <ChevronLeft className='w-4 h-4' />
-            </Button>
-            <Button
-                onClick={() => setOpen(true)}
-            >
-                {page}
-            </Button>
-            <Button
-                disabled={page === chapters?.meta.total_page}
-                onClick={() => {
-                    setPage(page + 1)
-                    scrollTo({ top: 0, behavior: "smooth" })
-                }}
-                className='bg-transparent  border border-primary/90'>
-                <ChevronRight className='w-4 h-4 ' />
-            </Button>
-        </section>
-    )
+export default function ChapterPagination({
+  page,
+  setPage,
+  chapters,
+  setOpen,
+}: Props) {
+  const totalPage = chapters?.meta?.total_page || 1
+
+  const handlePageChange = (target: number | ((prev: number) => number)) => {
+    const newPage = typeof target === 'function' ? target(page) : target
+    setPage(newPage)
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <section className="flex items-center justify-center w-full gap-4 pb-5">
+      <Button
+        disabled={page <= 1}
+        onClick={() => handlePageChange((p) => p - 1)}
+        className="bg-transparent border border-primary/90 text-white hover:bg-primary/20 cursor-pointer disabled:cursor-not-allowed"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </Button>
+      <Button
+        onClick={() => setOpen(true)}
+        className="bg-primary text-white font-semibold px-4 py-2 rounded-xl shadow-sm cursor-pointer"
+        title="Buka daftar chapter"
+      >
+        Halaman {page}
+      </Button>
+      <Button
+        disabled={page >= totalPage}
+        onClick={() => handlePageChange((p) => p + 1)}
+        className="bg-transparent border border-primary/90 text-white hover:bg-primary/20 cursor-pointer disabled:cursor-not-allowed"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </Button>
+    </section>
+  )
 }

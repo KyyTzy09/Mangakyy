@@ -14,13 +14,33 @@ const EXPLORE_TITLE =
 const EXPLORE_DESCRIPTION =
   'Cari dan temukan ribuan komik manga, manhwa, dan manhua berdasarkan genre action, romance, fantasy, isekai, komedi, dan banyak lagi secara gratis di MangaKyy.'
 
+export interface ExploreSearch {
+  page?: number
+  q?: string
+  genre?: string
+  format?: string
+  type?: string
+  status?: string
+  inc?: 'or' | 'and'
+  exc?: 'or' | 'and'
+  layout?: 'grid' | 'list'
+}
+
 export const Route = createFileRoute('/explore')({
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown>): ExploreSearch => {
     return {
-      genre: typeof search.genre === 'string' ? search.genre : undefined,
+      page: Number(search.page) > 0 ? Number(search.page) : 1,
+      q: typeof search.q === 'string' && search.q ? search.q : undefined,
+      genre: typeof search.genre === 'string' && search.genre ? search.genre : undefined,
+      format: typeof search.format === 'string' && search.format ? search.format : undefined,
+      type: typeof search.type === 'string' && search.type ? search.type : undefined,
+      status: typeof search.status === 'string' && search.status ? search.status : undefined,
+      inc: search.inc === 'and' ? 'and' : 'or',
+      exc: search.exc === 'and' ? 'and' : 'or',
+      layout: search.layout === 'list' ? 'list' : 'grid',
     }
   },
-  loaderDeps: ({ search: { genre } }) => ({ genre }),
+  loaderDeps: ({ search }) => search,
   component: ExplorePage,
   head: () => ({
     meta: [
@@ -107,13 +127,29 @@ export const Route = createFileRoute('/explore')({
       },
     ],
   }),
-  loader: async ({ deps: { genre } }) => {
+  loader: async ({ deps }) => {
+    const genres = deps.genre ? deps.genre.split(',').filter(Boolean) : []
+    const formats = deps.format ? deps.format.split(',').filter(Boolean) : []
+    const types = deps.type ? deps.type.split(',').filter(Boolean) : []
+    const status = deps.status ? deps.status.split(',').filter(Boolean) : []
+    const query = deps.q || ''
+    const page = deps.page || 1
+
     return {
       genres: await getComicGenres(),
       comics: await getMangaByGenre({
-        data: { query: '', genres: genre ? [genre] : [], page: 1 },
+        data: {
+          query,
+          genres,
+          format: formats,
+          type: types,
+          status,
+          inclusion: deps.inc || 'or',
+          exclusion: deps.exc || 'or',
+          page,
+        },
       }),
-      initialGenre: genre,
+      initialSearch: deps,
     }
   },
 })

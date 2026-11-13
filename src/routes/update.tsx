@@ -13,7 +13,21 @@ const UPDATE_TITLE =
 const UPDATE_DESCRIPTION =
   'Rilis chapter manga, manhwa, dan manhua terbaru hari ini dengan kecepatan update terbaik hanya di MangaKyy.'
 
+export interface UpdateSearch {
+  type?: 'mirror' | 'project'
+  page?: number
+}
+
 export const Route = createFileRoute('/update')({
+  validateSearch: (search: Record<string, unknown>): UpdateSearch => {
+    const type = search.type === 'project' ? 'project' : 'mirror'
+    const page = Number(search.page) > 0 ? Number(search.page) : 1
+    return {
+      type,
+      page,
+    }
+  },
+  loaderDeps: ({ search: { type, page } }) => ({ type, page }),
   component: UpdatePage,
   head: () => ({
     meta: [
@@ -100,9 +114,9 @@ export const Route = createFileRoute('/update')({
       },
     ],
   }),
-  loader: async () => ({
+  loader: async ({ deps: { type, page } }) => ({
     data: await getUpdateManga({
-      data: { type: 'mirror', page: 1, pageSize: 17 },
+      data: { type: type || 'mirror', page: page || 1, pageSize: 17 },
     }),
   }),
 })

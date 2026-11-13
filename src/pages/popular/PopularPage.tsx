@@ -2,13 +2,22 @@ import PopularCard from '@/features/manga/components/cards/PopularCard'
 import { useGetPopularManga } from '@/features/manga/hooks/MangaQuery'
 import PaginationSection from '@/shared/components/reusable/pagination'
 import { Label } from '@/shared/shadcn/label'
-import { useLoaderData } from '@tanstack/react-router'
+import { useLoaderData, useNavigate, useSearch } from '@tanstack/react-router'
 import { Flame } from 'lucide-react'
-import { useState } from 'react'
 
 export default function PopularPage() {
   const { popular } = useLoaderData({ from: '/popular' })
-  const [currentPage, setCurrentPage] = useState(1)
+  const search = useSearch({ from: '/popular' })
+  const navigate = useNavigate({ from: '/popular' })
+
+  const currentPage = Number(search?.page) > 0 ? Number(search.page) : 1
+
+  const setCurrentPage = (target: number | ((prev: number) => number)) => {
+    const newPage = typeof target === 'function' ? target(currentPage) : target
+    navigate({
+      search: (prev) => ({ ...prev, page: newPage }),
+    })
+  }
 
   const { data, isPending } = useGetPopularManga(
     'all_time',

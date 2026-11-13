@@ -10,14 +10,24 @@ import {
 } from '@/shared/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
+export interface DetailSearch {
+  page?: number
+}
+
 export const Route = createFileRoute('/detail/$mangaId')({
+  validateSearch: (search: Record<string, unknown>): DetailSearch => {
+    return {
+      page: Number(search.page) > 0 ? Number(search.page) : 1,
+    }
+  },
+  loaderDeps: ({ search: { page } }) => ({ page }),
   component: DetailPage,
-  loader: async ({ params }) => {
+  loader: async ({ params, deps: { page } }) => {
     const detail = await getMangaDetail({ data: { mangaId: params.mangaId } })
     return {
       detail,
       chapters: await getChapterList({
-        data: { mangaId: params.mangaId, page: 1 },
+        data: { mangaId: params.mangaId, page: page || 1 },
       }),
       meta: {
         title: `Baca Komik ${detail?.data.title || 'Manga'} Bahasa Indonesia - ${SITE_NAME}`,

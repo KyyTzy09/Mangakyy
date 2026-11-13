@@ -1,6 +1,7 @@
 import { Button } from '@/shared/shadcn/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Home } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
+import { useNavigate } from '@tanstack/react-router'
 
 interface FloatingTopBarProps {
   title: string
@@ -11,10 +12,11 @@ interface FloatingTopBarProps {
 
 export default function FloatingTopBar({
   title,
-  chapterNumber,
   isVisible,
   onBack,
 }: FloatingTopBarProps) {
+  const navigate = useNavigate()
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -26,23 +28,40 @@ export default function FloatingTopBar({
           onPointerDown={(e) => e.stopPropagation()}
           onPointerUp={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
-          className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl bg-[#111]/90 backdrop-blur-xl z-50 rounded-b-xl p-4 text-white flex items-center justify-between"
+          className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl bg-[#111]/90 border-b border-white/10 backdrop-blur-xl z-50 rounded-b-2xl p-3 sm:p-4 text-white flex items-center justify-between gap-3 shadow-2xl"
         >
+          {/* Left: Kembali ke Detail Manga (Icon only di layar kecil) */}
           <Button
             onClick={onBack}
-            className="hover:bg-blue-400 cursor-pointer flex items-center gap-1.5"
+            className="hover:bg-primary/20 hover:text-primary border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0"
             title="Kembali ke Detail Manga"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Detail Manga</span>
+            <ArrowLeft className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+            <span className="hidden sm:inline text-xs sm:text-sm font-medium">
+              Detail Manga
+            </span>
           </Button>
+
+          {/* Center: Judul Komik di Tengah (Hanya judul tanpa nomor chapter) */}
           <div
             onClick={onBack}
-            className="text-right truncate max-w-[60%] sm:max-w-[70%] font-medium text-sm sm:text-base cursor-pointer hover:text-blue-400 transition-colors"
-            title={`Kembali ke Detail: ${title} - Ch. ${chapterNumber}`}
+            className="flex-1 text-center truncate font-semibold text-sm sm:text-base text-white hover:text-primary transition-colors cursor-pointer px-1"
+            title={title}
           >
-            {title} - Ch. {chapterNumber}
+            {title}
           </div>
+
+          {/* Right: Tombol Kembali ke Beranda / Home (route '/') */}
+          <Button
+            onClick={() => navigate({ to: '/' })}
+            className="hover:bg-primary/20 hover:text-primary border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0"
+            title="Kembali ke Beranda"
+          >
+            <Home className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+            <span className="hidden sm:inline text-xs sm:text-sm font-medium">
+              Beranda
+            </span>
+          </Button>
         </motion.div>
       )}
     </AnimatePresence>

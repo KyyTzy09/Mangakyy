@@ -13,7 +13,18 @@ const POPULAR_TITLE =
 const POPULAR_DESCRIPTION =
   'Daftar komik manga, manhwa, dan manhua terpopuler dengan rating tertinggi dan paling banyak dibaca pembaca di MangaKyy.'
 
+export interface PopularSearch {
+  page?: number
+}
+
 export const Route = createFileRoute('/popular')({
+  validateSearch: (search: Record<string, unknown>): PopularSearch => {
+    const page = Number(search.page)
+    return {
+      page: page > 0 ? page : 1,
+    }
+  },
+  loaderDeps: ({ search: { page } }) => ({ page }),
   component: PopularPage,
   head: () => ({
     meta: [
@@ -100,10 +111,10 @@ export const Route = createFileRoute('/popular')({
       },
     ],
   }),
-  loader: async () => {
+  loader: async ({ deps: { page } }) => {
     return {
       popular: await getPopularManga({
-        data: { type: 'all_time', page: 1, pageSize: 20 },
+        data: { type: 'all_time', page: page || 1, pageSize: 20 },
       }),
     }
   },

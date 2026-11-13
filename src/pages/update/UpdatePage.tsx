@@ -4,9 +4,8 @@ import { useGetUpdateManga } from '@/features/manga/hooks/MangaQuery'
 import PaginationSection from '@/shared/components/reusable/pagination'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
-import { useLoaderData } from '@tanstack/react-router'
+import { useLoaderData, useNavigate, useSearch } from '@tanstack/react-router'
 import { Timer } from 'lucide-react'
-import { useState } from 'react'
 
 const updateType = [
   {
@@ -20,9 +19,26 @@ const updateType = [
 ]
 
 export default function UpdatePage() {
-  const [selectedType, setSelectedType] = useState<'mirror' | 'project'>('mirror')
-  const [page, setPage] = useState<number>(1)
+  const search = useSearch({ from: '/update' })
+  const navigate = useNavigate({ from: '/update' })
   const { data } = useLoaderData({ from: '/update' })
+
+  const selectedType = search?.type === 'project' ? 'project' : 'mirror'
+  const page = Number(search?.page) > 0 ? Number(search.page) : 1
+
+  const setSelectedType = (newType: 'mirror' | 'project') => {
+    navigate({
+      search: (prev) => ({ ...prev, type: newType, page: 1 }),
+    })
+  }
+
+  const setPage = (target: number | ((prev: number) => number)) => {
+    const newPage = typeof target === 'function' ? target(page) : target
+    navigate({
+      search: (prev) => ({ ...prev, page: newPage }),
+    })
+  }
+
   const { data: update, isPending } = useGetUpdateManga(
     data!,
     selectedType,
@@ -33,13 +49,13 @@ export default function UpdatePage() {
     <div className="flex items-start justify-start min-h-screen bg-linear-to-br from-[#0f172a] via-[#0b1a33] to-black/80 text-slate-100 pt-20 md:pt-24 p-2 gap-2 pb-16 md:pb-0">
       <aside className="hidden md:flex flex-col w-70 h-fit max-h-[85vh] sticky top-24 bg-black/20 backdrop-blur-xl border border-white/10 rounded-xl p-4 gap-5 overflow-y-auto">
         <div className="flex flex-col items-center justify-start w-full gap-2">
-          <Label className="text-sm font-semibold">Genre</Label>
+          <Label className="text-sm font-semibold">Tipe</Label>
           <div className="flex flex-col w-full gap-2">
             {updateType.map((u, i) => (
               <Button
                 key={i}
                 onClick={() => setSelectedType(u.value as 'mirror' | 'project')}
-                className={`${selectedType === u.value ? 'bg-primary' : 'bg-white/10'} w-full text-start hover:bg-white/20 text-sm py-2 px-3 rounded-md`}
+                className={`${selectedType === u.value ? 'bg-primary text-white' : 'bg-white/10 text-slate-300'} w-full text-start hover:bg-white/20 text-sm py-2 px-3 rounded-md transition cursor-pointer`}
               >
                 {u.title}
               </Button>
@@ -51,19 +67,21 @@ export default function UpdatePage() {
         <section className="flex items-center justify-between w-full">
           <Label className="text-lg font-semibold">
             <Timer className="w-5 h-5 text-pink-500" />
-            Update Komik
+            Update Komik ({selectedType === 'project' ? 'Project' : 'Mirror'})
           </Label>
         </section>
         <section className="flex md:hidden flex-col w-full gap-2">
-          {updateType.map((u, i) => (
-            <Button
-              key={i}
-              onClick={() => setSelectedType(u.value as 'mirror' | 'project')}
-              className={`${selectedType === u.value ? 'bg-primary' : 'bg-white/10'} w-full text-start hover:bg-white/20 text-sm py-2 px-3 rounded-md`}
-            >
-              {u.title}
-            </Button>
-          ))}
+          <div className="flex items-center gap-2 w-full">
+            {updateType.map((u, i) => (
+              <Button
+                key={i}
+                onClick={() => setSelectedType(u.value as 'mirror' | 'project')}
+                className={`${selectedType === u.value ? 'bg-primary text-white' : 'bg-white/10 text-slate-300'} flex-1 text-center hover:bg-white/20 text-sm py-2 px-3 rounded-md transition cursor-pointer`}
+              >
+                {u.title}
+              </Button>
+            ))}
+          </div>
         </section>
         <section className="flex w-full items-center justify-center">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 w-full max-h-screen overflow-y-auto gap-3">
