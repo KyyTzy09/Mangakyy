@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, Pause, Settings, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/shadcn/button';

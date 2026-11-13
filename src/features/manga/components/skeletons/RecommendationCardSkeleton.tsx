@@ -1,6 +1,5 @@
 import { Label } from '@/shared/shadcn/label'
 import { motion } from 'motion/react'
-import React from 'react'
 
 interface Props {
     count: number

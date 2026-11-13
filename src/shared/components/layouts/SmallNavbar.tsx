@@ -4,7 +4,7 @@ import { Activity } from 'react'
 
 const navbarItems = [
     {
-        to: "/home",
+        to: "/",
         icon: <Home size={22} />,
         label: "Home"
     },
@@ -28,7 +28,7 @@ const navbarItems = [
 export default function SmallNavbar() {
     const location = useLocation()
     return (
-        <Activity mode={location.pathname.startsWith("/detail") || location.pathname.startsWith("/chapter") || location.pathname === "/" ? "hidden" : "visible"}>
+        <Activity mode={location.pathname.startsWith("/detail") || location.pathname.startsWith("/chapter") ? "hidden" : "visible"}>
             <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
                 <div className="flex items-center justify-around h-16 px-2 
       bg-black/80 backdrop-blur-lg border-t border-white/10">

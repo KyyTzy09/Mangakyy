@@ -1,11 +1,7 @@
 import ExploreSidebar from '@/features/explore/components/ExploreSidebar'
 import GenreFilterDropdown from '@/features/explore/components/interacts/GenreFilterDropdown'
-import GenreListSection from '@/features/explore/components/section/GenreListSection'
 import GenreSearchSection from '@/features/explore/components/section/GenreSearchSection'
 import SelectedGenreSection from '@/features/explore/components/section/SelectedGenreSection'
-import SelectFormatSection from '@/features/explore/components/section/SelectFormatSection'
-import SelectStatussection from '@/features/explore/components/section/SelectStatusSection'
-import SelectTypesection from '@/features/explore/components/section/SelectTypeSection'
 import { useExplore } from '@/features/explore/hooks/useExplore'
 import { useSelectGenre } from '@/features/explore/hooks/useSelectGenre'
 import GenreMangaCard from '@/features/manga/components/cards/GenreMangaCard'
@@ -14,10 +10,10 @@ import GenreMangaCardSkeleton from '@/features/manga/components/skeletons/GenreM
 import { useGetMangaByGenre } from '@/features/manga/hooks/MangaQuery'
 import PaginationSection from '@/shared/components/reusable/pagination'
 import { useLoaderData } from '@tanstack/react-router'
-import { Activity } from 'react'
+import { Activity, useEffect } from 'react'
 
 export default function ExplorePage() {
-  const { genres, comics } = useLoaderData({ from: '/explore' })
+  const { genres, comics, initialGenre } = useLoaderData({ from: '/explore' })
 
   const {
     openFilter,
@@ -39,6 +35,20 @@ export default function ExplorePage() {
     selectedStatus,
     selectedFormats,
   } = useExplore()
+
+  useEffect(() => {
+    if (initialGenre && selectedSearch.length === 0) {
+      const matched = genres?.data?.find(
+        (g) => g.slug.toLowerCase() === initialGenre.toLowerCase(),
+      )
+      const genreName =
+        matched?.name ||
+        initialGenre.charAt(0).toUpperCase() + initialGenre.slice(1)
+      setSelectedSearch([
+        { name: genreName, slug: initialGenre, type: 'genre' },
+      ])
+    }
+  }, [initialGenre, genres, selectedSearch.length, setSelectedSearch])
 
   const { data: comicsData, isPending } = useGetMangaByGenre(
     comics!,

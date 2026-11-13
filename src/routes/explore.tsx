@@ -15,6 +15,12 @@ const EXPLORE_DESCRIPTION =
   'Cari dan temukan ribuan komik manga, manhwa, dan manhua berdasarkan genre action, romance, fantasy, isekai, komedi, dan banyak lagi secara gratis di MangaKyy.'
 
 export const Route = createFileRoute('/explore')({
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      genre: typeof search.genre === 'string' ? search.genre : undefined,
+    }
+  },
+  loaderDeps: ({ search: { genre } }) => ({ genre }),
   component: ExplorePage,
   head: () => ({
     meta: [
@@ -101,12 +107,13 @@ export const Route = createFileRoute('/explore')({
       },
     ],
   }),
-  loader: async () => {
+  loader: async ({ deps: { genre } }) => {
     return {
       genres: await getComicGenres(),
       comics: await getMangaByGenre({
-        data: { query: '', genres: [], page: 1 },
+        data: { query: '', genres: genre ? [genre] : [], page: 1 },
       }),
+      initialGenre: genre,
     }
   },
 })

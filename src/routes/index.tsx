@@ -1,4 +1,9 @@
-import LandingPage from '@/pages/landing'
+import {
+  getPopularManga,
+  getRecommendationManga,
+  getUpdateManga,
+} from '@/api/server/manga'
+import HomePage from '@/pages/home'
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
@@ -11,7 +16,7 @@ import {
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-  component: LandingPage,
+  component: HomePage,
   head: () => ({
     meta: [
       {
@@ -62,7 +67,7 @@ export const Route = createFileRoute('/')({
       },
       {
         property: 'og:url',
-        content: SITE_URL,
+        content: `${SITE_URL}/`,
       },
       {
         name: 'twitter:card',
@@ -82,7 +87,7 @@ export const Route = createFileRoute('/')({
       },
       {
         name: 'twitter:url',
-        content: SITE_URL,
+        content: `${SITE_URL}/`,
       },
     ],
     links: [
@@ -92,4 +97,16 @@ export const Route = createFileRoute('/')({
       },
     ],
   }),
+  loader: async () => {
+    return {
+      topWeekly: await getPopularManga({
+        data: { type: 'weekly', pageSize: 12 },
+      }),
+      recommendation: await getRecommendationManga({
+        data: { format: 'manga' },
+      }),
+      popular: await getPopularManga({ data: { type: 'all_time' } }),
+      update: await getUpdateManga({ data: { type: 'project' } }),
+    }
+  },
 })

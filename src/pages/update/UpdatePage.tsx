@@ -77,7 +77,7 @@ export default function UpdatePage() {
           </div>
         </section>
         <PaginationSection
-          totalPage={update?.meta?.total_page! || 1}
+          totalPage={update?.meta?.total_page ?? 1}
           currentPage={page}
           setCurrentPage={setPage}
         />

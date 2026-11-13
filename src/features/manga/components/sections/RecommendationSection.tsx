@@ -40,9 +40,9 @@ export default function RecommendationSection({ recommendation }: Props) {
                 <Selector items={recommendationButton} selectedValue={selectedType} setSelectedValue={setSelectedType} />
             </header>
             <div className='grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-1 md:gap-3'>
-                {!isPending ? data?.map((data, i) => {
+                {!isPending ? data?.map((comic, i) => {
                     return (
-                        <RecommendationCard data={data} index={i} key={i} />
+                        <RecommendationCard data={comic} index={i} key={i} />
                     )
                 }) : <RecommendationCardSkeleton count={10} />}
             </div>

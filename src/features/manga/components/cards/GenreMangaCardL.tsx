@@ -3,7 +3,7 @@ import { countryCodeToFlag } from '@/shared/utils/countryConverter'
 import { formatCompactNumber } from '@/shared/utils/formater'
 import { Link } from '@tanstack/react-router'
 import { Bookmark, Eye, Star } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 
 interface Props {
     data: ComicType

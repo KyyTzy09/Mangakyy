@@ -3,10 +3,10 @@ import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import { Loader2, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import React, { useEffect, useRef } from 'react'
+import { useState   } from 'react'
+import type {Dispatch, SetStateAction} from 'react';
 import ChapterList from '../cards/chapterList'
 import { useGetInfiniteChapter, useSearchChapter } from '../../hooks/chapterQuery'
-import { defaultImage } from '@/shared/dummy/image'
 import { Input } from '@/shared/shadcn/input'
 import { useDebounce } from '@/shared/hooks/useDebounce'
 
@@ -14,11 +14,11 @@ interface Props {
     chapters: ChapterListType[]
     comic: ComicType
     isOpen: boolean
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
 export default function ChapterListDropdown({ comic, isOpen, setIsOpen }: Props) {
-    const [search, setSearch] = React.useState<string>('')
+    const [search, setSearch] = useState<string>('')
     const debounce = useDebounce(search, 1000)
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfiniteChapter(comic.manga_id)
     const { data: searchResult } = useSearchChapter(comic.manga_id, debounce)
@@ -60,11 +60,11 @@ export default function ChapterListDropdown({ comic, isOpen, setIsOpen }: Props)
                                     }
                                 }}
                                 className="flex flex-col w-full max-h-[60vh] overflow-y-auto">
-                                {chapters?.map((data, i) => (
+                                {chapters?.map((chapterItem, i) => (
                                     <ChapterList
-                                        key={data?.chapter_id}
+                                        key={chapterItem?.chapter_id}
                                         index={i}
-                                        chapter={data!}
+                                        chapter={chapterItem!}
                                         comic={comic}
                                     />
                                 ))}

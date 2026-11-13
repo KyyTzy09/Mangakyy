@@ -1,15 +1,15 @@
-import SortHistoryButton, {
-  type SortType,
-} from '@/features/history/components/buttons/SortHistoryButton'
+import SortHistoryButton from '@/features/history/components/buttons/SortHistoryButton'
+import type {SortType} from '@/features/history/components/buttons/SortHistoryButton';
 import ChapterHistoryCard from '@/features/history/components/cards/ChapterHistoryCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
 import {
-  getHistoryByComicId,
-  type NewChapterHistory,
-  type NewComicHistory,
+  getHistoryByComicId
+  
+  
 } from '@/shared/utils/history'
+import type {NewChapterHistory, NewComicHistory} from '@/shared/utils/history';
 import { useParams, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, History } from 'lucide-react'
 import { useState } from 'react'

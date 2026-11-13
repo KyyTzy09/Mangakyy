@@ -1,6 +1,5 @@
 import type { TaxonomyItem } from '@/shared/interfaces'
 import { Badge } from '@/shared/shadcn/badge'
-import { Button } from '@/shared/shadcn/button'
 import { Input } from '@/shared/shadcn/input'
 import { Label } from '@/shared/shadcn/label'
 import { ChevronDown, Search } from 'lucide-react'

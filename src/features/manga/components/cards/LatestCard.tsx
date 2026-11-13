@@ -1,116 +1,105 @@
-import type { ComicType, UpdateComic } from '@/shared/interfaces'
-import { displayCountryName } from '@/shared/utils/countryConverter'
+import type { UpdateComic } from '@/shared/interfaces'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
 import { useNavigate } from '@tanstack/react-router'
-import { Bookmark, Clock, Eye, Globe, Star } from 'lucide-react'
 import { motion } from 'motion/react'
 
 interface Props {
-    data: UpdateComic
-    index: number
+  data: UpdateComic
+  index?: number
 }
 
-export default function LatestCard({ data, index }: Props) {
-    const navigate = useNavigate()
-    const { manga_id, title, cover_image_url: cover, release_year: year, description, user_rate: rating, view_count: views, bookmark_count: saves, country_id: country, updated_at: updatedAgo, taxonomy: { Genre: genres } } = data
+export default function LatestCard({ data, index = 0 }: Props) {
+  const navigate = useNavigate()
+  const {
+    manga_id,
+    title,
+    cover_image_url,
+    cover_portrait_url,
+    chapters,
+    latest_chapter_id,
+    latest_chapter_number,
+    updated_at,
+  } = data
 
-    return (
-        <motion.article
-            initial={{ translateY: 10 }}
-            animate={{ translateY: 0 }}
-            exit={{ translateY: 10 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={() => navigate({ to: "/detail/$mangaId", params: { mangaId: manga_id } })}
-            className="group relative w-full min-h-full max-w-md"
+  const cover = cover_portrait_url || cover_image_url
+
+  // Prepare up to 3 latest chapters
+  const displayChapters =
+    chapters && chapters.length > 0
+      ? chapters.slice(0, 3)
+      : latest_chapter_id
+        ? [
+            {
+              chapter_id: latest_chapter_id,
+              chapter_number: latest_chapter_number,
+              created_at: updated_at,
+            },
+          ]
+        : []
+
+  const handleGoToDetail = () => {
+    navigate({
+      to: '/detail/$mangaId',
+      params: { mangaId: manga_id },
+    })
+  }
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: index * 0.04 }}
+      className="group flex gap-3.5 p-3 sm:p-3.5 rounded-2xl bg-[#0e1422] border border-white/5 hover:border-primary/40 transition-all duration-300 w-full shadow-sm hover:shadow-md"
+    >
+      {/* Cover Kiri */}
+      <div
+        onClick={handleGoToDetail}
+        className="relative w-24 sm:w-28 aspect-[3/4.2] rounded-xl overflow-hidden shrink-0 cursor-pointer bg-slate-900 border border-white/5 group-hover:opacity-90 transition-opacity"
+      >
+        <img
+          src={cover}
+          alt={title}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+
+      {/* Konten Kanan */}
+      <div className="flex flex-col flex-1 min-w-0 justify-between py-0.5">
+        {/* Judul Komik */}
+        <h3
+          onClick={handleGoToDetail}
+          className="font-bold text-sm sm:text-base text-white line-clamp-2 leading-snug hover:text-primary transition-colors cursor-pointer"
+          title={title}
         >
-            {/* glow border */}
-            <div className="absolute -inset-px rounded-2xl bg-linear-to-r from-primary/0 via-primary/40 to-primary/0 bg-clip-border opacity-0 blur transition duration-500 group-hover:opacity-100" />
+          {title}
+        </h3>
 
-            {/* card */}
-            <div className="relative flex gap-4 rounded-2xl bg-linear-to-br from-[#0f172a] via-[#0b1220] to-[#090f1a] group-hover:from-transparent group-hover:via-black group-hover:to-primary p-4 backdrop-blur-xl border border-white/5 transition duration-500 group-hover:border-primary/30">
-
-                {/* shimmer effect */}
-                <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-                    <div className="absolute -left-full top-0 h-full w-1/2 bg-linear-to-r from-transparent via-white/5 to-transparent group-hover:animate-shimmer" />
-                </div>
-
-                {/* cover */}
-                <div className="relative">
-                    <img
-                        src={cover}
-                        alt='No-image'
-                        className="h-36 w-24 rounded-lg object-cover shadow-lg transition duration-500 group-hover:scale-105"
-                    />
-
-                    {/* status badge */}
-                    <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-xs backdrop-blur">
-                        <div className="h-2 w-2 rounded-full bg-green-400" />
-
-                    </div>
-
-                    {/* year */}
-                    <div className="absolute bottom-2 left-2 rounded-md bg-black/70 px-2 py-0.5 text-xs backdrop-blur">
-                        {year}
-                    </div>
-                </div>
-
-                {/* content */}
-                <div className="flex flex-col flex-1 gap-2">
-                    <h3 className="text-lg line-clamp-2 font-semibold text-white group-hover:text-primary transition">
-                        {title}
-                    </h3>
-
-                    <p className="text-sm text-gray-400 line-clamp-2">
-                        {description}
-                    </p>
-
-                    {/* stats */}
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-300">
-
-                        <div className="flex items-center gap-1">
-                            <Star size={14} className="text-yellow-400" />
-                            {rating.toFixed(1)}
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                            <Eye size={14} className="text-blue-400" />
-                            {views.toLocaleString()}
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                            <Bookmark size={14} className="text-pink-400" />
-                            {saves.toLocaleString()}
-                        </div>
-
-                    </div>
-
-                    {/* genres */}
-                    <div className="flex flex-wrap gap-2 mt-1">
-                        {genres?.map((genre) => (
-                            <span
-                                key={genre?.slug}
-                                className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-gray-300 border border-white/10 group-hover:border-primary/40 transition"
-                            >
-                                {genre?.name}
-                            </span>
-                        ))}
-                    </div>
-                    {/* footer */}
-                    <div className="flex items-center justify-between mt-2 text-[10px] sm:text-xs text-gray-400">
-                        <div className="flex items-center gap-1 text-primary">
-                            <Globe className='w-3 h-3 sm:w-4 sm:h-4' />
-                            {displayCountryName(country.toUpperCase())}
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                            <Clock className='w-3 h-3 sm:w-4 sm:h-4' />
-                            {formatRelativeTime(updatedAgo)}
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </motion.article>
-    )
+        {/* 3 Shortcut Chapter Buttons */}
+        <div className="flex flex-col gap-1.5 mt-2">
+          {displayChapters.map((ch) => (
+            <button
+              key={ch.chapter_id}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate({
+                  to: '/chapter/$chapterId',
+                  params: { chapterId: ch.chapter_id },
+                })
+              }}
+              className="w-full bg-[#182030]/80 hover:bg-primary/25 border border-white/5 hover:border-primary/40 rounded-lg px-3 py-2 flex items-center justify-between text-xs sm:text-sm transition cursor-pointer"
+            >
+              <span className="font-semibold text-slate-100">
+                Ch. {ch.chapter_number}
+              </span>
+              <span className="text-[11px] sm:text-xs text-slate-400">
+                {formatRelativeTime(ch.created_at)}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </motion.article>
+  )
 }

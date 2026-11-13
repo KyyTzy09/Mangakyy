@@ -1,4 +1,3 @@
-import { Button } from '@/shared/shadcn/button'
 import { Link, useLocation } from '@tanstack/react-router'
 import { Timer } from 'lucide-react'
 import { Activity } from 'react'
@@ -8,7 +7,7 @@ export default function Navbar() {
 
     const menus = [{
         title: "Home",
-        link: "/home"
+        link: "/"
     }, {
         title: "Populer",
         link: "/popular",

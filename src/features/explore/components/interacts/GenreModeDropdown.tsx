@@ -1,7 +1,8 @@
 import { Button } from '@/shared/shadcn/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/shadcn/dropdown-menu'
 import React from 'react'
-import { useGenreMode, type GenreMode, type SelectedGenreMode } from '../../hooks/useGenreMode'
+import { useGenreMode   } from '../../hooks/useGenreMode'
+import type {GenreMode, SelectedGenreMode} from '../../hooks/useGenreMode';
 import { ChevronDown } from 'lucide-react'
 
 interface Props {

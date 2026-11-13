@@ -8,9 +8,6 @@ interface Props {
     onChange?: (sort: SortType) => void
 }
 
-interface Props {
-    onChange?: (sort: SortType) => void
-}
 
 export default function SortHistoryButton({ onChange }: Props) {
     const [sort, setSort] = useState<SortType>("newest")
@@ -38,9 +35,9 @@ export default function SortHistoryButton({ onChange }: Props) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="flex flex-col bg-primary/10 text-white gap-1" align="end">
-                {dropDownItems.map(({ value, label }, i) => (
+                {dropDownItems.map(({ value, label: itemLabel }, i) => (
                     <DropdownMenuItem key={i} className="bg-primary focus:bg-primary/50" onSelect={() => handleSort(value as SortType)}>
-                        {label}
+                        {itemLabel}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>

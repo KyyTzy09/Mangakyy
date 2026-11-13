@@ -1,8 +1,10 @@
 import { defaultImage } from '@/shared/dummy/image'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
-import { saveNewComicHistory, type NewChapterHistory, type NewComicHistory } from '@/shared/utils/history'
+import { saveNewComicHistory   } from '@/shared/utils/history'
+import type {NewChapterHistory, NewComicHistory} from '@/shared/utils/history';
 import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'motion/react'
+
 interface ChapterHistoryCardProps {
     history: NewComicHistory
     chapter: NewChapterHistory

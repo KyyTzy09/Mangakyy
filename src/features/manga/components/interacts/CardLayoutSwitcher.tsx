@@ -1,5 +1,4 @@
 import { LayoutGrid, List } from "lucide-react"
-import { useState } from "react"
 
 type ViewMode = "grid" | "list"
 

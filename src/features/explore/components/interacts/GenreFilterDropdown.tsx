@@ -11,6 +11,7 @@ import SelectStatussection from '../section/SelectStatusSection'
 import SelectTypesection from '../section/SelectTypeSection'
 import SelectFormatSection from '../section/SelectFormatSection'
 import type { SelectedGenreMode } from '../../hooks/useGenreMode'
+
 interface Props {
     genres: TaxonomyItem[]
     isOpen: boolean

@@ -18,24 +18,40 @@ export default function PopularPage() {
   )
 
   return (
-    <div className="font-primary flex flex-col w-full min-h-screen px-6 py-24 gap-5 pb-16 md:pb-0">
-      <header className="flex flex-col md:flex-row items-center justify-between w-full gap-2">
+    <div className="relative font-primary flex flex-col w-full min-h-screen px-6 py-24 gap-5 pb-16 md:pb-0 overflow-x-hidden">
+      {/* Fixed Ambient Watermark Logo */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden"
+      >
+        <img
+          src="/mangakyy-logo.png"
+          alt=""
+          className="w-[320px] sm:w-[480px] md:w-[600px] max-w-[85vw] object-contain opacity-[0.045] select-none pointer-events-none transform-gpu will-change-transform"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      <header className="relative z-10 flex flex-col md:flex-row items-center justify-between w-full gap-2">
         <Label className="text-white font-semibold text-2xl">
           <Flame className="w-6 h-6 text-primary" />
           Komik Populer
         </Label>
       </header>
-      <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 w-full gap-3">
+      <section className="relative z-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 w-full gap-3">
         {!isPending &&
           data?.map((item, i) => (
             <PopularCard key={i} index={i} data={item} />
           ))}
       </section>
-      <PaginationSection
-        totalPage={popular?.meta?.total_page || 1}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+      <div className="relative z-10">
+        <PaginationSection
+          totalPage={popular?.meta?.total_page || 1}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      </div>
     </div>
   )
 }

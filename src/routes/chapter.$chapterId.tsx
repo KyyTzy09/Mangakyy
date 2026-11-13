@@ -16,21 +16,24 @@ export const Route = createFileRoute('/chapter/$chapterId')({
     const detail = await getChapterDetail({
       data: { chapterId: params.chapterId },
     })
-    const manga = await getMangaDetail({
-      data: { mangaId: detail?.data.manga_id! },
-    })
+    const mangaId = detail?.data?.manga_id
+    const manga = mangaId
+      ? await getMangaDetail({
+          data: { mangaId },
+        })
+      : undefined
     return {
       detail,
       manga,
       meta: {
-        title: `Baca ${manga?.data.title || 'Manga'} Chapter ${detail?.data?.chapter_number || ''} Bahasa Indonesia - ${SITE_NAME}`,
-        mangaTitle: manga?.data.title || 'Manga',
+        title: `Baca ${manga?.data?.title || 'Manga'} Chapter ${detail?.data?.chapter_number || ''} Bahasa Indonesia - ${SITE_NAME}`,
+        mangaTitle: manga?.data?.title || 'Manga',
         chapterNumber: detail?.data?.chapter_number || 0,
-        description: `Baca ${manga?.data.title} chapter ${detail?.data?.chapter_number} subtitle bahasa Indonesia kualitas HD dan gratis tanpa iklan di MangaKyy.`,
-        image: manga?.data.cover_image_url || DEFAULT_OG_IMAGE,
-        mangaId: detail?.data.manga_id,
-        chapterId: detail?.data.chapter_id,
-        releaseDate: detail?.data.release_date,
+        description: `Baca ${manga?.data?.title || 'komik'} chapter ${detail?.data?.chapter_number || ''} subtitle bahasa Indonesia kualitas HD dan gratis tanpa iklan di MangaKyy.`,
+        image: manga?.data?.cover_image_url || DEFAULT_OG_IMAGE,
+        mangaId: detail?.data?.manga_id,
+        chapterId: detail?.data?.chapter_id,
+        releaseDate: detail?.data?.release_date,
       },
     }
   },

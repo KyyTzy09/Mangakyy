@@ -1,5 +1,5 @@
 import { defaultImage } from '@/shared/dummy/image'
-import type { Chapter, ChapterList, ComicType } from '@/shared/interfaces'
+import type { ChapterList, ComicType } from '@/shared/interfaces'
 import { Button } from '@/shared/shadcn/button'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
 import { saveNewComicHistory } from '@/shared/utils/history'
