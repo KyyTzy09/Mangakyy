@@ -10,6 +10,8 @@ interface Props {
 }
 
 export default function H18Card({ data, index = 0 }: Props) {
+  const imageUrl = getH18ImageUrl(data.cover_url)
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 15 }}
@@ -26,11 +28,17 @@ export default function H18Card({ data, index = 0 }: Props) {
         {/* Cover Image Container */}
         <div className="relative w-full aspect-[3/4.2] overflow-hidden rounded-t-xl bg-slate-900">
           <img
-            src={getH18ImageUrl(data.cover_url)}
+            src={imageUrl}
             alt={data.title}
             loading="lazy"
             decoding="async"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              const target = e.currentTarget
+              if (data.cover_url && !target.src.includes(data.cover_url)) {
+                target.src = data.cover_url
+              }
+            }}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
 
@@ -68,7 +76,7 @@ export default function H18Card({ data, index = 0 }: Props) {
                 key={tag.name}
                 className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-slate-300 border border-white/5 group-hover:border-[#ff2d78]/30 transition-colors truncate max-w-[80px]"
               >
-                {tag.name}
+                #{tag.name}
               </span>
             ))}
           </div>

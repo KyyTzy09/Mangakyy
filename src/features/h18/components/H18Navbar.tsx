@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Timer, ArrowLeft, Compass } from 'lucide-react'
+import { Timer, ArrowLeft, Compass, Tag } from 'lucide-react'
 import { Activity } from 'react'
 
 export default function H18Navbar() {
@@ -42,6 +42,18 @@ export default function H18Navbar() {
               >
                 <Compass className="w-4 h-4 text-[#ff2d78]" />
                 <span>Explore</span>
+              </Link>
+
+              <Link
+                to="/h-genre"
+                className={`font-semibold transition-colors flex items-center gap-1.5 ${
+                  location.pathname.startsWith('/h-genre')
+                    ? 'text-[#ff2d78]'
+                    : 'text-white hover:text-slate-200'
+                }`}
+              >
+                <Tag className="w-4 h-4 text-[#ff2d78]" />
+                <span>Genre</span>
               </Link>
 
               {/* Redirect to Normal Mode Button */}

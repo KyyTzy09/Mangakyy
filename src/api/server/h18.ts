@@ -38,19 +38,24 @@ export function validateH18Passcode(
   }
 }
 
-export const getH18List = createServerFn({ method: 'GET' })
+export const getH18List = createServerFn()
   .validator(getH18ListSchema)
   .handler(async ({ data }) => {
     return h18Service.search(data)
   })
 
-export const getH18Detail = createServerFn({ method: 'GET' })
+export const getH18Detail = createServerFn()
   .validator(getH18DetailSchema)
   .handler(async ({ data }) => {
     return h18Service.getDetail(data.id)
   })
 
-export const verifyH18Passcode = createServerFn({ method: 'POST' })
+export const getH18GenreList = createServerFn()
+  .handler(async () => {
+    return h18Service.getGenreCategories()
+  })
+
+export const verifyH18Passcode = createServerFn()
   .validator(verifyH18PasscodeSchema)
   .handler(async ({ data }) => {
     return validateH18Passcode(data.passcode)

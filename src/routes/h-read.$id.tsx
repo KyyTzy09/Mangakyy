@@ -1,39 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
-import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
-import { ArrowLeft, Home, Play, Pause } from 'lucide-react'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
+import { ArrowLeft, Home, Play, Pause, AlertCircle, RefreshCw } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
-import { getClientCookie } from '@/shared/utils/cookie'
-import { H18_COOKIE_NAME, getH18Detail } from '@/api/server/h18'
+import { getH18Detail } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h-read/$id')({
-  beforeLoad: async () => {
-    if (typeof window !== 'undefined') {
-      const token = getClientCookie(H18_COOKIE_NAME)
-      if (!token) {
-        throw redirect({
-          to: '/',
-          search: { auth_h18: true },
-        })
-      }
-    }
-  },
   loader: async ({ params: { id } }) => {
     try {
-      const detail = await getH18Detail({ data: { id } })
-      if (!detail) throw new Error('Not found')
-      return { detail }
-    } catch {
-      throw redirect({ to: '/h18' })
+      const cleanId = String(id).replace(/[^0-9]/g, '')
+      const detail = await getH18Detail({ data: { id: cleanId || id } })
+      return { detail, id: cleanId || id }
+    } catch (err) {
+      console.error('[H18Read] Error loading reader:', err)
+      return { detail: null, id }
     }
   },
   component: H18ReaderPage,
 })
 
 function H18ReaderPage() {
-  const { detail } = Route.useLoaderData()
+  const { detail, id } = Route.useLoaderData()
   const { isAuthenticated } = useH18Auth()
   const navigate = useNavigate()
 
@@ -78,18 +67,58 @@ function H18ReaderPage() {
     return <H18LockedGate onSuccess={() => window.location.reload()} />
   }
 
-  const toggleAutoScroll = () => {
+  if (!detail) {
+    return (
+      <main className="relative flex flex-col items-center justify-center min-h-screen bg-[#08050a] text-slate-100 p-4">
+        <div className="flex flex-col items-center text-center max-w-md p-8 rounded-2xl bg-[#0f0913] border border-white/10 shadow-2xl gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-[#ff2d78]/15 border border-[#ff2d78] text-[#ff2d78] flex items-center justify-center">
+            <AlertCircle className="w-7 h-7" />
+          </div>
+          <h2 className="text-xl font-bold text-white">Komik Tidak Ditemukan</h2>
+          <p className="text-xs sm:text-sm text-slate-400">
+            Halaman komik #{id} tidak dapat dimuat. Silakan coba muat ulang.
+          </p>
+          <div className="flex items-center gap-3 mt-2 w-full">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="flex-1 py-2.5 rounded-xl bg-[#ff2d78] hover:bg-[#e02068] text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Coba Lagi</span>
+            </button>
+            <Link
+              to="/h18"
+              className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs font-bold transition-colors text-center"
+            >
+              Ke Katalog
+            </Link>
+          </div>
+        </div>
+      </main>
+    )
+  }
+
+  const toggleBars = () => {
+    setIsBarsVisible((prev) => !prev)
+  }
+
+  const toggleAutoScroll = (e: React.MouseEvent) => {
+    e.stopPropagation()
     setIsAutoScrolling((prev) => !prev)
   }
 
-  const handleBack = () => {
-    navigate({ to: '/h-detail/$id', params: { id: String(detail.id) } })
+  const handleBackToDetail = () => {
+    navigate({
+      to: '/h-detail/$id',
+      params: { id: String(detail.id) },
+    })
   }
 
   return (
     <main
-      className="relative flex flex-col items-center justify-start min-h-screen bg-[#060408] text-slate-100 overflow-x-hidden select-none cursor-pointer"
-      onClick={() => setIsBarsVisible((prev) => !prev)}
+      onClick={toggleBars}
+      className="relative flex flex-col items-center justify-start min-h-screen bg-[#050307] text-slate-100 select-none overflow-x-hidden"
     >
       {/* 1. Floating Top Bar in Solid Pink Style */}
       <AnimatePresence>
@@ -100,43 +129,39 @@ function H18ReaderPage() {
             exit={{ y: -80, opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             onClick={(e) => e.stopPropagation()}
-            className="fixed top-0 left-0 right-0 h-16 bg-[#0f0913]/90 border-b border-[#ff2d78]/40 backdrop-blur-xl z-50 px-4 sm:px-6 flex items-center justify-between gap-4 shadow-xl shadow-black/60"
+            className="fixed top-0 inset-x-0 h-16 bg-[#0f0913]/90 border-b border-[#ff2d78]/40 backdrop-blur-xl z-50 px-4 sm:px-6 flex items-center justify-between shadow-2xl"
           >
-            {/* Left: Kembali ke Detail Komik */}
-            <button
-              type="button"
-              onClick={handleBack}
-              aria-label="Kembali ke detail komik"
-              className="hover:bg-[#ff2d78] hover:text-white border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0 min-w-[40px] min-h-[40px]"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline text-xs font-semibold">Detail</span>
-            </button>
-
-            {/* Center: Judul Komik */}
-            <div
-              className="flex-1 text-center truncate font-bold text-xs sm:text-sm text-white px-2 cursor-pointer hover:text-[#ff2d78] transition-colors"
-              title={detail.title}
-              onClick={() => navigate({ to: '/h-detail/$id', params: { id: String(detail.id) } })}
-            >
-              {detail.title}
+            {/* Left Back button */}
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                type="button"
+                onClick={handleBackToDetail}
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#ff2d78] text-white flex items-center justify-center transition-all cursor-pointer shrink-0"
+                title="Kembali ke Detail Komik"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <h1 className="text-xs sm:text-sm font-bold text-white truncate max-w-xs sm:max-w-md md:max-w-xl">
+                {detail.title}
+              </h1>
             </div>
 
-            {/* Right: Home Katalog H18 */}
-            <Link
-              to="/h18"
-              aria-label="Kembali ke Katalog H18"
-              className="hover:bg-[#ff2d78] hover:text-white border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0 min-w-[40px] min-h-[40px]"
-            >
-              <Home className="w-4 h-4" />
-              <span className="hidden sm:inline text-xs font-semibold">Katalog</span>
-            </Link>
+            {/* Right Home Link */}
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                to="/h18"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#ff2d78] text-white flex items-center justify-center transition-all"
+                title="Katalog H18"
+              >
+                <Home className="w-4 h-4" />
+              </Link>
+            </div>
           </motion.header>
         )}
       </AnimatePresence>
 
-      {/* 2. Comic Images Vertical Stack */}
-      <section className="flex flex-col w-full max-w-3xl overflow-hidden py-1">
+      {/* 2. Comic Images Vertical Stack with Full Width */}
+      <section className="w-full max-w-4xl flex flex-col items-center pt-16 pb-24 gap-1">
         {detail.images.map((img) => (
           <div key={img.page} className="relative w-full bg-slate-950 min-h-[400px]">
             <img
@@ -145,6 +170,12 @@ function H18ReaderPage() {
               loading="lazy"
               decoding="async"
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.currentTarget
+                if (img.url && !target.src.includes(img.url)) {
+                  target.src = img.url
+                }
+              }}
               className="flex w-full h-auto select-none pointer-events-none"
             />
           </div>

@@ -1,37 +1,26 @@
-import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
-import { ArrowLeft, Home, BookOpen, Heart, Calendar, BookText } from 'lucide-react'
-import { getClientCookie } from '@/shared/utils/cookie'
-import { H18_COOKIE_NAME, getH18Detail } from '@/api/server/h18'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
+import { ArrowLeft, Home, BookOpen, Heart, Calendar, BookText, AlertCircle, RefreshCw } from 'lucide-react'
+import { getH18Detail } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h-detail/$id')({
-  beforeLoad: async () => {
-    if (typeof window !== 'undefined') {
-      const token = getClientCookie(H18_COOKIE_NAME)
-      if (!token) {
-        throw redirect({
-          to: '/',
-          search: { auth_h18: true },
-        })
-      }
-    }
-  },
   loader: async ({ params: { id } }) => {
     try {
-      const detail = await getH18Detail({ data: { id } })
-      if (!detail) throw new Error('Not found')
-      return { detail }
-    } catch {
-      throw redirect({ to: '/h18' })
+      const cleanId = String(id).replace(/[^0-9]/g, '')
+      const detail = await getH18Detail({ data: { id: cleanId || id } })
+      return { detail, id: cleanId || id }
+    } catch (err) {
+      console.error('[H18Detail] Error loading detail:', err)
+      return { detail: null, id }
     }
   },
   component: H18DetailPage,
 })
 
 function H18DetailPage() {
-  const { detail } = Route.useLoaderData()
+  const { detail, id } = Route.useLoaderData()
   const { isAuthenticated } = useH18Auth()
   const navigate = useNavigate()
 
@@ -40,6 +29,7 @@ function H18DetailPage() {
   }
 
   const handleStartRead = () => {
+    if (!detail) return
     navigate({
       to: '/h-read/$id',
       params: { id: String(detail.id) },
@@ -52,6 +42,38 @@ function H18DetailPage() {
     } else {
       navigate({ to: '/h18' })
     }
+  }
+
+  if (!detail) {
+    return (
+      <main className="relative flex flex-col items-center justify-center min-h-screen bg-[#08050a] text-slate-100 p-4">
+        <div className="flex flex-col items-center text-center max-w-md p-8 rounded-2xl bg-[#0f0913] border border-white/10 shadow-2xl gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-[#ff2d78]/15 border border-[#ff2d78] text-[#ff2d78] flex items-center justify-center">
+            <AlertCircle className="w-7 h-7" />
+          </div>
+          <h2 className="text-xl font-bold text-white">Komik Tidak Ditemukan</h2>
+          <p className="text-xs sm:text-sm text-slate-400">
+            Komik #{id} tidak dapat dimuat atau server data sedang sibuk. Silakan coba muat ulang.
+          </p>
+          <div className="flex items-center gap-3 mt-2 w-full">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="flex-1 py-2.5 rounded-xl bg-[#ff2d78] hover:bg-[#e02068] text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Coba Lagi</span>
+            </button>
+            <Link
+              to="/h18"
+              className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs font-bold transition-colors text-center"
+            >
+              Ke Katalog
+            </Link>
+          </div>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -67,6 +89,12 @@ function H18DetailPage() {
             loading="eager"
             decoding="async"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              const target = e.currentTarget
+              if (detail.cover_url && !target.src.includes(detail.cover_url)) {
+                target.src = detail.cover_url
+              }
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-[#08050a]/85 to-[#08050a]" />
         </div>
@@ -104,6 +132,12 @@ function H18DetailPage() {
               loading="eager"
               decoding="async"
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.currentTarget
+                if (detail.cover_url && !target.src.includes(detail.cover_url)) {
+                  target.src = detail.cover_url
+                }
+              }}
             />
           </div>
 
@@ -148,16 +182,21 @@ function H18DetailPage() {
               )}
             </div>
 
-            {/* Tags Pills */}
+            {/* Tags Pills linked to Genre Detail */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mt-1">
-              {detail.tags.map((tag) => (
-                <span
-                  key={tag.name}
-                  className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-[#ff2d78]/20 border border-white/10 text-xs text-slate-300 font-medium transition-colors"
-                >
-                  #{tag.name}
-                </span>
-              ))}
+              {detail.tags.map((tag) => {
+                const slug = tag.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                return (
+                  <Link
+                    key={tag.name}
+                    to="/h-genre-detail/$genre"
+                    params={{ genre: slug }}
+                    className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-[#ff2d78]/25 border border-white/10 hover:border-[#ff2d78]/50 text-xs text-slate-300 hover:text-white font-medium transition-all"
+                  >
+                    #{tag.name}
+                  </Link>
+                )
+              })}
             </div>
 
             {/* Big Action Button: Baca Sekarang in Solid Pink */}
@@ -195,6 +234,13 @@ function H18DetailPage() {
                 loading="lazy"
                 decoding="async"
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget
+                  const fallback = img.thumbnail_url || img.url
+                  if (fallback && !target.src.includes(fallback)) {
+                    target.src = fallback
+                  }
+                }}
                 className="w-full h-full object-cover"
               />
               <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold text-white">

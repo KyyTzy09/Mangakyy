@@ -66,6 +66,12 @@ export default function H18Carousel({ items }: Props) {
             transition={{ duration: 0.5, ease: 'easeOut' }}
             decoding="async"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              const target = e.currentTarget
+              if (activeComic.cover_url && !target.src.includes(activeComic.cover_url)) {
+                target.src = activeComic.cover_url
+              }
+            }}
             className="absolute inset-0 w-full h-full object-cover filter blur-[4px] scale-105 transform-gpu will-change-transform"
           />
         </AnimatePresence>
@@ -144,6 +150,12 @@ export default function H18Carousel({ items }: Props) {
                   loading={isCenter ? 'eager' : 'lazy'}
                   decoding="async"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget
+                    if (comic.cover_url && !target.src.includes(comic.cover_url)) {
+                      target.src = comic.cover_url
+                    }
+                  }}
                   className="w-full h-full object-cover select-none pointer-events-none"
                 />
 

@@ -1,8 +1,7 @@
-import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { Flame, Sparkles, Compass } from 'lucide-react'
 import { z } from 'zod'
-import { getClientCookie } from '@/shared/utils/cookie'
-import { H18_COOKIE_NAME, getH18List } from '@/api/server/h18'
+import { getH18List } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 import H18Carousel from '@/features/h18/components/H18Carousel'
@@ -14,17 +13,6 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute('/h18')({
   validateSearch: (search) => searchSchema.parse(search),
-  beforeLoad: async () => {
-    if (typeof window !== 'undefined') {
-      const token = getClientCookie(H18_COOKIE_NAME)
-      if (!token) {
-        throw redirect({
-          to: '/',
-          search: { auth_h18: true },
-        })
-      }
-    }
-  },
   loaderDeps: ({ search: { sort } }) => ({ sort }),
   loader: async ({ deps: { sort } }) => {
     try {

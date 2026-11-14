@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as HExploreRouteImport } from './routes/h-explore'
+import { Route as HGenreRouteImport } from './routes/h-genre'
 import { Route as H18RouteImport } from './routes/h18'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as HomeRouteImport } from './routes/home'
@@ -22,6 +23,7 @@ import { Route as UpdateRouteImport } from './routes/update'
 import { Route as ChapterChapterIdRouteImport } from './routes/chapter.$chapterId'
 import { Route as DetailMangaIdRouteImport } from './routes/detail.$mangaId'
 import { Route as HDetailIdRouteImport } from './routes/h-detail.$id'
+import { Route as HGenreDetailGenreRouteImport } from './routes/h-genre-detail.$genre'
 import { Route as HReadIdRouteImport } from './routes/h-read.$id'
 import { Route as HistoryDetailMangaIdRouteImport } from './routes/history-detail.$mangaId'
 import { Route as ApiH18ImageRouteImport } from './routes/api.h18.image'
@@ -40,6 +42,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const HExploreRoute = HExploreRouteImport.update({
   id: '/h-explore',
   path: '/h-explore',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HGenreRoute = HGenreRouteImport.update({
+  id: '/h-genre',
+  path: '/h-genre',
   getParentRoute: () => rootRouteImport,
 } as any)
 const H18Route = H18RouteImport.update({
@@ -92,6 +99,11 @@ const HDetailIdRoute = HDetailIdRouteImport.update({
   path: '/h-detail/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HGenreDetailGenreRoute = HGenreDetailGenreRouteImport.update({
+  id: '/h-genre-detail/$genre',
+  path: '/h-genre-detail/$genre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HReadIdRoute = HReadIdRouteImport.update({
   id: '/h-read/$id',
   path: '/h-read/$id',
@@ -117,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/h-explore': typeof HExploreRoute
+  '/h-genre': typeof HGenreRoute
   '/h18': typeof H18Route
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
@@ -127,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/detail/$mangaId': typeof DetailMangaIdRoute
   '/h-detail/$id': typeof HDetailIdRoute
+  '/h-genre-detail/$genre': typeof HGenreDetailGenreRoute
   '/h-read/$id': typeof HReadIdRoute
   '/history-detail/$mangaId': typeof HistoryDetailMangaIdRoute
   '/api/h18/image': typeof ApiH18ImageRoute
@@ -136,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/h-explore': typeof HExploreRoute
+  '/h-genre': typeof HGenreRoute
   '/h18': typeof H18Route
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
@@ -146,6 +161,7 @@ export interface FileRoutesByTo {
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/detail/$mangaId': typeof DetailMangaIdRoute
   '/h-detail/$id': typeof HDetailIdRoute
+  '/h-genre-detail/$genre': typeof HGenreDetailGenreRoute
   '/h-read/$id': typeof HReadIdRoute
   '/history-detail/$mangaId': typeof HistoryDetailMangaIdRoute
   '/api/h18/image': typeof ApiH18ImageRoute
@@ -156,6 +172,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/h-explore': typeof HExploreRoute
+  '/h-genre': typeof HGenreRoute
   '/h18': typeof H18Route
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
@@ -166,6 +183,7 @@ export interface FileRoutesById {
   '/chapter/$chapterId': typeof ChapterChapterIdRoute
   '/detail/$mangaId': typeof DetailMangaIdRoute
   '/h-detail/$id': typeof HDetailIdRoute
+  '/h-genre-detail/$genre': typeof HGenreDetailGenreRoute
   '/h-read/$id': typeof HReadIdRoute
   '/history-detail/$mangaId': typeof HistoryDetailMangaIdRoute
   '/api/h18/image': typeof ApiH18ImageRoute
@@ -177,6 +195,7 @@ export interface FileRouteTypes {
     | '/'
     | '/explore'
     | '/h-explore'
+    | '/h-genre'
     | '/h18'
     | '/history'
     | '/home'
@@ -187,6 +206,7 @@ export interface FileRouteTypes {
     | '/chapter/$chapterId'
     | '/detail/$mangaId'
     | '/h-detail/$id'
+    | '/h-genre-detail/$genre'
     | '/h-read/$id'
     | '/history-detail/$mangaId'
     | '/api/h18/image'
@@ -196,6 +216,7 @@ export interface FileRouteTypes {
     | '/'
     | '/explore'
     | '/h-explore'
+    | '/h-genre'
     | '/h18'
     | '/history'
     | '/home'
@@ -206,6 +227,7 @@ export interface FileRouteTypes {
     | '/chapter/$chapterId'
     | '/detail/$mangaId'
     | '/h-detail/$id'
+    | '/h-genre-detail/$genre'
     | '/h-read/$id'
     | '/history-detail/$mangaId'
     | '/api/h18/image'
@@ -215,6 +237,7 @@ export interface FileRouteTypes {
     | '/'
     | '/explore'
     | '/h-explore'
+    | '/h-genre'
     | '/h18'
     | '/history'
     | '/home'
@@ -225,6 +248,7 @@ export interface FileRouteTypes {
     | '/chapter/$chapterId'
     | '/detail/$mangaId'
     | '/h-detail/$id'
+    | '/h-genre-detail/$genre'
     | '/h-read/$id'
     | '/history-detail/$mangaId'
     | '/api/h18/image'
@@ -235,6 +259,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExploreRoute: typeof ExploreRoute
   HExploreRoute: typeof HExploreRoute
+  HGenreRoute: typeof HGenreRoute
   H18Route: typeof H18Route
   HistoryRoute: typeof HistoryRoute
   HomeRoute: typeof HomeRoute
@@ -245,6 +270,7 @@ export interface RootRouteChildren {
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   DetailMangaIdRoute: typeof DetailMangaIdRoute
   HDetailIdRoute: typeof HDetailIdRoute
+  HGenreDetailGenreRoute: typeof HGenreDetailGenreRoute
   HReadIdRoute: typeof HReadIdRoute
   HistoryDetailMangaIdRoute: typeof HistoryDetailMangaIdRoute
   ApiH18ImageRoute: typeof ApiH18ImageRoute
@@ -272,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/h-explore'
       fullPath: '/h-explore'
       preLoaderRoute: typeof HExploreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h-genre': {
+      id: '/h-genre'
+      path: '/h-genre'
+      fullPath: '/h-genre'
+      preLoaderRoute: typeof HGenreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/h18': {
@@ -344,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HDetailIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/h-genre-detail/$genre': {
+      id: '/h-genre-detail/$genre'
+      path: '/h-genre-detail/$genre'
+      fullPath: '/h-genre-detail/$genre'
+      preLoaderRoute: typeof HGenreDetailGenreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/h-read/$id': {
       id: '/h-read/$id'
       path: '/h-read/$id'
@@ -379,6 +419,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExploreRoute: ExploreRoute,
   HExploreRoute: HExploreRoute,
+  HGenreRoute: HGenreRoute,
   H18Route: H18Route,
   HistoryRoute: HistoryRoute,
   HomeRoute: HomeRoute,
@@ -389,6 +430,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChapterChapterIdRoute: ChapterChapterIdRoute,
   DetailMangaIdRoute: DetailMangaIdRoute,
   HDetailIdRoute: HDetailIdRoute,
+  HGenreDetailGenreRoute: HGenreDetailGenreRoute,
   HReadIdRoute: HReadIdRoute,
   HistoryDetailMangaIdRoute: HistoryDetailMangaIdRoute,
   ApiH18ImageRoute: ApiH18ImageRoute,

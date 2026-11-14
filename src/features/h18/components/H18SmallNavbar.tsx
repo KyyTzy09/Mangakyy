@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { BookOpen, Compass, Home, Timer } from 'lucide-react'
+import { BookOpen, Compass, Tag, Home, Timer } from 'lucide-react'
 import { Activity } from 'react'
 
 export default function H18SmallNavbar() {
@@ -12,7 +12,7 @@ export default function H18SmallNavbar() {
   return (
     <Activity mode={isHidden ? 'hidden' : 'visible'}>
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-        <div className="flex items-center justify-around h-16 px-4 bg-black/90 backdrop-blur-lg border-t border-[#ff2d78]/30">
+        <div className="flex items-center justify-around h-16 px-2 bg-black/90 backdrop-blur-lg border-t border-[#ff2d78]/30">
           <Link
             to="/h18"
             className={`flex flex-col items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
@@ -38,6 +38,20 @@ export default function H18SmallNavbar() {
             <Compass size={20} />
             <span className={location.pathname === '/h-explore' ? 'sr-only' : 'text-[10px]'}>
               Explore
+            </span>
+          </Link>
+
+          <Link
+            to="/h-genre"
+            className={`flex flex-col items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
+              location.pathname.startsWith('/h-genre')
+                ? 'bg-[#ff2d78] text-white -translate-y-3 shadow-lg shadow-[#ff2d78]/40'
+                : 'text-gray-300'
+            }`}
+          >
+            <Tag size={20} />
+            <span className={location.pathname.startsWith('/h-genre') ? 'sr-only' : 'text-[10px]'}>
+              Genre
             </span>
           </Link>
 
