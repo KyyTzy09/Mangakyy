@@ -47,7 +47,7 @@ export default function Navbar() {
                         </div>
                     </section>
                     <div className='w-1/2 flex items-center justify-end gap-4'>
-                        <Link to="/history" aria-label="Riwayat Bacaan" className='flex items-center justify-center gap-1.5 text-sm font-bold px-3.5 bg-primary hover:bg-primary/80 border border-primary/50 text-white rounded-lg py-2 transition-colors shadow-sm'>
+                        <Link to="/history" className='flex items-center justify-center gap-1.5 text-sm font-bold px-3.5 bg-primary hover:bg-primary/80 border border-primary/50 text-white rounded-lg py-2 transition-colors shadow-sm'>
                             <Timer className='w-4 h-4 mr-1' />
                             History
                         </Link>

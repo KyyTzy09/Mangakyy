@@ -137,7 +137,7 @@ export default function CarouselSection({ items, recommendations }: Props) {
             return (
               <motion.div
                 key={comic.manga_id}
-                layout
+                layout="position"
                 initial={false}
                 animate={{
                   scale: isCenter ? 1.08 : isNear ? 0.95 : 0.88,
