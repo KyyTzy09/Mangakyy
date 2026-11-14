@@ -1,7 +1,7 @@
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { Home, Search, Star, Timer, Flame } from 'lucide-react'
 import { Activity } from 'react'
-import { openH18Modal } from '@/features/h18/hooks/useH18Auth'
+import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 
 const navbarItems = [
   {
@@ -28,6 +28,16 @@ const navbarItems = [
 
 export default function SmallNavbar() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { isAuthenticated, openModal } = useH18Auth()
+
+  const handleH18Click = () => {
+    if (isAuthenticated) {
+      navigate({ to: '/h18' })
+    } else {
+      openModal()
+    }
+  }
 
   const isHidden =
     location.pathname.startsWith('/detail') ||
@@ -64,7 +74,7 @@ export default function SmallNavbar() {
           {/* H18 Trigger Button */}
           <button
             type="button"
-            onClick={() => openH18Modal()}
+            onClick={handleH18Click}
             aria-label="Mode H18"
             className="text-[#ff2d78] hover:text-white flex flex-col items-center justify-center w-12 h-12 rounded-full transition-all duration-300 cursor-pointer"
           >

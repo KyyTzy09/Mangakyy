@@ -1,10 +1,20 @@
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { Timer, Flame } from 'lucide-react'
 import { Activity } from 'react'
-import { openH18Modal } from '@/features/h18/hooks/useH18Auth'
+import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 
 export default function Navbar() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { isAuthenticated, openModal } = useH18Auth()
+
+  const handleH18Click = () => {
+    if (isAuthenticated) {
+      navigate({ to: '/h18' })
+    } else {
+      openModal()
+    }
+  }
 
   const menus = [
     { title: 'Home', link: '/' },
@@ -45,7 +55,7 @@ export default function Navbar() {
 
               <button
                 type="button"
-                onClick={() => openH18Modal()}
+                onClick={handleH18Click}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold text-[#ff2d78] hover:bg-[#ff2d78]/15 border border-[#ff2d78]/40 transition-all cursor-pointer"
                 aria-label="Mode H18 Dewasa"
               >
