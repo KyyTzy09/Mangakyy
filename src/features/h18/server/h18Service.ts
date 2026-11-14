@@ -5,7 +5,6 @@ import type { H18ComicDetail, H18ComicItem, H18SearchResponse, H18Tag } from '..
 /**
  * Normalisasi format raw Book dari nhentai-api / API menjadi H18ComicItem
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function transformBookToComicItem(book: any): H18ComicItem {
   const mediaId = book.media || book.media_id || String(book.id)
   const coverExt = book.cover?.type?.extension || book.cover?.type || 'jpg'
@@ -17,7 +16,6 @@ export function transformBookToComicItem(book: any): H18ComicItem {
       ? book.tags
       : []
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tags: H18Tag[] = rawTags.map((t: any) => ({
     id: t.id || t.name,
     name: t.name || '',
@@ -48,13 +46,11 @@ export function transformBookToComicItem(book: any): H18ComicItem {
 /**
  * Normalisasi detail book lengkap beserta daftar gambar halaman
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function transformBookToComicDetail(book: any): H18ComicDetail {
   const baseItem = transformBookToComicItem(book)
   const mediaId = baseItem.media_id || String(book.id)
 
   const rawPages = Array.isArray(book.pages) ? book.pages : []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const images = rawPages.map((page: any, index: number) => {
     const pageNum = index + 1
     const ext = page.type?.extension || page.type || (page.t === 'p' ? 'png' : 'jpg')

@@ -10,6 +10,8 @@ Allow: /
 Disallow: /history
 Disallow: /history-detail/
 Disallow: /api/
+Disallow: /h18/
+Disallow: /h18
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `
