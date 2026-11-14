@@ -63,7 +63,11 @@ export default function MascotProgressRing({
   return (
     <div
       className={`relative flex items-center justify-center select-none ${config.container} ${className}`}
+      role={isIndeterminate ? 'status' : 'progressbar'}
       aria-label={`${type} mascot progress`}
+      aria-valuenow={!isIndeterminate ? progress : undefined}
+      aria-valuemin={!isIndeterminate ? 0 : undefined}
+      aria-valuemax={!isIndeterminate ? 100 : undefined}
     >
       {/* Ambient Pulsing Glow behind Mascot */}
       {showPulse && (

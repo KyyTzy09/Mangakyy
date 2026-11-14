@@ -48,15 +48,19 @@ export default function Footer() {
               </Link>
               . All Rights Reserved.
             </span>
-            <div className="flex mt-4 gap-3 sm:justify-center sm:mt-0">
+            <div className="flex mt-4 gap-2 sm:justify-center sm:mt-0">
               {linkItems.map((item) => (
-                <Link
+                <a
                   key={item.label}
-                  to={item.href}
-                  className="text-white hover:text-primary text-lg"
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Kunjungi MangaKyy di ${item.label}`}
+                  className="w-11 h-11 flex items-center justify-center rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all text-xl"
                 >
                   {item.icon}
-                </Link>
+                  <span className="sr-only">{item.label}</span>
+                </a>
               ))}
             </div>
           </div>

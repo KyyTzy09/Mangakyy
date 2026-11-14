@@ -338,18 +338,22 @@ export default function CarouselSection({ items, recommendations }: Props) {
       </div>
 
       {/* 4. Dots Indicators */}
-      <div className="relative z-10 flex items-center justify-center gap-1.5 mt-2">
+      <div className="relative z-10 flex items-center justify-center gap-1 mt-2">
         {list.map((_, i) => (
           <button
             key={i}
             type="button"
             onClick={() => handleSelect(i)}
             aria-label={`Pilih komik nomor ${i + 1}`}
-            className={`
-              h-1.5 rounded-full transition-all duration-300 cursor-pointer
-              ${i === selectedIndex ? 'w-6 bg-primary' : 'w-1.5 bg-white/20 hover:bg-white/40'}
-            `}
-          />
+            className="p-2.5 flex items-center justify-center cursor-pointer min-w-[32px] min-h-[32px]"
+          >
+            <span
+              className={`
+                h-1.5 rounded-full transition-all duration-300 block
+                ${i === selectedIndex ? 'w-6 bg-primary' : 'w-1.5 bg-white/25 hover:bg-white/50'}
+              `}
+            />
+          </button>
         ))}
       </div>
     </section>

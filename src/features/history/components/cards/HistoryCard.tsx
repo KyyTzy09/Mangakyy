@@ -26,7 +26,9 @@ export default function HistoryCard({ h, index }: HistoryCardProps) {
       <div className="relative w-full h-60 sm:h-64 md:h-70 overflow-hidden">
         <img
           src={h.comic_cover_url}
-          alt="no-image"
+          alt={h.comic_title || 'Sampul komik'}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute top-0 left-0 text-xs flex flex-col items-start justify-end w-full h-full bg-linear-to-b from-transparent via-black/60 to-black p-2 gap-2 z-10">

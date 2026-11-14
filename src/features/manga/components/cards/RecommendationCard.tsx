@@ -22,7 +22,13 @@ export default function RecommendationCard({ data, index }: Props) {
                 key={data.manga_id}
                 className='group flex flex-col w-full h-auto font-primary text-white bg-transparent hover:bg-white/[0.03] transition-colors gap-2.5 p-1.5 rounded-xl'>
                 <div className='relative w-full h-48 sm:52 md:h-60 lg:h-65 overflow-hidden rounded-md'>
-                    <img src={data.cover_image_url} alt="No-image" className='w-full h-full bg-primary object-cover group-hover:scale-105 group-hover:-translate-y-3 transition duration-700' />
+                    <img
+                        src={data.cover_image_url}
+                        alt={data.title || 'Sampul komik'}
+                        loading="lazy"
+                        decoding="async"
+                        className='w-full h-full bg-primary object-cover group-hover:scale-105 group-hover:-translate-y-3 transition duration-700'
+                    />
                     <div className='absolute flex flex-col items-center justify-between top-0 right-0 w-full h-full bg-linear-to-b from-transparent to-black p-1'>
                         <div className='flex w-full items-center justify-between'>
                             <Label className='flex items-center justify-center text-lg px-1 rounded-full'>

@@ -133,7 +133,8 @@ export default function WelcomeScreen() {
             <button
               type="button"
               onClick={handleDismiss}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-slate-400 hover:text-white transition-all cursor-pointer backdrop-blur-md"
+              aria-label="Lewati sambutan selamat datang"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-slate-400 hover:text-white transition-all cursor-pointer backdrop-blur-md min-h-[36px]"
             >
               <span>Lewati</span>
               <X className="w-3.5 h-3.5" />
@@ -163,9 +164,9 @@ export default function WelcomeScreen() {
                 <span>WELCOME TO MANGAKYY</span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-black font-heading text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black font-heading text-white tracking-tight">
                 Selamat Datang di <span className="text-primary">MangaKyy</span>
-              </h1>
+              </h2>
 
               <p className="text-slate-400 text-xs sm:text-sm max-w-sm mt-0.5 leading-relaxed">
                 Tempat terbaik membaca manga, manhwa, dan manhua favoritmu dengan pengalaman paling lancar.

@@ -36,6 +36,7 @@ export default function SmallNavbar() {
                         <Link
                             key={i}
                             to={to}
+                            aria-label={label}
                             className={`
                                 ${location.pathname === to
                                     ? "bg-primary text-white -translate-y-5 shadow-lg shadow-primary/40"
@@ -47,7 +48,7 @@ export default function SmallNavbar() {
                                 `}
                         >
                             {icon}
-                            <span className={`${location.pathname === to ? "hidden" : "text-[11px]"}`}>
+                            <span className={location.pathname === to ? "sr-only" : "text-[11px]"}>
                                 {label}
                             </span>
                         </Link>

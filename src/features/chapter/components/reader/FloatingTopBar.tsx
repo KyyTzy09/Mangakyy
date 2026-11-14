@@ -33,8 +33,9 @@ export default function FloatingTopBar({
           {/* Left: Kembali ke Detail Manga (Icon only di layar kecil) */}
           <Button
             onClick={onBack}
-            className="hover:bg-primary/20 hover:text-primary border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0"
+            className="hover:bg-primary/20 hover:text-primary border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0 min-w-[40px] min-h-[40px]"
             title="Kembali ke Detail Manga"
+            aria-label="Kembali ke Detail Manga"
           >
             <ArrowLeft className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
             <span className="hidden sm:inline text-xs sm:text-sm font-medium">
@@ -54,8 +55,9 @@ export default function FloatingTopBar({
           {/* Right: Tombol Kembali ke Beranda / Home (route '/') */}
           <Button
             onClick={() => navigate({ to: '/' })}
-            className="hover:bg-primary/20 hover:text-primary border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0"
+            className="hover:bg-primary/20 hover:text-primary border border-white/10 bg-white/5 cursor-pointer flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all shrink-0 min-w-[40px] min-h-[40px]"
             title="Kembali ke Beranda"
+            aria-label="Kembali ke Beranda"
           >
             <Home className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
             <span className="hidden sm:inline text-xs sm:text-sm font-medium">

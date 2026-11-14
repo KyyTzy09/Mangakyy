@@ -27,7 +27,9 @@ export default function MangaUpdateCard({ data, index }: Props) {
       <div className="relative w-full h-60 sm:h-64 md:h-60 overflow-hidden">
         <img
           src={data.cover_image_url}
-          alt="no-image"
+          alt={data.title || 'Sampul komik'}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute top-0 left-0 text-xs flex flex-col items-start justify-end w-full h-full bg-linear-to-b from-transparent via-black/60 to-black p-2 gap-2 z-10">

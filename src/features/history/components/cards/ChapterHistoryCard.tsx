@@ -28,7 +28,9 @@ export default function ChapterHistoryCard({ history, chapter, index }: ChapterH
             <div className="flex gap-4 items-center">
                 <img
                     src={chapter.thumbnail_image_url || defaultImage}
-                    alt={"No-image"}
+                    alt={`Thumbnail Chapter ${chapter?.chapter_number || ''}`}
+                    loading="lazy"
+                    decoding="async"
                     className="flex items-center justify-center w-auto h-14 rounded-lg object-cover bg-gray-600"
                 />
                 <div>

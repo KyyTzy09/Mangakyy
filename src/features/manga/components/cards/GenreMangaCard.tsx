@@ -29,7 +29,9 @@ export default function GenreMangaCard({ data, index }: Props) {
                 <div className="w-full h-52 sm:h-64 md:h-60 overflow-hidden">
                     <img
                         src={data.cover_image_url}
-                        alt="no-image"
+                        alt={data.title || 'Sampul komik'}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
 
