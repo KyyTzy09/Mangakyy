@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { Search, Flame, Sparkles } from 'lucide-react'
-import { getH18ListFn } from '@/features/h18/server/h18Service'
+import { getH18List } from '@/api/server/h18'
 import H18Carousel from '@/features/h18/components/H18Carousel'
 import H18Card from '@/features/h18/components/H18Card'
 
 export const Route = createFileRoute('/h18/')({
   loader: async () => {
     try {
-      const res = await getH18ListFn({ data: { query: '', page: 1, sort: 'recent' } })
+      const res = await getH18List({ data: { query: '', page: 1, sort: 'recent' } })
       return { data: res }
     } catch {
       return { data: { books: [], total_pages: 1, current_page: 1, per_page: 0 } }

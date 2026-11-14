@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { getClientCookie } from '@/shared/utils/cookie'
-import { H18_COOKIE_NAME } from '@/features/h18/server/auth'
+import { H18_COOKIE_NAME } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 

@@ -9,8 +9,8 @@ const FALLBACK_SVG = `<svg width="400" height="560" viewBox="0 0 400 560" fill="
   <rect x="20" y="20" width="360" height="520" rx="16" fill="#1a0f22" stroke="#ff2d78" stroke-width="1.5" stroke-dasharray="4 4"/>
   <circle cx="200" cy="250" r="48" fill="#ff2d78" fill-opacity="0.15"/>
   <path d="M200 230V270M180 250H220" stroke="#ff2d78" stroke-width="3" stroke-linecap="round"/>
-  <text x="200" y="330" fill="#ff2d78" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">MangaKyy 18+</text>
-  <text x="200" y="355" fill="#a1a1aa" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">Preview Unavailable</text>
+  <text x="200" y="330" fill="#ff2d78" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">MangaKyy H18</text>
+  <text x="200" y="355" fill="#a1a1aa" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">Pratinjau Tidak Tersedia</text>
 </svg>`
 
 function fallbackResponse(status = 200) {

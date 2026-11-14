@@ -1,8 +1,7 @@
 import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
 import { ArrowLeft, Home, BookOpen, Heart, Calendar, BookText } from 'lucide-react'
 import { getClientCookie } from '@/shared/utils/cookie'
-import { H18_COOKIE_NAME } from '@/features/h18/server/auth'
-import { getH18DetailFn } from '@/features/h18/server/h18Service'
+import { H18_COOKIE_NAME, getH18Detail } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
@@ -21,7 +20,8 @@ export const Route = createFileRoute('/h18/$id')({
   },
   loader: async ({ params: { id } }) => {
     try {
-      const detail = await getH18DetailFn({ data: { id } })
+      const detail = await getH18Detail({ data: { id } })
+      if (!detail) throw new Error('Not found')
       return { detail }
     } catch {
       throw redirect({ to: '/h18' })

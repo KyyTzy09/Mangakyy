@@ -14,6 +14,7 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  useLocation,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import type { TRPCRouter } from '@/integrations/trpc/router'
@@ -21,6 +22,10 @@ import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import Footer from '@/shared/components/layouts/footer'
 import Navbar from '@/shared/components/layouts/navbar'
 import SmallNavbar from '@/shared/components/layouts/SmallNavbar'
+import H18Navbar from '@/features/h18/components/H18Navbar'
+import H18SmallNavbar from '@/features/h18/components/H18SmallNavbar'
+import H18AuthModal from '@/features/h18/components/H18AuthModal'
+import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import WelcomeScreen from '@/shared/components/mascot/WelcomeScreen'
 import PageTransitionLoader from '@/shared/components/mascot/PageTransitionLoader'
 import NotFoundPage from '@/pages/error/NotFoundPage'
@@ -175,6 +180,23 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   shellComponent: RootDocument,
 })
 
+function RootNavbars() {
+  const location = useLocation()
+  const isH18 = location.pathname.startsWith('/h18')
+  return isH18 ? <H18Navbar /> : <Navbar />
+}
+
+function RootSmallNavbars() {
+  const location = useLocation()
+  const isH18 = location.pathname.startsWith('/h18')
+  return isH18 ? <H18SmallNavbar /> : <SmallNavbar />
+}
+
+function RootH18Modal() {
+  const { isModalOpen, closeModal } = useH18Auth()
+  return <H18AuthModal isOpen={isModalOpen} onClose={closeModal} />
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
@@ -182,7 +204,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="bg-black/95 min-h-screen flex flex-col">
-        <Navbar />
+        <RootNavbars />
         <TanStackQueryProvider>
           <div className="flex-1 flex flex-col w-full">
             {children}
@@ -203,7 +225,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           />
         </TanStackQueryProvider>
         <Footer />
-        <SmallNavbar />
+        <RootSmallNavbars />
+        <RootH18Modal />
         <Scripts />
       </body>
     </html>
