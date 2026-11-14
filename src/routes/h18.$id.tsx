@@ -4,6 +4,7 @@ import { getClientCookie } from '@/shared/utils/cookie'
 import { H18_COOKIE_NAME } from '@/features/h18/server/auth'
 import { getH18DetailFn } from '@/features/h18/server/h18Service'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
+import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h18/$id')({
@@ -60,11 +61,12 @@ function H18DetailPage() {
         {/* Background Blurred Cover */}
         <div className="absolute inset-0 z-0">
           <img
-            src={detail.cover_url}
+            src={getH18ImageUrl(detail.cover_url)}
             alt=""
             className="w-full h-full object-cover blur-md scale-110 opacity-50 select-none"
             loading="eager"
             decoding="async"
+            referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-[#08050a]/85 to-[#08050a]" />
         </div>
@@ -96,11 +98,12 @@ function H18DetailPage() {
           {/* Comic Cover Poster */}
           <div className="shrink-0 w-48 sm:w-56 md:w-64 aspect-[3/4.2] rounded-2xl overflow-hidden border-2 border-[#ff2d78] shadow-2xl shadow-[#ff2d78]/25 bg-slate-900">
             <img
-              src={detail.cover_url}
+              src={getH18ImageUrl(detail.cover_url)}
               alt={detail.title}
               className="w-full h-full object-cover"
               loading="eager"
               decoding="async"
+              referrerPolicy="no-referrer"
             />
           </div>
 
@@ -187,10 +190,11 @@ function H18DetailPage() {
               className="group relative aspect-[3/4.2] rounded-lg overflow-hidden bg-slate-900 border border-white/10 hover:border-[#ff2d78] cursor-pointer transition-all shadow-sm hover:scale-105"
             >
               <img
-                src={img.thumbnail_url || img.url}
+                src={getH18ImageUrl(img.thumbnail_url || img.url)}
                 alt={`Halaman ${img.page}`}
                 loading="lazy"
                 decoding="async"
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
               />
               <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold text-white">

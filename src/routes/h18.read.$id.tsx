@@ -6,6 +6,7 @@ import { getClientCookie } from '@/shared/utils/cookie'
 import { H18_COOKIE_NAME } from '@/features/h18/server/auth'
 import { getH18DetailFn } from '@/features/h18/server/h18Service'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
+import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h18/read/$id')({
@@ -135,10 +136,11 @@ function H18ReaderPage() {
         {detail.images.map((img) => (
           <div key={img.page} className="relative w-full bg-slate-950 min-h-[400px]">
             <img
-              src={img.url}
+              src={getH18ImageUrl(img.url)}
               alt={`Halaman ${img.page}`}
               loading="lazy"
               decoding="async"
+              referrerPolicy="no-referrer"
               className="flex w-full h-auto select-none pointer-events-none"
             />
           </div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { ChevronLeft, ChevronRight, Heart, BookOpen } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import type { H18ComicItem } from '../types'
+import { getH18ImageUrl } from '../utils/imageUrl'
 
 interface Props {
   items: H18ComicItem[]
@@ -57,13 +58,14 @@ export default function H18Carousel({ items }: Props) {
         <AnimatePresence initial={false}>
           <motion.img
             key={activeComic.id}
-            src={activeComic.cover_url}
+            src={getH18ImageUrl(activeComic.cover_url)}
             alt={activeComic.title}
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.35 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
             decoding="async"
+            referrerPolicy="no-referrer"
             className="absolute inset-0 w-full h-full object-cover filter blur-[4px] scale-105 transform-gpu will-change-transform"
           />
         </AnimatePresence>
@@ -137,10 +139,11 @@ export default function H18Carousel({ items }: Props) {
               >
                 {/* Poster Artwork */}
                 <img
-                  src={comic.cover_url}
+                  src={getH18ImageUrl(comic.cover_url)}
                   alt={comic.title}
                   loading={isCenter ? 'eager' : 'lazy'}
                   decoding="async"
+                  referrerPolicy="no-referrer"
                   className="w-full h-full object-cover select-none pointer-events-none"
                 />
 

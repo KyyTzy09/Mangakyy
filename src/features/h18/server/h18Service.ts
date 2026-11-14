@@ -1,3 +1,5 @@
+import https from 'node:https'
+import dns from 'node:dns'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import type { H18ComicDetail, H18ComicItem, H18SearchResponse, H18Tag } from '../types'
@@ -77,10 +79,10 @@ const MOCK_H18_BOOKS: H18ComicItem[] = [
     id: 489201,
     title: '[H18] Secret Rendezvous at Twilight',
     japanese_title: '黄昏の密会',
-    media_id: '2783941',
-    page_count: 24,
-    cover_url: 'https://t.nhentai.net/galleries/2783941/cover.jpg',
-    thumbnail_url: 'https://t.nhentai.net/galleries/2783941/thumb.jpg',
+    media_id: '987543',
+    page_count: 16,
+    cover_url: 'https://t.nhentai.net/galleries/987543/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987543/thumb.jpg',
     upload_date: '2026-03-01T12:00:00Z',
     favorite_count: 1420,
     tags: [
@@ -94,10 +96,10 @@ const MOCK_H18_BOOKS: H18ComicItem[] = [
     id: 489202,
     title: '[H18] Midnight Cherry Blossom Love',
     japanese_title: '真夜中の桜恋',
-    media_id: '2783942',
-    page_count: 32,
-    cover_url: 'https://t.nhentai.net/galleries/2783942/cover.jpg',
-    thumbnail_url: 'https://t.nhentai.net/galleries/2783942/thumb.jpg',
+    media_id: '987548',
+    page_count: 20,
+    cover_url: 'https://t.nhentai.net/galleries/987548/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987548/thumb.jpg',
     upload_date: '2026-03-02T15:30:00Z',
     favorite_count: 2890,
     tags: [
@@ -111,10 +113,10 @@ const MOCK_H18_BOOKS: H18ComicItem[] = [
     id: 489203,
     title: '[H18] The Maid and the Noble Prince',
     japanese_title: 'メイドと貴族の王子様',
-    media_id: '2783943',
-    page_count: 28,
-    cover_url: 'https://t.nhentai.net/galleries/2783943/cover.jpg',
-    thumbnail_url: 'https://t.nhentai.net/galleries/2783943/thumb.jpg',
+    media_id: '987552',
+    page_count: 18,
+    cover_url: 'https://t.nhentai.net/galleries/987552/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987552/thumb.jpg',
     upload_date: '2026-03-03T18:00:00Z',
     favorite_count: 3120,
     tags: [
@@ -128,10 +130,10 @@ const MOCK_H18_BOOKS: H18ComicItem[] = [
     id: 489204,
     title: '[H18] Private Lesson After School',
     japanese_title: '放課後の個人レッスン',
-    media_id: '2783944',
+    media_id: '987553',
     page_count: 22,
-    cover_url: 'https://t.nhentai.net/galleries/2783944/cover.jpg',
-    thumbnail_url: 'https://t.nhentai.net/galleries/2783944/thumb.jpg',
+    cover_url: 'https://t.nhentai.net/galleries/987553/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987553/thumb.jpg',
     upload_date: '2026-03-04T20:15:00Z',
     favorite_count: 1950,
     tags: [
@@ -144,10 +146,10 @@ const MOCK_H18_BOOKS: H18ComicItem[] = [
     id: 489205,
     title: '[H18] Summer Vacation Memories',
     japanese_title: '夏休みの思い出',
-    media_id: '2783945',
-    page_count: 36,
-    cover_url: 'https://t.nhentai.net/galleries/2783945/cover.jpg',
-    thumbnail_url: 'https://t.nhentai.net/galleries/2783945/thumb.jpg',
+    media_id: '987558',
+    page_count: 24,
+    cover_url: 'https://t.nhentai.net/galleries/987558/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987558/thumb.jpg',
     upload_date: '2026-03-05T09:40:00Z',
     favorite_count: 4500,
     tags: [
@@ -156,7 +158,64 @@ const MOCK_H18_BOOKS: H18ComicItem[] = [
       { id: 18, name: 'full color', type: 'tag' },
     ],
   },
+  {
+    id: 489206,
+    title: '[H18] Moonlight Secret Room',
+    japanese_title: '月下の密室',
+    media_id: '987559',
+    page_count: 26,
+    cover_url: 'https://t.nhentai.net/galleries/987559/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987559/thumb.jpg',
+    upload_date: '2026-03-06T11:20:00Z',
+    favorite_count: 3680,
+    tags: [
+      { id: 19, name: 'romance', type: 'tag' },
+      { id: 20, name: 'sole female', type: 'tag' },
+      { id: 21, name: 'english', type: 'language' },
+    ],
+  },
+  {
+    id: 489207,
+    title: '[H18] Sweet Blossom Rendezvous',
+    japanese_title: '甘い花咲く逢瀬',
+    media_id: '987560',
+    page_count: 28,
+    cover_url: 'https://t.nhentai.net/galleries/987560/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987560/thumb.jpg',
+    upload_date: '2026-03-07T14:10:00Z',
+    favorite_count: 5120,
+    tags: [
+      { id: 22, name: 'sweet', type: 'tag' },
+      { id: 23, name: 'full color', type: 'tag' },
+      { id: 24, name: 'vanilla', type: 'tag' },
+    ],
+  },
+  {
+    id: 489208,
+    title: '[H18] Starry Night Whisper',
+    japanese_title: '星降る夜の囁き',
+    media_id: '987569',
+    page_count: 18,
+    cover_url: 'https://t.nhentai.net/galleries/987569/cover.jpg',
+    thumbnail_url: 'https://t.nhentai.net/galleries/987569/thumb.jpg',
+    upload_date: '2026-03-08T16:45:00Z',
+    favorite_count: 2740,
+    tags: [
+      { id: 25, name: 'romance', type: 'tag' },
+      { id: 26, name: 'sole male', type: 'tag' },
+      { id: 27, name: 'english', type: 'language' },
+    ],
+  },
 ]
+
+const bypassAgent = new https.Agent({
+  lookup: (hostname, _options, callback) => {
+    if (hostname.includes('nhentai.net')) {
+      return callback(null, '104.21.19.217', 4)
+    }
+    return dns.lookup(hostname, callback)
+  },
+})
 
 export class H18Service {
   /**
@@ -170,7 +229,7 @@ export class H18Service {
     try {
       // Dynamic import nhentai-api di server
       const { API } = await import('nhentai-api')
-      const api = new API()
+      const api = new API(bypassAgent)
       const sortParam = sort === 'popular' ? 'popular-all-time' : 'recent'
       const searchRes = await api.search(query || 'language:english', page, sortParam)
 
@@ -208,7 +267,7 @@ export class H18Service {
   public async getDetail(id: number | string): Promise<H18ComicDetail> {
     try {
       const { API } = await import('nhentai-api')
-      const api = new API()
+      const api = new API(bypassAgent)
       const rawBook = await api.getBook(Number(id))
       if (rawBook) {
         return transformBookToComicDetail(rawBook)
@@ -219,7 +278,7 @@ export class H18Service {
 
     // Cari di mock list
     const found = MOCK_H18_BOOKS.find((b) => String(b.id) === String(id)) || MOCK_H18_BOOKS[0]
-    const mediaId = found.media_id || '2783941'
+    const mediaId = found.media_id || '987543'
     const pages = Array.from({ length: found.page_count || 24 }, (_, i) => ({
       page: i + 1,
       url: `https://i.nhentai.net/galleries/${mediaId}/${i + 1}.jpg`,

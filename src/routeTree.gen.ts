@@ -20,8 +20,10 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as UpdateRouteImport } from './routes/update'
 import { Route as ChapterChapterIdRouteImport } from './routes/chapter.$chapterId'
 import { Route as DetailMangaIdRouteImport } from './routes/detail.$mangaId'
+import { Route as H18IndexRouteImport } from './routes/h18.index'
 import { Route as H18IdRouteImport } from './routes/h18.$id'
 import { Route as HistoryDetailMangaIdRouteImport } from './routes/history-detail.$mangaId'
+import { Route as ApiH18ImageRouteImport } from './routes/api.h18.image'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 import { Route as H18ReadIdRouteImport } from './routes/h18.read.$id'
 
@@ -80,6 +82,11 @@ const DetailMangaIdRoute = DetailMangaIdRouteImport.update({
   path: '/detail/$mangaId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const H18IndexRoute = H18IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => H18Route,
+} as any)
 const H18IdRoute = H18IdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -88,6 +95,11 @@ const H18IdRoute = H18IdRouteImport.update({
 const HistoryDetailMangaIdRoute = HistoryDetailMangaIdRouteImport.update({
   id: '/history-detail/$mangaId',
   path: '/history-detail/$mangaId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiH18ImageRoute = ApiH18ImageRouteImport.update({
+  id: '/api/h18/image',
+  path: '/api/h18/image',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
@@ -115,13 +127,14 @@ export interface FileRoutesByFullPath {
   '/detail/$mangaId': typeof DetailMangaIdRoute
   '/h18/$id': typeof H18IdRoute
   '/history-detail/$mangaId': typeof HistoryDetailMangaIdRoute
+  '/h18/': typeof H18IndexRoute
+  '/api/h18/image': typeof ApiH18ImageRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/h18/read/$id': typeof H18ReadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
-  '/h18': typeof H18RouteWithChildren
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
   '/popular': typeof PopularRoute
@@ -132,6 +145,8 @@ export interface FileRoutesByTo {
   '/detail/$mangaId': typeof DetailMangaIdRoute
   '/h18/$id': typeof H18IdRoute
   '/history-detail/$mangaId': typeof HistoryDetailMangaIdRoute
+  '/h18': typeof H18IndexRoute
+  '/api/h18/image': typeof ApiH18ImageRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/h18/read/$id': typeof H18ReadIdRoute
 }
@@ -150,6 +165,8 @@ export interface FileRoutesById {
   '/detail/$mangaId': typeof DetailMangaIdRoute
   '/h18/$id': typeof H18IdRoute
   '/history-detail/$mangaId': typeof HistoryDetailMangaIdRoute
+  '/h18/': typeof H18IndexRoute
+  '/api/h18/image': typeof ApiH18ImageRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/h18/read/$id': typeof H18ReadIdRoute
 }
@@ -169,13 +186,14 @@ export interface FileRouteTypes {
     | '/detail/$mangaId'
     | '/h18/$id'
     | '/history-detail/$mangaId'
+    | '/h18/'
+    | '/api/h18/image'
     | '/api/trpc/$'
     | '/h18/read/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/explore'
-    | '/h18'
     | '/history'
     | '/home'
     | '/popular'
@@ -186,6 +204,8 @@ export interface FileRouteTypes {
     | '/detail/$mangaId'
     | '/h18/$id'
     | '/history-detail/$mangaId'
+    | '/h18'
+    | '/api/h18/image'
     | '/api/trpc/$'
     | '/h18/read/$id'
   id:
@@ -203,6 +223,8 @@ export interface FileRouteTypes {
     | '/detail/$mangaId'
     | '/h18/$id'
     | '/history-detail/$mangaId'
+    | '/h18/'
+    | '/api/h18/image'
     | '/api/trpc/$'
     | '/h18/read/$id'
   fileRoutesById: FileRoutesById
@@ -220,6 +242,7 @@ export interface RootRouteChildren {
   ChapterChapterIdRoute: typeof ChapterChapterIdRoute
   DetailMangaIdRoute: typeof DetailMangaIdRoute
   HistoryDetailMangaIdRoute: typeof HistoryDetailMangaIdRoute
+  ApiH18ImageRoute: typeof ApiH18ImageRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
@@ -302,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DetailMangaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/h18/': {
+      id: '/h18/'
+      path: '/'
+      fullPath: '/h18/'
+      preLoaderRoute: typeof H18IndexRouteImport
+      parentRoute: typeof H18Route
+    }
     '/h18/$id': {
       id: '/h18/$id'
       path: '/$id'
@@ -314,6 +344,13 @@ declare module '@tanstack/react-router' {
       path: '/history-detail/$mangaId'
       fullPath: '/history-detail/$mangaId'
       preLoaderRoute: typeof HistoryDetailMangaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/h18/image': {
+      id: '/api/h18/image'
+      path: '/api/h18/image'
+      fullPath: '/api/h18/image'
+      preLoaderRoute: typeof ApiH18ImageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/trpc/$': {
@@ -335,11 +372,13 @@ declare module '@tanstack/react-router' {
 
 interface H18RouteChildren {
   H18IdRoute: typeof H18IdRoute
+  H18IndexRoute: typeof H18IndexRoute
   H18ReadIdRoute: typeof H18ReadIdRoute
 }
 
 const H18RouteChildren: H18RouteChildren = {
   H18IdRoute: H18IdRoute,
+  H18IndexRoute: H18IndexRoute,
   H18ReadIdRoute: H18ReadIdRoute,
 }
 
@@ -358,6 +397,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChapterChapterIdRoute: ChapterChapterIdRoute,
   DetailMangaIdRoute: DetailMangaIdRoute,
   HistoryDetailMangaIdRoute: HistoryDetailMangaIdRoute,
+  ApiH18ImageRoute: ApiH18ImageRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport
