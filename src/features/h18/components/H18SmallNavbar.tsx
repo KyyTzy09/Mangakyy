@@ -1,11 +1,13 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { BookOpen, Home, Timer } from 'lucide-react'
+import { BookOpen, Compass, Home, Timer } from 'lucide-react'
 import { Activity } from 'react'
 
 export default function H18SmallNavbar() {
   const location = useLocation()
 
-  const isHidden = location.pathname.startsWith('/h18/read')
+  const isHidden =
+    location.pathname.startsWith('/h-read') ||
+    location.pathname.startsWith('/h18/read')
 
   return (
     <Activity mode={isHidden ? 'hidden' : 'visible'}>
@@ -22,6 +24,20 @@ export default function H18SmallNavbar() {
             <BookOpen size={20} />
             <span className={location.pathname === '/h18' ? 'sr-only' : 'text-[10px]'}>
               Katalog
+            </span>
+          </Link>
+
+          <Link
+            to="/h-explore"
+            className={`flex flex-col items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
+              location.pathname === '/h-explore'
+                ? 'bg-[#ff2d78] text-white -translate-y-3 shadow-lg shadow-[#ff2d78]/40'
+                : 'text-gray-300'
+            }`}
+          >
+            <Compass size={20} />
+            <span className={location.pathname === '/h-explore' ? 'sr-only' : 'text-[10px]'}>
+              Explore
             </span>
           </Link>
 

@@ -27,7 +27,7 @@ export default function H18Carousel({ items }: Props) {
   const handleSelect = (index: number) => {
     if (index === selectedIndex) {
       // Click on center card goes to detail
-      navigate({ to: '/h18/$id', params: { id: String(list[index].id) } })
+      navigate({ to: '/h-detail/$id', params: { id: String(list[index].id) } })
       return
     }
     setSelectedIndex(index)

@@ -5,7 +5,8 @@ import { FaGithub, FaInstagram, FaTiktok } from 'react-icons/fa'
 
 export default function Footer() {
   const location = useLocation()
-  const isH18Mode = location.pathname.startsWith('/h18')
+  const isH18Mode =
+    location.pathname.startsWith('/h18') || location.pathname.startsWith('/h-')
 
   const linkItems = [
     {
@@ -27,6 +28,7 @@ export default function Footer() {
 
   const hideFooter =
     location.pathname.startsWith('/chapter') ||
+    location.pathname.startsWith('/h-read') ||
     location.pathname.startsWith('/h18/read')
 
   return (

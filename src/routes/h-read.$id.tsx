@@ -8,7 +8,7 @@ import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
-export const Route = createFileRoute('/h18/read/$id')({
+export const Route = createFileRoute('/h-read/$id')({
   beforeLoad: async () => {
     if (typeof window !== 'undefined') {
       const token = getClientCookie(H18_COOKIE_NAME)
@@ -83,7 +83,7 @@ function H18ReaderPage() {
   }
 
   const handleBack = () => {
-    navigate({ to: '/h18/$id', params: { id: String(detail.id) } })
+    navigate({ to: '/h-detail/$id', params: { id: String(detail.id) } })
   }
 
   return (
@@ -117,7 +117,7 @@ function H18ReaderPage() {
             <div
               className="flex-1 text-center truncate font-bold text-xs sm:text-sm text-white px-2 cursor-pointer hover:text-[#ff2d78] transition-colors"
               title={detail.title}
-              onClick={() => navigate({ to: '/h18/$id', params: { id: String(detail.id) } })}
+              onClick={() => navigate({ to: '/h-detail/$id', params: { id: String(detail.id) } })}
             >
               {detail.title}
             </div>

@@ -41,7 +41,7 @@ export function validateH18Passcode(
 export const getH18List = createServerFn({ method: 'GET' })
   .validator(getH18ListSchema)
   .handler(async ({ data }) => {
-    return h18Service.search(data.query, data.page, data.sort)
+    return h18Service.search(data)
   })
 
 export const getH18Detail = createServerFn({ method: 'GET' })

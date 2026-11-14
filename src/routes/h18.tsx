@@ -1,14 +1,34 @@
-import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { Search, Flame, Sparkles } from 'lucide-react'
-import { getH18List } from '@/api/server/h18'
+import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
+import { Flame, Sparkles, Compass } from 'lucide-react'
+import { z } from 'zod'
+import { getClientCookie } from '@/shared/utils/cookie'
+import { H18_COOKIE_NAME, getH18List } from '@/api/server/h18'
+import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
+import H18LockedGate from '@/features/h18/components/H18LockedGate'
 import H18Carousel from '@/features/h18/components/H18Carousel'
 import H18Card from '@/features/h18/components/H18Card'
 
-export const Route = createFileRoute('/h18/')({
-  loader: async () => {
+const searchSchema = z.object({
+  sort: z.enum(['recent', 'popular']).optional().default('recent'),
+})
+
+export const Route = createFileRoute('/h18')({
+  validateSearch: (search) => searchSchema.parse(search),
+  beforeLoad: async () => {
+    if (typeof window !== 'undefined') {
+      const token = getClientCookie(H18_COOKIE_NAME)
+      if (!token) {
+        throw redirect({
+          to: '/',
+          search: { auth_h18: true },
+        })
+      }
+    }
+  },
+  loaderDeps: ({ search: { sort } }) => ({ sort }),
+  loader: async ({ deps: { sort } }) => {
     try {
-      const res = await getH18List({ data: { query: '', page: 1, sort: 'recent' } })
+      const res = await getH18List({ data: { query: '', page: 1, sort } })
       return { data: res }
     } catch {
       return { data: { books: [], total_pages: 1, current_page: 1, per_page: 0 } }
@@ -19,17 +39,23 @@ export const Route = createFileRoute('/h18/')({
 
 function H18HomePage() {
   const { data } = Route.useLoaderData()
-  const [activeTab, setActiveTab] = useState<'all' | 'popular'>('all')
-  const [searchQuery, setSearchQuery] = useState('')
+  const { sort } = Route.useSearch()
+  const { isAuthenticated } = useH18Auth()
+  const navigate = useNavigate()
+
+  if (!isAuthenticated) {
+    return <H18LockedGate onSuccess={() => window.location.reload()} />
+  }
 
   const books = data?.books || []
-  const filteredBooks = searchQuery
-    ? books.filter(
-        (b) =>
-          b.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          b.tags.some((t) => t.name.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : books
+  const activeSort = sort || 'recent'
+
+  const handleTabChange = (newSort: 'recent' | 'popular') => {
+    navigate({
+      to: '/h18',
+      search: { sort: newSort },
+    })
+  }
 
   return (
     <main className="relative flex flex-col items-center justify-start min-h-screen bg-[#08050a] text-slate-100 overflow-x-hidden pb-20">
@@ -57,27 +83,15 @@ function H18HomePage() {
             </div>
           </div>
 
-          {/* Right Action: Search Bar & Tabs */}
-          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-            {/* Search Input */}
-            <div className="relative flex-1 sm:w-64">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari komik / tag H18..."
-                className="w-full h-10 bg-black/60 border border-white/15 focus:border-[#ff2d78] rounded-xl pl-9 pr-4 text-xs sm:text-sm text-white outline-none transition-colors placeholder:text-slate-500"
-              />
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            </div>
-
-            {/* Tab Pill Switcher */}
+          {/* Right Action: Tabs Switcher & Link to Explore */}
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            {/* Tab Pill Switcher (Semua vs Populer) */}
             <div className="flex items-center gap-1 bg-[#140c19] border border-white/10 p-1 rounded-xl">
               <button
                 type="button"
-                onClick={() => setActiveTab('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === 'all'
+                onClick={() => handleTabChange('recent')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeSort === 'recent'
                     ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/30'
                     : 'text-slate-400 hover:text-white'
                 }`}
@@ -86,9 +100,9 @@ function H18HomePage() {
               </button>
               <button
                 type="button"
-                onClick={() => setActiveTab('popular')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === 'popular'
+                onClick={() => handleTabChange('popular')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeSort === 'popular'
                     ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/30'
                     : 'text-slate-400 hover:text-white'
                 }`}
@@ -96,13 +110,22 @@ function H18HomePage() {
                 Populer
               </button>
             </div>
+
+            {/* Quick Explore Link */}
+            <Link
+              to="/h-explore"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-[#ff2d78]/20 border border-white/10 hover:border-[#ff2d78]/40 text-xs font-bold text-slate-300 hover:text-white transition-all shadow-sm"
+            >
+              <Compass className="w-3.5 h-3.5 text-[#ff2d78]" />
+              <span>Explore &gt;</span>
+            </Link>
           </div>
         </div>
 
         {/* 3. Comic Cards Grid */}
-        {filteredBooks.length > 0 ? (
+        {books.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-            {filteredBooks.map((comic, index) => (
+            {books.map((comic, index) => (
               <H18Card key={comic.id} data={comic} index={index} />
             ))}
           </div>
@@ -113,15 +136,14 @@ function H18HomePage() {
             </div>
             <h3 className="font-bold text-lg text-white">Belum Ada Komik Ditemukan</h3>
             <p className="text-xs sm:text-sm text-slate-400 max-w-sm">
-              Coba gunakan kata kunci pencarian lain atau kembali ke daftar utama.
+              Gunakan fitur Explore untuk menjelajahi berbagai genre dan kategori.
             </p>
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
+            <Link
+              to="/h-explore"
               className="px-4 py-2 rounded-xl bg-[#ff2d78] text-white text-xs font-bold cursor-pointer hover:bg-[#e02068] transition-colors"
             >
-              Reset Pencarian
-            </button>
+              Buka Halaman Explore
+            </Link>
           </div>
         )}
       </div>

@@ -182,13 +182,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootNavbars() {
   const location = useLocation()
-  const isH18 = location.pathname.startsWith('/h18')
+  const isH18 =
+    location.pathname.startsWith('/h18') || location.pathname.startsWith('/h-')
   return isH18 ? <H18Navbar /> : <Navbar />
 }
 
 function RootSmallNavbars() {
   const location = useLocation()
-  const isH18 = location.pathname.startsWith('/h18')
+  const isH18 =
+    location.pathname.startsWith('/h18') || location.pathname.startsWith('/h-')
   return isH18 ? <H18SmallNavbar /> : <SmallNavbar />
 }
 

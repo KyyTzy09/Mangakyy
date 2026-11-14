@@ -6,7 +6,7 @@ import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
-export const Route = createFileRoute('/h18/$id')({
+export const Route = createFileRoute('/h-detail/$id')({
   beforeLoad: async () => {
     if (typeof window !== 'undefined') {
       const token = getClientCookie(H18_COOKIE_NAME)
@@ -41,7 +41,7 @@ function H18DetailPage() {
 
   const handleStartRead = () => {
     navigate({
-      to: '/h18/read/$id',
+      to: '/h-read/$id',
       params: { id: String(detail.id) },
     })
   }

@@ -19,7 +19,7 @@ export default function H18Card({ data, index = 0 }: Props) {
       className="w-full"
     >
       <Link
-        to="/h18/$id"
+        to="/h-detail/$id"
         params={{ id: String(data.id) }}
         className="group relative flex flex-col items-center justify-start w-full h-auto bg-[#110a16]/80 hover:bg-[#1a0f22] border border-white/10 hover:border-[#ff2d78] overflow-hidden rounded-xl gap-2 transition-all cursor-pointer shadow-sm hover:shadow-lg hover:shadow-[#ff2d78]/20"
       >

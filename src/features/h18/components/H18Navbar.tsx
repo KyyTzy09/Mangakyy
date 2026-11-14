@@ -1,11 +1,12 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Timer, ArrowLeft } from 'lucide-react'
+import { Timer, ArrowLeft, Compass } from 'lucide-react'
 import { Activity } from 'react'
 
 export default function H18Navbar() {
   const location = useLocation()
 
   const hideNavbar =
+    location.pathname.startsWith('/h-read') ||
     location.pathname.startsWith('/h18/read')
 
   return (
@@ -29,6 +30,18 @@ export default function H18Navbar() {
                 }`}
               >
                 Katalog
+              </Link>
+
+              <Link
+                to="/h-explore"
+                className={`font-semibold transition-colors flex items-center gap-1.5 ${
+                  location.pathname === '/h-explore'
+                    ? 'text-[#ff2d78]'
+                    : 'text-white hover:text-slate-200'
+                }`}
+              >
+                <Compass className="w-4 h-4 text-[#ff2d78]" />
+                <span>Explore</span>
               </Link>
 
               {/* Redirect to Normal Mode Button */}

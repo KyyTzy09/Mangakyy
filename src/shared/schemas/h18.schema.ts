@@ -3,7 +3,13 @@ import { z } from 'zod'
 export const getH18ListSchema = z.object({
   query: z.string().optional().default(''),
   page: z.number().optional().default(1),
-  sort: z.enum(['popular', 'recent']).optional().default('recent'),
+  sort: z
+    .enum(['recent', 'popular', 'popular-today', 'popular-week', 'popular-month'])
+    .optional()
+    .default('recent'),
+  category: z.string().optional(),
+  language: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 })
 
 export const getH18DetailSchema = z.object({

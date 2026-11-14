@@ -3,6 +3,15 @@ import type { H18ComicDetail, H18ComicItem, H18SearchResponse, H18Tag } from '@/
 
 const CLOUDFLARE_EDGE_IP = '104.21.19.217'
 
+export interface H18SearchParams {
+  query?: string
+  page?: number
+  sort?: 'recent' | 'popular' | 'popular-today' | 'popular-week' | 'popular-month'
+  category?: string
+  language?: string
+  tags?: string[]
+}
+
 function fetchNhentaiV2<T>(path: string): Promise<T> {
   return new Promise((resolve, reject) => {
     const req = https.request(
@@ -49,28 +58,54 @@ function fetchNhentaiV2<T>(path: string): Promise<T> {
 
 export class H18Service {
   /**
-   * Search / daftar komik H18 langsung dari API resmi nhentai v2
+   * Search / explore komik H18 dengan filter lengkap (query, tags, category, language, sort)
    */
-  public async search(
-    query = '',
-    page = 1,
-    sort: 'popular' | 'recent' = 'recent'
-  ): Promise<H18SearchResponse> {
+  public async search(params: H18SearchParams = {}): Promise<H18SearchResponse> {
     try {
-      let searchQuery = query.trim()
-      if (sort === 'popular') {
-        searchQuery = searchQuery ? `${searchQuery} sort:popular` : 'language:english sort:popular'
-      } else {
-        searchQuery = searchQuery || 'language:english'
+      const page = params.page && params.page > 0 ? params.page : 1
+      const queryParts: string[] = []
+
+      if (params.query?.trim()) {
+        queryParts.push(params.query.trim())
+      }
+      if (params.category) {
+        queryParts.push(`category:${params.category}`)
+      }
+      if (params.language) {
+        queryParts.push(`language:${params.language}`)
+      }
+      if (params.tags && Array.isArray(params.tags)) {
+        params.tags.forEach((t) => {
+          const clean = t.trim()
+          if (clean) {
+            queryParts.push(`tag:${clean.includes(' ') ? `"${clean}"` : clean}`)
+          }
+        })
       }
 
-      const encodedQuery = encodeURIComponent(searchQuery)
+      if (queryParts.length === 0) {
+        queryParts.push('language:english')
+      }
+
+      const fullQuery = queryParts.join(' ')
+      const sortParam =
+        params.sort === 'popular'
+          ? 'popular'
+          : params.sort === 'popular-today'
+            ? 'popular-today'
+            : params.sort === 'popular-week'
+              ? 'popular-week'
+              : params.sort === 'popular-month'
+                ? 'popular-month'
+                : 'date'
+
+      const encodedQuery = encodeURIComponent(fullQuery)
       const data = await fetchNhentaiV2<{
         result?: any[]
         num_pages?: number
         per_page?: number
         total?: number
-      }>(`/api/v2/search?query=${encodedQuery}&page=${page}`)
+      }>(`/api/v2/search?query=${encodedQuery}&sort=${sortParam}&page=${page}`)
 
       const list = Array.isArray(data.result) ? data.result : []
       const books: H18ComicItem[] = list.map((item) => {
@@ -112,7 +147,7 @@ export class H18Service {
       return {
         books: [],
         total_pages: 1,
-        current_page: page,
+        current_page: params.page || 1,
         per_page: 0,
       }
     }
