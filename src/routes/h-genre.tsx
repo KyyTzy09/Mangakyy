@@ -179,23 +179,67 @@ function H18GenreIndexPage() {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
   const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
   const tabsContainerRef = useRef<HTMLDivElement | null>(null)
+  const curatedTabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
+  const curatedContainerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     setInputVal(search.q || '')
   }, [search.q])
 
-  // Otomatis geser / center tab aktif jika layar tidak cukup (persis seperti GenreSection di halaman utama '/')
-  useEffect(() => {
-    const currentTab = search.type || 'all'
-    const element = tabRefs.current[currentTab]
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
+  // Fungsi eksak untuk memposisikan tab terpilih tepat ke tengah (auto-center) dan bergeser sendiri secara halus
+  const centerActiveTab = (tabKey: string, smooth = true) => {
+    const run = () => {
+      const element = tabRefs.current[tabKey]
+      const container = tabsContainerRef.current
+      if (!element || !container) return
+
+      const containerWidth = container.clientWidth
+      const elementLeft = element.offsetLeft
+      const elementWidth = element.clientWidth
+      const targetLeft = elementLeft - containerWidth / 2 + elementWidth / 2
+
+      container.scrollTo({
+        left: Math.max(0, targetLeft),
+        behavior: smooth ? 'smooth' : 'auto',
       })
     }
+
+    requestAnimationFrame(run)
+    setTimeout(run, 50)
+  }
+
+  const centerCuratedTab = (catKey: string, smooth = true) => {
+    const run = () => {
+      const element = curatedTabRefs.current[catKey]
+      const container = curatedContainerRef.current
+      if (!element || !container) return
+
+      const containerWidth = container.clientWidth
+      const elementLeft = element.offsetLeft
+      const elementWidth = element.clientWidth
+      const targetLeft = elementLeft - containerWidth / 2 + elementWidth / 2
+
+      container.scrollTo({
+        left: Math.max(0, targetLeft),
+        behavior: smooth ? 'smooth' : 'auto',
+      })
+    }
+
+    requestAnimationFrame(run)
+    setTimeout(run, 50)
+  }
+
+  // Otomatis geser / center tab aktif ke tengah sendiri saat halaman dimuat atau tab berganti
+  useEffect(() => {
+    const currentTab = search.type || 'all'
+    centerActiveTab(currentTab, true)
   }, [search.type])
+
+  useEffect(() => {
+    if (search.type === 'curated') {
+      centerCuratedTab(activeCuratedCategory, true)
+    }
+  }, [search.type, activeCuratedCategory])
 
   const handleTabsWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (e.deltaY !== 0 && tabsContainerRef.current) {
@@ -314,14 +358,12 @@ function H18GenreIndexPage() {
   const handleTabChange = (typeVal: (typeof TAXONOMY_TABS)[number]['value']) => {
     setInputVal('')
     updateSearch({ type: typeVal, q: '', page: 1 })
-    const element = tabRefs.current[typeVal]
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
-      })
-    }
+    centerActiveTab(typeVal, true)
+  }
+
+  const handleSelectCurated = (catKey: string) => {
+    setActiveCuratedCategory(catKey)
+    centerCuratedTab(catKey, true)
   }
 
   const handleSortToggle = (newSort: 'popular' | 'name') => {
@@ -445,7 +487,7 @@ function H18GenreIndexPage() {
         <div
           ref={tabsContainerRef}
           onWheel={handleTabsWheel}
-          className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] touch-pan-x"
+          className="flex items-center gap-2 overflow-x-auto py-1 scroll-smooth scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] touch-pan-x"
         >
           {TAXONOMY_TABS.map((tab) => {
             const Icon = tab.icon
@@ -508,11 +550,17 @@ function H18GenreIndexPage() {
 
           {/* Sub-controls: Curated Category Filter vs Sort Order & Alphabet Bar */}
           {search.type === 'curated' ? (
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <div
+              ref={curatedContainerRef}
+              className="flex items-center gap-1.5 overflow-x-auto py-1 scroll-smooth scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] touch-pan-x"
+            >
               <button
+                ref={(el) => {
+                  curatedTabRefs.current['all'] = el
+                }}
                 type="button"
-                onClick={() => setActiveCuratedCategory('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                onClick={() => handleSelectCurated('all')}
+                className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none ${
                   activeCuratedCategory === 'all'
                     ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/40'
                     : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
@@ -523,9 +571,12 @@ function H18GenreIndexPage() {
               {categories.map((cat) => (
                 <button
                   key={cat.category}
+                  ref={(el) => {
+                    curatedTabRefs.current[cat.category] = el
+                  }}
                   type="button"
-                  onClick={() => setActiveCuratedCategory(cat.category)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  onClick={() => handleSelectCurated(cat.category)}
+                  className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none ${
                     activeCuratedCategory === cat.category
                       ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/40'
                       : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
