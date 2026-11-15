@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { getH18Detail } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
-import { saveH18History } from '@/features/h18/utils/history'
+import { saveH18History, updateH18Progress, getH18HistoryById } from '@/features/h18/utils/history'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h-read/$id')({
@@ -31,9 +31,20 @@ function H18ReaderPage() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
   const autoScrollTimerRef = useRef<number | null>(null)
+  const progressRef = useRef(0)
+  const currentPageRef = useRef(1)
+  const saveTimeoutRef = useRef<number | null>(null)
+
+  const pageCount = detail?.page_count || detail?.images.length || 1
 
   useEffect(() => {
     if (detail && isAuthenticated) {
+      const existing = getH18HistoryById(detail.id)
+      const initialProgress = existing?.progress || 0
+      setScrollProgress(initialProgress)
+      progressRef.current = initialProgress
+      currentPageRef.current = existing?.last_page || 1
+
       saveH18History({
         id: detail.id,
         title: detail.title,
@@ -42,23 +53,61 @@ function H18ReaderPage() {
         cover_url: detail.cover_url,
         thumbnail_url: detail.thumbnail_url,
         page_count: detail.page_count,
+        progress: initialProgress,
+        last_page: existing?.last_page || 1,
       })
     }
   }, [detail, isAuthenticated])
 
-  // Track scroll progress
+  // Track scroll progress & automatically record reading progress
   useEffect(() => {
+    if (!detail) return
+
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight
       if (totalHeight > 0) {
-        const current = (window.scrollY / totalHeight) * 100
-        setScrollProgress(Math.min(100, Math.max(0, current)))
+        const current = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100))
+        const rounded = Math.round(current)
+        setScrollProgress(rounded)
+        progressRef.current = rounded
+
+        const currentP = Math.min(pageCount, Math.max(1, Math.ceil((current / 100) * pageCount)))
+        currentPageRef.current = currentP
+
+        // Debounced save every 500ms
+        if (saveTimeoutRef.current) {
+          window.clearTimeout(saveTimeoutRef.current)
+        }
+        saveTimeoutRef.current = window.setTimeout(() => {
+          updateH18Progress(detail.id, rounded, currentP)
+        }, 500)
       }
     }
 
+    // Flush immediately when user switches tabs or leaves page
+    const handleExit = () => {
+      updateH18Progress(detail.id, progressRef.current, currentPageRef.current)
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    window.addEventListener('beforeunload', handleExit)
+    window.addEventListener('pagehide', handleExit)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        handleExit()
+      }
+    })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('beforeunload', handleExit)
+      window.removeEventListener('pagehide', handleExit)
+      if (saveTimeoutRef.current) {
+        window.clearTimeout(saveTimeoutRef.current)
+      }
+      handleExit()
+    }
+  }, [detail, pageCount])
 
   // Auto scroll effect
   useEffect(() => {
@@ -238,10 +287,26 @@ function H18ReaderPage() {
               </button>
             </div>
 
+            {/* Reading Progress Indicator with Explicit Percentage & Page Count */}
+            <div className="flex items-center justify-between text-xs text-slate-300 font-semibold px-0.5 select-none">
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400">Halaman</span>
+                <span className="text-white font-bold">
+                  {Math.min(pageCount, Math.max(1, Math.ceil((scrollProgress / 100) * pageCount)))}
+                </span>
+                <span className="text-slate-500">/</span>
+                <span className="text-slate-400">{pageCount}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-slate-400">Progress:</span>
+                <span className="text-[#ff2d78] font-bold text-xs">{scrollProgress}%</span>
+              </div>
+            </div>
+
             {/* Reading Progress Bar in Solid Pink */}
-            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#ff2d78] transition-all duration-150 rounded-full"
+                className="h-full bg-gradient-to-r from-[#ff2d78] to-pink-400 transition-all duration-150 rounded-full shadow-sm shadow-[#ff2d78]/40"
                 style={{ width: `${scrollProgress}%` }}
               />
             </div>

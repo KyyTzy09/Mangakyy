@@ -21,7 +21,20 @@ export default function ChapterHistoryCard({ history, chapter, index }: ChapterH
             exit={{ translateY: 10 }}
             transition={{ delay: index * 0.1 }}
             onClick={() => {
-                saveNewComicHistory({ comic_cover_url: history.comic_cover_url, comic_id: history.comic_id, comic_title: history.comic_title }, { chapter_id: chapter.chapter_id, chapter_number: chapter.chapter_number, thumbnail_image_url: chapter.thumbnail_image_url, last_read_at: new Date() })
+                saveNewComicHistory(
+                    {
+                        comic_cover_url: history.comic_cover_url,
+                        comic_id: history.comic_id,
+                        comic_title: history.comic_title,
+                    },
+                    {
+                        chapter_id: chapter.chapter_id,
+                        chapter_number: chapter.chapter_number,
+                        thumbnail_image_url: chapter.thumbnail_image_url,
+                        last_read_at: new Date(),
+                        progress: chapter.progress,
+                    }
+                )
                 navigate({ to: '/chapter/$chapterId', params: { chapterId: chapter.chapter_id } })
             }}
             className="group flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 transition p-4 rounded-xl mb-2 cursor-pointer">
@@ -34,7 +47,7 @@ export default function ChapterHistoryCard({ history, chapter, index }: ChapterH
                     className="flex items-center justify-center w-auto h-14 rounded-lg object-cover bg-gray-600"
                 />
                 <div>
-                    <div className="font-medium">
+                    <div className="font-medium text-white group-hover:text-primary transition-colors">
                         Chapter {chapter?.chapter_number}
                     </div>
                     <div className="text-sm text-slate-400">
@@ -42,6 +55,19 @@ export default function ChapterHistoryCard({ history, chapter, index }: ChapterH
                     </div>
                 </div>
             </div>
+            {chapter.progress !== undefined && chapter.progress > 0 && (
+                <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
+                    <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/30 px-2 py-0.5 rounded-md">
+                        {chapter.progress}%
+                    </span>
+                    <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-primary rounded-full"
+                            style={{ width: `${chapter.progress}%` }}
+                        />
+                    </div>
+                </div>
+            )}
         </motion.article>
     )
 }

@@ -38,6 +38,7 @@ export const Route = createFileRoute('/h-explore')({
   loader: async ({ deps }) => {
     try {
       const cleanTag = deps.tag ? deps.tag.replace(/^#/, '').replace(/-/g, ' ') : undefined
+      const cleanArtist = deps.artist ? deps.artist.replace(/-/g, ' ') : undefined
       const tagsList: string[] = []
       if (cleanTag) tagsList.push(cleanTag)
       if (deps.theme) tagsList.push(deps.theme.replace(/-/g, ' '))
@@ -49,7 +50,7 @@ export const Route = createFileRoute('/h-explore')({
             category: deps.category,
             language: deps.language,
             tags: tagsList.length > 0 ? tagsList : undefined,
-            artist: deps.artist,
+            artist: cleanArtist,
             sort: deps.sort,
             page: deps.page,
           },
@@ -97,20 +98,38 @@ const SORT_OPTIONS = [
 
 const CREATOR_OPTIONS = [
   { label: 'Semua Kreator', value: '' },
-  { label: 'Mizuryu Kei', value: 'mizuryu-kei' },
-  { label: 'Shindo L', value: 'shindo-l' },
-  { label: 'Hisasi', value: 'hisasi' },
+  { label: 'Akitsuki Itsuhito', value: 'akitsuki-itsuhito' },
   { label: 'Asagi Ryu', value: 'asagi-ryu' },
-  { label: 'Homunculus', value: 'homunculus' },
-  { label: 'MEME50', value: 'meme50' },
-  { label: 'Distance', value: 'distance' },
+  { label: 'Bakunyu', value: 'bakunyu' },
+  { label: 'Ban!', value: 'ban' },
   { label: 'Bosshi', value: 'bosshi' },
+  { label: 'Crimson', value: 'crimson' },
+  { label: 'Cu-Little', value: 'cu-little' },
+  { label: 'Distance', value: 'distance' },
+  { label: 'Fue', value: 'fue' },
+  { label: 'Hirame', value: 'hirame' },
+  { label: 'Hisasi', value: 'hisasi' },
+  { label: 'Homunculus', value: 'homunculus' },
+  { label: 'Inu', value: 'inu' },
+  { label: 'Itou Life', value: 'itou-life' },
   { label: 'Kisaragi Gunma', value: 'kisaragi-gunma' },
   { label: 'Kurogane Ken', value: 'kurogane-ken' },
+  { label: 'MEME50', value: 'meme50' },
+  { label: 'Mizuryu Kei', value: 'mizuryu-kei' },
+  { label: 'Nanashi', value: 'nanashi' },
+  { label: 'Oda Non', value: 'oda-non' },
+  { label: 'Pochi.', value: 'pochi' },
   { label: 'Po-Ju', value: 'po-ju' },
+  { label: 'Raita', value: 'raita' },
   { label: 'ReDrop', value: 'redrop' },
+  { label: 'Sasamori Tomoe', value: 'sasamori-tomoe' },
+  { label: 'Shindo L', value: 'shindo-l' },
+  { label: 'Syroh', value: 'syroh' },
   { label: 'Tachibana Omina', value: 'tachibana-omina' },
   { label: 'Tony Taka', value: 'tony-taka' },
+  { label: 'Urushihara Satoshi', value: 'urushihara-satoshi' },
+  { label: 'Wadapen', value: 'wadapen' },
+  { label: 'Yamatogawa', value: 'yamatogawa' },
 ]
 
 const THEME_OPTIONS = [

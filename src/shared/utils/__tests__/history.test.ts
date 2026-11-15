@@ -5,6 +5,7 @@ import {
   getLatestChapterHistory,
   getNewChapterHistories,
   saveNewComicHistory,
+  updateChapterProgress,
 } from '../history'
 
 describe('history', () => {
@@ -134,6 +135,27 @@ describe('history', () => {
     histories = getNewChapterHistories()
     expect(histories[0].comic_id).toBe('comic-1')
     expect(histories[1].comic_id).toBe('comic-2')
+  })
+
+  it('updates chapter reading progress properly', () => {
+    const comic = {
+      comic_id: 'comic-progress',
+      comic_title: 'Solo Leveling',
+      comic_cover_url: 'https://example.com/sl.jpg',
+    }
+
+    saveNewComicHistory(comic, {
+      chapter_id: 'ch-sl-1',
+      chapter_number: 1,
+      thumbnail_image_url: 'https://example.com/sl1.jpg',
+      last_read_at: new Date(),
+    })
+
+    updateChapterProgress('comic-progress', 'ch-sl-1', 75)
+
+    const found = getHistoryByComicId('comic-progress')
+    expect(found?.last_read_progress).toBe(75)
+    expect(found?.chapters[0].progress).toBe(75)
   })
 
   it('clears all history', () => {

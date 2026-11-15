@@ -35,12 +35,28 @@ export default function HistoryCard({ h, index }: HistoryCardProps) {
           decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute top-0 left-0 text-xs flex flex-col items-start justify-end w-full h-full bg-linear-to-b from-transparent via-black/60 to-black p-2 gap-2 z-10">
+        <div className="absolute top-0 left-0 text-xs flex flex-col items-start justify-end w-full h-full bg-linear-to-b from-transparent via-black/60 to-black p-2 gap-1.5 z-10">
           <p className="line-clamp-2 font-semibold">{h.comic_title}</p>
-          <p className="text-[10px] line-clamp-1">
-            Ch {latestChapter?.chapter_number || h.chapters.length} - {formatRelativeTime(h.last_read_at)}
-          </p>
+          <div className="flex items-center justify-between w-full text-[10px] text-slate-300">
+            <span className="line-clamp-1 font-medium">
+              Ch {latestChapter?.chapter_number || h.chapters.length}
+              {latestChapter?.progress !== undefined && latestChapter.progress > 0
+                ? ` (${latestChapter.progress}%)`
+                : ''}
+            </span>
+            <span className="text-slate-400 shrink-0">
+              {formatRelativeTime(h.last_read_at)}
+            </span>
+          </div>
         </div>
+        {latestChapter?.progress !== undefined && latestChapter.progress > 0 && (
+          <div className="absolute inset-x-0 bottom-0 h-1 bg-black/60 z-10 overflow-hidden">
+            <div
+              className="h-full bg-primary"
+              style={{ width: `${latestChapter.progress}%` }}
+            />
+          </div>
+        )}
         <div className="absolute opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 top-0 left-0 text-xs flex flex-col items-center justify-center w-full h-full bg-black/70 z-20 p-5 gap-2 transition duration-500">
           <Button
             onClick={(e) => {

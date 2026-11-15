@@ -7,7 +7,9 @@ export default function H18SmallNavbar() {
 
   const isHidden =
     location.pathname.startsWith('/h-read') ||
-    location.pathname.startsWith('/h18/read')
+    location.pathname.startsWith('/h18/read') ||
+    location.pathname.startsWith('/h-detail') ||
+    location.pathname.startsWith('/h18/detail')
 
   return (
     <Activity mode={isHidden ? 'hidden' : 'visible'}>

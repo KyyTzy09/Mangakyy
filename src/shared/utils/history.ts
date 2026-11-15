@@ -46,6 +46,7 @@ export interface NewChapterHistory {
     chapter_number: number
     thumbnail_image_url: string
     last_read_at: Date
+    progress?: number // 0 to 100%
 }
 export interface NewComicHistory {
     comic_id: string
@@ -53,6 +54,7 @@ export interface NewComicHistory {
     comic_cover_url: string
     chapters: NewChapterHistory[]
     last_read_at: Date
+    last_read_progress?: number // 0 to 100%
 }
 
 const KEY = "histories"
@@ -131,6 +133,7 @@ export function saveNewComicHistory(
         const updatedChapter: NewChapterHistory = {
             ...history.chapters[chapterIndex],
             ...chapter,
+            progress: chapter.progress ?? history.chapters[chapterIndex].progress ?? 0,
             last_read_at: now,
         }
         history.chapters.splice(chapterIndex, 1)
@@ -139,10 +142,40 @@ export function saveNewComicHistory(
 
     // update waktu terakhir baca manga
     history.last_read_at = now
+    history.last_read_progress = chapter.progress ?? history.last_read_progress ?? 0
 
     // Pindahkan ke paling awal daftar agar manga yang baru dibaca selalu di atas
     histories.splice(index, 1)
     histories.unshift(history)
+
+    localStorage.setItem(KEY, JSON.stringify(histories))
+}
+
+export function updateChapterProgress(
+    comicId: string,
+    chapterId: string,
+    progress: number
+): void {
+    if (typeof window === "undefined") return
+
+    const histories = getNewChapterHistories()
+    const index = histories.findIndex((item) => item.comic_id === comicId)
+    if (index === -1) return
+
+    const comicHistory = histories[index]
+    const chapterIndex = comicHistory.chapters.findIndex((c) => c.chapter_id === chapterId)
+    if (chapterIndex === -1) return
+
+    const rounded = Math.min(100, Math.max(0, Math.round(progress)))
+    const now = new Date()
+
+    comicHistory.chapters[chapterIndex].progress = rounded
+    comicHistory.chapters[chapterIndex].last_read_at = now
+    comicHistory.last_read_at = now
+    comicHistory.last_read_progress = rounded
+
+    histories.splice(index, 1)
+    histories.unshift(comicHistory)
 
     localStorage.setItem(KEY, JSON.stringify(histories))
 }

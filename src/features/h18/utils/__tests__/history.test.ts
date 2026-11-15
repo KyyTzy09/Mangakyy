@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import {
   getH18Histories,
+  getH18HistoryById,
   saveH18History,
+  updateH18Progress,
   removeH18History,
   clearH18Histories,
 } from '../history'
@@ -122,6 +124,24 @@ describe('H18 History Storage Utility', () => {
     const list = getH18Histories()
     expect(list.length).toBe(1)
     expect(list[0].id).toBe(456)
+  })
+
+  it('should update reading progress and retrieve by ID', () => {
+    saveH18History({
+      id: 789,
+      title: 'Comic Progress Test',
+      cover_url: 'https://example.com/c.jpg',
+      thumbnail_url: 'https://example.com/c_t.jpg',
+      page_count: 50,
+      progress: 0,
+      last_page: 1,
+    })
+
+    updateH18Progress(789, 45, 23)
+    const item = getH18HistoryById(789)
+    expect(item).not.toBeNull()
+    expect(item?.progress).toBe(45)
+    expect(item?.last_page).toBe(23)
   })
 
   it('should clear all history', () => {

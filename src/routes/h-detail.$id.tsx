@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { ArrowLeft, Home, BookOpen, Heart, Calendar, BookText, AlertCircle, RefreshCw } from 'lucide-react'
 import { getH18Detail } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
-import { saveH18History } from '@/features/h18/utils/history'
+import { saveH18History, getH18HistoryById } from '@/features/h18/utils/history'
+import type { H18HistoryItem } from '@/features/h18/utils/history'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h-detail/$id')({
@@ -25,9 +26,13 @@ function H18DetailPage() {
   const { detail, id } = Route.useLoaderData()
   const { isAuthenticated } = useH18Auth()
   const navigate = useNavigate()
+  const [historyItem, setHistoryItem] = useState<H18HistoryItem | null>(null)
 
   useEffect(() => {
     if (detail && isAuthenticated) {
+      const existing = getH18HistoryById(detail.id)
+      setHistoryItem(existing)
+
       saveH18History({
         id: detail.id,
         title: detail.title,
@@ -36,6 +41,8 @@ function H18DetailPage() {
         cover_url: detail.cover_url,
         thumbnail_url: detail.thumbnail_url,
         page_count: detail.page_count,
+        progress: existing?.progress,
+        last_page: existing?.last_page,
       })
     }
   }, [detail, isAuthenticated])
@@ -92,6 +99,17 @@ function H18DetailPage() {
     )
   }
 
+  // Group tags by their authentic types
+  const artists = detail.tags.filter((t) => t.type === 'artist')
+  const groups = detail.tags.filter((t) => t.type === 'group')
+  const parodies = detail.tags.filter((t) => t.type === 'parody')
+  const characters = detail.tags.filter((t) => t.type === 'character')
+  const genres = detail.tags.filter((t) => t.type === 'tag' || !t.type)
+  const categories = detail.tags.filter((t) => t.type === 'category')
+  const languages = detail.tags.filter((t) => t.type === 'language')
+
+  const hasProgress = historyItem && historyItem.progress !== undefined && historyItem.progress > 0
+
   return (
     <main className="relative flex flex-col items-center justify-start min-h-screen bg-[#08050a] text-slate-100 overflow-x-hidden pb-16">
       {/* 1. Hero Detail Section with Blurred Cover Background */}
@@ -115,25 +133,27 @@ function H18DetailPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-[#08050a]/85 to-[#08050a]" />
         </div>
 
-        {/* Top Navigation Bar: Back & Home */}
+        {/* Top Navigation Bar: Back & Home (Prominent & Clear) */}
         <header className="relative z-30 flex items-center justify-between w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-6 pb-3">
           <button
             type="button"
             onClick={handleBack}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-900/85 hover:bg-[#ff2d78] text-white border border-white/15 hover:border-[#ff2d78] flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-95 backdrop-blur-md group"
-            title="Kembali"
+            className="flex items-center gap-2 px-4 py-2 sm:py-2.5 rounded-xl bg-slate-900/90 hover:bg-[#ff2d78] text-white border border-white/20 hover:border-[#ff2d78] text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-2xl active:scale-95 backdrop-blur-md group"
+            title="Kembali ke halaman sebelumnya"
             aria-label="Kembali ke halaman sebelumnya"
           >
-            <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            <span>Kembali</span>
           </button>
 
           <Link
             to="/h18"
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-900/85 hover:bg-[#ff2d78] text-white border border-white/15 hover:border-[#ff2d78] flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-95 backdrop-blur-md group"
+            className="flex items-center gap-2 px-4 py-2 sm:py-2.5 rounded-xl bg-slate-900/90 hover:bg-[#ff2d78] text-white border border-white/20 hover:border-[#ff2d78] text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-2xl active:scale-95 backdrop-blur-md group"
             title="Kembali ke Katalog H18"
             aria-label="Kembali ke Katalog H18"
           >
-            <Home className="w-5 h-5 transition-transform group-hover:scale-110" />
+            <Home className="w-4 h-4 transition-transform group-hover:scale-110" />
+            <span>Katalog</span>
           </Link>
         </header>
 
@@ -198,33 +218,193 @@ function H18DetailPage() {
               )}
             </div>
 
-            {/* Tags Pills linked to Genre Detail */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mt-1">
-              {detail.tags.map((tag) => {
-                const slug = tag.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-                return (
-                  <Link
-                    key={tag.name}
-                    to="/h-genre-detail/$genre"
-                    params={{ genre: slug }}
-                    className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-[#ff2d78]/25 border border-white/10 hover:border-[#ff2d78]/50 text-xs text-slate-300 hover:text-white font-medium transition-all"
-                  >
-                    #{tag.name}
-                  </Link>
-                )
-              })}
-            </div>
+            {/* Reading Progress Info & Progress Bar (with explicit percentage) */}
+            {hasProgress && (
+              <div className="flex flex-col gap-2 p-3.5 rounded-2xl bg-gradient-to-r from-[#ff2d78]/15 via-purple-500/10 to-transparent border border-[#ff2d78]/35 max-w-lg mt-1 text-left">
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="text-slate-300 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#ff2d78] animate-pulse" />
+                    Progress Membaca
+                  </span>
+                  <span className="text-[#ff2d78] text-sm font-black">
+                    {historyItem.progress}%
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden border border-white/10">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#ff2d78] to-pink-400 rounded-full transition-all duration-300 shadow-sm shadow-[#ff2d78]/50"
+                    style={{ width: `${historyItem.progress}%` }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                  <span>Halaman {historyItem.last_page || 1} dari {detail.page_count}</span>
+                  <span className="text-[#ff2d78] font-semibold">
+                    {historyItem.progress >= 100 ? 'Selesai Dibaca' : 'Sedang Dibaca'}
+                  </span>
+                </div>
+              </div>
+            )}
 
-            {/* Big Action Button: Baca Sekarang in Solid Pink */}
-            <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
+            {/* Big Action Button: Baca Sekarang / Lanjutkan Membaca in Solid Pink */}
+            <div className="mt-2 flex flex-col sm:flex-row items-center gap-3">
               <button
                 type="button"
                 onClick={handleStartRead}
                 className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#ff2d78] hover:bg-[#e02068] text-white font-bold text-sm sm:text-base transition-all shadow-xl shadow-[#ff2d78]/40 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
                 <BookText className="w-5 h-5" />
-                <span>Baca Komik Sekarang</span>
+                <span>
+                  {hasProgress
+                    ? `Lanjutkan Membaca (${historyItem.progress}%)`
+                    : 'Baca Komik Sekarang'}
+                </span>
               </button>
+            </div>
+
+            {/* Comprehensive Classified Metadata (Author, Group, Parody, Character, Genre, Format) */}
+            <div className="flex flex-col gap-3 pt-3 text-left">
+              {/* Authors / Artists */}
+              {artists.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold text-white min-w-16 shrink-0">
+                    Author / Artist:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {artists.map((a) => (
+                      <Link
+                        key={a.name}
+                        to="/h-explore"
+                        search={{ artist: a.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') }}
+                        className="px-2.5 py-1 bg-[#ff2d78]/20 hover:bg-[#ff2d78]/35 border border-[#ff2d78]/50 hover:border-[#ff2d78] rounded-lg text-xs font-semibold text-pink-200 hover:text-white transition-all cursor-pointer shadow-xs"
+                      >
+                        {a.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Circles / Groups */}
+              {groups.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold text-white min-w-16 shrink-0">
+                    Group:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {groups.map((g) => (
+                      <Link
+                        key={g.name}
+                        to="/h-explore"
+                        search={{ q: `group:"${g.name}"` }}
+                        className="px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all"
+                      >
+                        {g.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Parodies / Original Series */}
+              {parodies.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold text-white min-w-16 shrink-0">
+                    Parodi:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {parodies.map((p) => (
+                      <Link
+                        key={p.name}
+                        to="/h-explore"
+                        search={{ q: `parody:"${p.name}"` }}
+                        className="px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all"
+                      >
+                        {p.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Characters */}
+              {characters.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold text-white min-w-16 shrink-0">
+                    Karakter:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {characters.map((c) => (
+                      <Link
+                        key={c.name}
+                        to="/h-explore"
+                        search={{ q: `character:"${c.name}"` }}
+                        className="px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all"
+                      >
+                        {c.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Genres & Tags */}
+              {genres.length > 0 && (
+                <div className="flex items-start gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold text-white min-w-16 shrink-0 pt-1">
+                    Genre / Tag:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap flex-1">
+                    {genres.map((tag) => {
+                      const slug = tag.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                      return (
+                        <Link
+                          key={tag.name}
+                          to="/h-genre-detail/$genre"
+                          params={{ genre: slug }}
+                          className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-[#ff2d78]/25 border border-white/10 hover:border-[#ff2d78]/50 text-xs text-slate-300 hover:text-white font-medium transition-all"
+                        >
+                          #{tag.name}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Categories & Languages */}
+              {(categories.length > 0 || languages.length > 0) && (
+                <div className="flex items-center gap-4 flex-wrap pt-1 text-xs text-slate-400">
+                  {categories.length > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-slate-300">Format:</span>
+                      {categories.map((cat) => (
+                        <Link
+                          key={cat.name}
+                          to="/h-explore"
+                          search={{ category: cat.name.toLowerCase() }}
+                          className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-white font-medium border border-white/10 transition-colors"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                  {languages.length > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-slate-300">Bahasa:</span>
+                      {languages.map((lang) => (
+                        <span
+                          key={lang.name}
+                          className="px-2 py-0.5 rounded bg-white/5 text-slate-300 font-medium border border-white/10"
+                        >
+                          {lang.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

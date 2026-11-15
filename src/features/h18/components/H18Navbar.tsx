@@ -6,7 +6,9 @@ export default function H18Navbar() {
 
   const hideNavbar =
     location.pathname.startsWith('/h-read') ||
-    location.pathname.startsWith('/h18/read')
+    location.pathname.startsWith('/h18/read') ||
+    location.pathname.startsWith('/h-detail') ||
+    location.pathname.startsWith('/h18/detail')
 
   return (
     <Activity mode={hideNavbar ? 'hidden' : 'visible'}>

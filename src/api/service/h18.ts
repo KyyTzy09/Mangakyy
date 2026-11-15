@@ -199,7 +199,8 @@ export class H18Service {
         queryParts.push(`language:${params.language}`)
       }
       if (params.artist) {
-        queryParts.push(`artist:"${params.artist.replace(/"/g, '')}"`)
+        const cleanA = params.artist.replace(/-/g, ' ').replace(/"/g, '').trim()
+        queryParts.push(`artist:"${cleanA}"`)
       }
       if (params.parody) {
         queryParts.push(`parody:"${params.parody.replace(/"/g, '')}"`)

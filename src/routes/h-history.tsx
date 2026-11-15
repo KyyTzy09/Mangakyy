@@ -177,6 +177,23 @@ function H18HistoryPage() {
                     <BookOpen className="w-3 h-3 text-[#ff2d78]" />
                     <span>{item.page_count} P</span>
                   </div>
+
+                  {/* Reading Progress Percentage Badge */}
+                  {item.progress !== undefined && item.progress > 0 && (
+                    <div className="absolute bottom-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/85 backdrop-blur-sm text-[10px] font-black text-[#ff2d78] border border-[#ff2d78]/40 shadow-xs">
+                      <span>{item.progress}%</span>
+                    </div>
+                  )}
+
+                  {/* Reading Progress Bar along bottom edge of thumbnail */}
+                  {item.progress !== undefined && item.progress > 0 && (
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-black/60 overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#ff2d78] to-pink-400"
+                        style={{ width: `${item.progress}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Details */}
@@ -185,7 +202,11 @@ function H18HistoryPage() {
                     {item.title}
                   </h3>
                   <div className="flex items-center justify-between text-[11px] text-slate-400 mt-1">
-                    <span className="text-[10px] text-slate-500">ID: #{item.id}</span>
+                    <span className="text-[10px] text-slate-400 font-medium">
+                      {item.progress !== undefined && item.progress > 0
+                        ? `Hal. ${item.last_page || 1} • ${item.progress}%`
+                        : `ID: #${item.id}`}
+                    </span>
                     <span className="text-[10px] text-[#ff2d78] font-medium">
                       {new Date(item.read_at).toLocaleDateString('id-ID', {
                         day: 'numeric',
