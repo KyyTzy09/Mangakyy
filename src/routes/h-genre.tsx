@@ -177,10 +177,31 @@ function H18GenreIndexPage() {
   const [inputVal, setInputVal] = useState(search.q || '')
   const [activeCuratedCategory, setActiveCuratedCategory] = useState<string>('all')
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
+  const tabsContainerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     setInputVal(search.q || '')
   }, [search.q])
+
+  // Otomatis geser / center tab aktif jika layar tidak cukup (persis seperti GenreSection di halaman utama '/')
+  useEffect(() => {
+    const currentTab = search.type || 'all'
+    const element = tabRefs.current[currentTab]
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      })
+    }
+  }, [search.type])
+
+  const handleTabsWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (e.deltaY !== 0 && tabsContainerRef.current) {
+      tabsContainerRef.current.scrollLeft += e.deltaY
+    }
+  }
 
   // 1. TanStack Query for Grouped Taxonomy (50 items per category) with caching
   const groupedQuery = useQuery({
@@ -293,6 +314,14 @@ function H18GenreIndexPage() {
   const handleTabChange = (typeVal: (typeof TAXONOMY_TABS)[number]['value']) => {
     setInputVal('')
     updateSearch({ type: typeVal, q: '', page: 1 })
+    const element = tabRefs.current[typeVal]
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      })
+    }
   }
 
   const handleSortToggle = (newSort: 'popular' | 'name') => {
@@ -413,23 +442,30 @@ function H18GenreIndexPage() {
         </div>
 
         {/* 2. Taxonomy Category Tabs (Semua Dikelompokkan, Genre, Karakter, Artis, Parodi, Grup) */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div
+          ref={tabsContainerRef}
+          onWheel={handleTabsWheel}
+          className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] touch-pan-x"
+        >
           {TAXONOMY_TABS.map((tab) => {
             const Icon = tab.icon
             const isActive = search.type === tab.value
             return (
               <button
                 key={tab.value}
+                ref={(el) => {
+                  tabRefs.current[tab.value] = el
+                }}
                 type="button"
                 onClick={() => handleTabChange(tab.value)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border select-none ${
                   isActive
                     ? 'bg-[#ff2d78] text-white border-[#ff2d78] shadow-md shadow-[#ff2d78]/30 font-extrabold'
                     : 'bg-[#120a18] text-slate-400 hover:text-white hover:bg-white/10 border-white/10'
                 }`}
               >
                 <Icon
-                  className={`w-3.5 h-3.5 ${
+                  className={`w-3.5 h-3.5 shrink-0 ${
                     isActive ? 'text-white' : 'text-[#ff2d78]'
                   }`}
                 />
