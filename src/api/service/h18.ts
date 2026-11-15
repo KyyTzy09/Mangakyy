@@ -1,5 +1,12 @@
 import https from 'node:https'
-import type { H18ComicDetail, H18ComicItem, H18SearchResponse, H18Tag } from '@/features/h18/types'
+import type {
+  H18ComicDetail,
+  H18ComicItem,
+  H18PaginatedTagsResult,
+  H18SearchResponse,
+  H18Tag,
+  H18TagItem,
+} from '@/features/h18/types'
 import { H18_GENRE_CATEGORIES } from '@/features/h18/data/tags'
 
 const CLOUDFLARE_IPS = ['104.21.19.217', '172.67.190.60', '213.152.165.54']
@@ -14,6 +21,14 @@ export interface H18SearchParams {
   artist?: string
   parody?: string
   character?: string
+  group?: string
+}
+
+interface RequestOptions {
+  method?: 'GET' | 'POST'
+  body?: string
+  headers?: Record<string, string>
+  timeout?: number
 }
 
 interface CacheEntry<T> {
@@ -24,30 +39,46 @@ interface CacheEntry<T> {
 // In-memory cache for API queries
 const searchCache = new Map<string, CacheEntry<H18SearchResponse>>()
 const detailCache = new Map<string, CacheEntry<H18ComicDetail>>()
+const tagsCache = new Map<string, CacheEntry<H18PaginatedTagsResult>>()
+const searchTagsCache = new Map<string, CacheEntry<H18TagItem[]>>()
 
 const SEARCH_CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 const DETAIL_CACHE_TTL = 30 * 60 * 1000 // 30 minutes
+const TAGS_CACHE_TTL = 60 * 60 * 1000 // 60 minutes
+const SEARCH_TAGS_CACHE_TTL = 15 * 60 * 1000 // 15 minutes
 
 /**
- * Perform HTTPS GET with direct connection and Cloudflare IP fallbacks
+ * Perform HTTPS request with direct connection and Cloudflare IP fallbacks
  */
-function requestWithFallback(path: string): Promise<string> {
+function requestWithFallback(path: string, options?: RequestOptions): Promise<string> {
+  const method = options?.method || 'GET'
+  const body = options?.body
+  const timeout = options?.timeout || 6000
+
   // 1. Try direct HTTPS request first
   return new Promise((resolve, reject) => {
-    const directReq = https.get(
+    const reqHeaders: Record<string, string> = {
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      Accept: 'application/json',
+      ...options?.headers,
+    }
+    if (body) {
+      reqHeaders['Content-Type'] = 'application/json'
+      reqHeaders['Content-Length'] = Buffer.byteLength(body).toString()
+    }
+
+    const directReq = https.request(
       `https://nhentai.net${path}`,
       {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-          Accept: 'application/json',
-        },
-        timeout: 6000,
+        method,
+        headers: reqHeaders,
+        timeout,
       },
       (res) => {
         if (res.statusCode !== 200) {
           directReq.destroy()
-          fallbackIps(path).then(resolve).catch(reject)
+          fallbackIps(path, options).then(resolve).catch(reject)
           return
         }
         let raw = ''
@@ -59,36 +90,53 @@ function requestWithFallback(path: string): Promise<string> {
     )
 
     directReq.on('error', () => {
-      fallbackIps(path).then(resolve).catch(reject)
+      fallbackIps(path, options).then(resolve).catch(reject)
     })
 
     directReq.on('timeout', () => {
       directReq.destroy()
-      fallbackIps(path).then(resolve).catch(reject)
+      fallbackIps(path, options).then(resolve).catch(reject)
     })
+
+    if (body) {
+      directReq.write(body)
+    }
+    directReq.end()
   })
 }
 
 /**
  * Fallback to Cloudflare edge IPs when direct DNS / ISP is hijacked
  */
-async function fallbackIps(path: string): Promise<string> {
+async function fallbackIps(path: string, options?: RequestOptions): Promise<string> {
+  const method = options?.method || 'GET'
+  const body = options?.body
+  const timeout = options?.timeout || 6000
+
   for (const ip of CLOUDFLARE_IPS) {
     try {
       const data = await new Promise<string>((resolve, reject) => {
+        const reqHeaders: Record<string, string> = {
+          Host: 'nhentai.net',
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          Accept: 'application/json',
+          ...options?.headers,
+        }
+        if (body) {
+          reqHeaders['Content-Type'] = 'application/json'
+          reqHeaders['Content-Length'] = Buffer.byteLength(body).toString()
+        }
+
         const req = https.request(
           {
             host: ip,
             port: 443,
             path,
+            method,
             servername: 'nhentai.net',
-            headers: {
-              Host: 'nhentai.net',
-              'User-Agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-              Accept: 'application/json',
-            },
-            timeout: 6000,
+            headers: reqHeaders,
+            timeout,
           },
           (res) => {
             if (res.statusCode !== 200) {
@@ -107,6 +155,9 @@ async function fallbackIps(path: string): Promise<string> {
           req.destroy()
           reject(new Error('timeout'))
         })
+        if (body) {
+          req.write(body)
+        }
         req.end()
       })
       return data
@@ -207,6 +258,9 @@ export class H18Service {
       }
       if (params.character) {
         queryParts.push(`character:"${params.character.replace(/"/g, '')}"`)
+      }
+      if (params.group) {
+        queryParts.push(`group:"${params.group.replace(/"/g, '')}"`)
       }
       if (params.tags && Array.isArray(params.tags)) {
         params.tags.forEach((t) => {
@@ -379,6 +433,169 @@ export class H18Service {
    */
   public getGenreCategories() {
     return H18_GENRE_CATEGORIES
+  }
+
+  /**
+   * Ekstraksi tag lokal dari H18_GENRE_CATEGORIES sebagai fallback offline / rate limit
+   */
+  public getLocalFallbackTags(
+    sort: 'popular' | 'name' = 'popular',
+    page = 1,
+    perPage = 60
+  ): H18PaginatedTagsResult {
+    const fallbackAllTags: H18TagItem[] = []
+    const seenSlugs = new Set<string>()
+
+    H18_GENRE_CATEGORIES.forEach((cat) => {
+      cat.tags.forEach((t) => {
+        if (!seenSlugs.has(t.slug)) {
+          seenSlugs.add(t.slug)
+          const numCount = parseInt(t.count.replace(/[^0-9]/g, ''), 10) || 1000
+          fallbackAllTags.push({
+            id: t.slug,
+            type: 'tag',
+            name: t.name,
+            slug: t.slug,
+            count: numCount,
+            description: null,
+          })
+        }
+      })
+    })
+
+    if (sort === 'name') {
+      fallbackAllTags.sort((a, b) => a.name.localeCompare(b.name))
+    } else {
+      fallbackAllTags.sort((a, b) => b.count - a.count)
+    }
+
+    const total = fallbackAllTags.length
+    const numPages = Math.max(1, Math.ceil(total / perPage))
+    const safePage = Math.min(Math.max(1, page), numPages)
+    const start = (safePage - 1) * perPage
+    const paged = fallbackAllTags.slice(start, start + perPage)
+
+    return {
+      tags: paged,
+      total,
+      num_pages: numPages,
+      current_page: safePage,
+      per_page: perPage,
+    }
+  }
+
+  /**
+   * Mengambil daftar live tag/genre dengan paginasi dan sorting dari nhentai API v2
+   */
+  public async getTagsPaginated(params?: {
+    type?: string
+    sort?: 'popular' | 'name'
+    page?: number
+    per_page?: number
+  }): Promise<H18PaginatedTagsResult> {
+    const rawType = (params?.type || 'tag').toLowerCase().trim()
+    const validTypes = ['tag', 'artist', 'parody', 'character', 'group', 'category']
+    const type = validTypes.includes(rawType) ? rawType : 'tag'
+    const sort = params?.sort === 'name' ? 'name' : 'popular'
+    const page = Math.max(1, params?.page || 1)
+    const perPage = Math.min(120, Math.max(1, params?.per_page || 60))
+
+    const cacheKey = `${type}_${sort}_${page}_${perPage}`
+    const cached = tagsCache.get(cacheKey)
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data
+    }
+
+    try {
+      const raw = await requestWithFallback(
+        `/api/v2/tags/${type}?sort=${sort}&page=${page}&per_page=${perPage}`
+      )
+      const data = JSON.parse(raw)
+      const list = Array.isArray(data.result) ? data.result : []
+      const tags: H18TagItem[] = list.map((item: any) => ({
+        id: item.id || item.slug,
+        type: item.type || type,
+        name: item.name,
+        slug: item.slug,
+        count: typeof item.count === 'number' ? item.count : 0,
+        description: item.description || null,
+      }))
+
+      const result: H18PaginatedTagsResult = {
+        tags,
+        total: typeof data.total === 'number' ? data.total : tags.length,
+        num_pages: typeof data.num_pages === 'number' ? data.num_pages : 1,
+        current_page: page,
+        per_page: perPage,
+      }
+
+      tagsCache.set(cacheKey, {
+        data: result,
+        expiresAt: Date.now() + TAGS_CACHE_TTL,
+      })
+
+      return result
+    } catch {
+      return this.getLocalFallbackTags(sort, page, perPage)
+    }
+  }
+
+  /**
+   * Pencarian langsung live tag/genre/creator/parody dengan POST /api/v2/tags/search
+   */
+  public async searchTags(params: {
+    query: string
+    type?: string
+    limit?: number
+  }): Promise<H18TagItem[]> {
+    const q = (params.query || '').trim()
+    if (!q) return []
+
+    const rawType = params.type ? params.type.toLowerCase().trim() : undefined
+    const limit = Math.min(50, Math.max(1, params.limit || 20))
+    const cacheKey = `${rawType || 'all'}_${q.toLowerCase()}_${limit}`
+
+    const cached = searchTagsCache.get(cacheKey)
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data
+    }
+
+    try {
+      const payload = JSON.stringify({
+        query: q,
+        ...(rawType ? { type: rawType } : {}),
+        limit,
+      })
+      const raw = await requestWithFallback('/api/v2/tags/search', {
+        method: 'POST',
+        body: payload,
+      })
+      const data = JSON.parse(raw)
+      const list = Array.isArray(data) ? data : []
+      const tags: H18TagItem[] = list.map((item: any) => ({
+        id: item.id || item.slug,
+        type: item.type || rawType || 'tag',
+        name: item.name,
+        slug: item.slug,
+        count: typeof item.count === 'number' ? item.count : 0,
+        description: item.description || null,
+      }))
+
+      searchTagsCache.set(cacheKey, {
+        data: tags,
+        expiresAt: Date.now() + SEARCH_TAGS_CACHE_TTL,
+      })
+
+      return tags
+    } catch {
+      const fallback = this.getLocalFallbackTags('popular', 1, 300).tags
+      const filtered = fallback.filter((t) => {
+        const nameMatches = t.name.toLowerCase().includes(q.toLowerCase())
+        const slugMatches = t.slug.toLowerCase().includes(q.toLowerCase())
+        return nameMatches || slugMatches
+      })
+      return filtered.slice(0, limit)
+    }
   }
 }
 

@@ -13,6 +13,20 @@ export const getH18ListSchema = z.object({
   artist: z.string().optional(),
   parody: z.string().optional(),
   character: z.string().optional(),
+  group: z.string().optional(),
+})
+
+export const getH18TagsPaginatedSchema = z.object({
+  type: z.string().optional().default('tag'),
+  sort: z.enum(['popular', 'name']).optional().default('popular'),
+  page: z.number().optional().default(1),
+  per_page: z.number().optional().default(60),
+})
+
+export const searchH18TagsSchema = z.object({
+  query: z.string(),
+  type: z.string().optional(),
+  limit: z.number().optional().default(20),
 })
 
 export const getH18DetailSchema = z.object({
@@ -24,5 +38,7 @@ export const verifyH18PasscodeSchema = z.object({
 })
 
 export type GetH18ListInput = z.infer<typeof getH18ListSchema>
+export type GetH18TagsPaginatedInput = z.infer<typeof getH18TagsPaginatedSchema>
+export type SearchH18TagsInput = z.infer<typeof searchH18TagsSchema>
 export type GetH18DetailInput = z.infer<typeof getH18DetailSchema>
 export type VerifyH18PasscodeInput = z.infer<typeof verifyH18PasscodeSchema>

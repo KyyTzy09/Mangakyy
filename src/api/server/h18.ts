@@ -5,6 +5,8 @@ import { h18Service } from '@/api/service/h18'
 import {
   getH18DetailSchema,
   getH18ListSchema,
+  getH18TagsPaginatedSchema,
+  searchH18TagsSchema,
   verifyH18PasscodeSchema,
 } from '@/shared/schemas/h18.schema'
 
@@ -53,6 +55,18 @@ export const getH18Detail = createServerFn()
 export const getH18GenreList = createServerFn()
   .handler(async () => {
     return h18Service.getGenreCategories()
+  })
+
+export const getH18LiveTags = createServerFn()
+  .validator(getH18TagsPaginatedSchema)
+  .handler(async ({ data }) => {
+    return h18Service.getTagsPaginated(data)
+  })
+
+export const searchH18Tags = createServerFn()
+  .validator(searchH18TagsSchema)
+  .handler(async ({ data }) => {
+    return h18Service.searchTags(data)
   })
 
 export const verifyH18Passcode = createServerFn()

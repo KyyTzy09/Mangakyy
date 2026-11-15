@@ -39,4 +39,29 @@ describe('H18 Service live query', () => {
       expect(matching.length, `Letter ${letter} should have at least one tag`).toBeGreaterThan(0)
     })
   })
+
+  it('should fetch paginated tags with live/fallback tags structure', async () => {
+    const res = await h18Service.getTagsPaginated({ type: 'tag', page: 1, per_page: 20 })
+    expect(res).toBeDefined()
+    expect(Array.isArray(res.tags)).toBe(true)
+    expect(res.tags.length).toBeGreaterThan(0)
+    expect(res.total).toBeGreaterThan(0)
+    expect(res.num_pages).toBeGreaterThan(0)
+    expect(res.current_page).toBe(1)
+
+    const first = res.tags[0]
+    expect(first.name).toBeDefined()
+    expect(first.slug).toBeDefined()
+    expect(typeof first.count).toBe('number')
+  }, 15000)
+
+  it('should search tags and return matching results', async () => {
+    const results = await h18Service.searchTags({ query: 'school', limit: 10 })
+    expect(Array.isArray(results)).toBe(true)
+    expect(results.length).toBeGreaterThan(0)
+    const match = results.some(
+      (t) => t.name.toLowerCase().includes('school') || t.slug.includes('school')
+    )
+    expect(match).toBe(true)
+  }, 15000)
 })

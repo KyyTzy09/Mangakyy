@@ -38,3 +38,20 @@ export interface H18SearchResponse {
   current_page: number
   per_page: number
 }
+
+export interface H18TagItem {
+  id: number | string
+  type: string
+  name: string
+  slug: string
+  count: number
+  description?: string | null
+}
+
+export interface H18PaginatedTagsResult {
+  tags: H18TagItem[]
+  total: number
+  num_pages: number
+  current_page: number
+  per_page: number
+}

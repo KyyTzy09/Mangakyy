@@ -13,7 +13,7 @@ import {
   Check,
 } from 'lucide-react'
 import { z } from 'zod'
-import { getH18List, getH18GenreList } from '@/api/server/h18'
+import { getH18List, getH18GenreList, searchH18Tags } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 import H18Card from '@/features/h18/components/H18Card'
@@ -252,6 +252,9 @@ function H18ExplorePage() {
     search.tag ? `#${search.tag}` : search.q || ''
   )
   const [debouncedTagTerm, setDebouncedTagTerm] = useState<string | null>(null)
+  const [liveSuggestions, setLiveSuggestions] = useState<
+    Array<{ name: string; slug: string; count: string; category: string }>
+  >([])
   const [isSuggestionOpen, setIsSuggestionOpen] = useState(false)
   const searchContainerRef = useRef<HTMLDivElement>(null)
 
@@ -276,13 +279,43 @@ function H18ExplorePage() {
       const timer = setTimeout(() => {
         setDebouncedTagTerm(rawTerm)
         setIsSuggestionOpen(true)
-      }, 200)
+      }, 250)
       return () => clearTimeout(timer)
     } else {
       setDebouncedTagTerm(null)
       setIsSuggestionOpen(false)
     }
   }, [inputQuery])
+
+  // Query live tags from API when typing #tag
+  useEffect(() => {
+    if (debouncedTagTerm === null || !debouncedTagTerm.trim()) {
+      setLiveSuggestions([])
+      return
+    }
+
+    const term = debouncedTagTerm.trim()
+    let isMounted = true
+
+    searchH18Tags({ data: { query: term, limit: 15 } })
+      .then((tags) => {
+        if (!isMounted || !Array.isArray(tags)) return
+        const mapped = tags.map((t) => ({
+          name: t.name,
+          slug: t.slug,
+          count: typeof t.count === 'number' ? `${(t.count / 1000).toFixed(1)}k` : String(t.count),
+          category: t.type || 'Tag',
+        }))
+        setLiveSuggestions(mapped)
+      })
+      .catch(() => {
+        // Fallback to local
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [debouncedTagTerm])
 
   // Close suggestions on outside click
   useEffect(() => {
@@ -295,14 +328,27 @@ function H18ExplorePage() {
     return () => document.removeEventListener('mousedown', handleOutsideClick)
   }, [])
 
-  // Filtered tag suggestions based on debounced term
+  // Filtered tag suggestions combining live search results and local database
   const suggestedTags = useMemo(() => {
     if (debouncedTagTerm === null) return []
     const term = debouncedTagTerm
-    return allFlattenedTags
+
+    const mergedMap = new Map<string, { name: string; slug: string; count: string; category: string }>()
+
+    liveSuggestions.forEach((t) => {
+      mergedMap.set(t.slug, t)
+    })
+
+    allFlattenedTags
       .filter((t) => !term || t.name.toLowerCase().includes(term) || t.slug.includes(term))
-      .slice(0, 12)
-  }, [debouncedTagTerm, allFlattenedTags])
+      .forEach((t) => {
+        if (!mergedMap.has(t.slug)) {
+          mergedMap.set(t.slug, t)
+        }
+      })
+
+    return Array.from(mergedMap.values()).slice(0, 15)
+  }, [debouncedTagTerm, liveSuggestions, allFlattenedTags])
 
   if (!isAuthenticated) {
     return <H18LockedGate onSuccess={() => window.location.reload()} />
