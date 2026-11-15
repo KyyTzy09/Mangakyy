@@ -4,6 +4,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { h18Service } from '@/api/service/h18'
 import {
   getH18DetailSchema,
+  getH18GroupedTagsSchema,
   getH18ListSchema,
   getH18TagsPaginatedSchema,
   searchH18TagsSchema,
@@ -61,6 +62,12 @@ export const getH18LiveTags = createServerFn()
   .validator(getH18TagsPaginatedSchema)
   .handler(async ({ data }) => {
     return h18Service.getTagsPaginated(data)
+  })
+
+export const getH18GroupedTags = createServerFn()
+  .validator(getH18GroupedTagsSchema)
+  .handler(async ({ data }) => {
+    return h18Service.getGroupedTags(data)
   })
 
 export const searchH18Tags = createServerFn()

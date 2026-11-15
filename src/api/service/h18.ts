@@ -2,6 +2,7 @@ import https from 'node:https'
 import type {
   H18ComicDetail,
   H18ComicItem,
+  H18GroupedTagsResult,
   H18PaginatedTagsResult,
   H18SearchResponse,
   H18Tag,
@@ -40,7 +41,16 @@ interface CacheEntry<T> {
 const searchCache = new Map<string, CacheEntry<H18SearchResponse>>()
 const detailCache = new Map<string, CacheEntry<H18ComicDetail>>()
 const tagsCache = new Map<string, CacheEntry<H18PaginatedTagsResult>>()
+const letterTagsCache = new Map<string, CacheEntry<H18PaginatedTagsResult>>()
+const groupedTagsCache = new Map<string, CacheEntry<H18GroupedTagsResult>>()
 const searchTagsCache = new Map<string, CacheEntry<H18TagItem[]>>()
+
+const TAG_LETTER_START_PAGES: Record<string, number> = {
+  A: 1, B: 3, C: 4, D: 6, E: 9, F: 10, G: 13, H: 14,
+  I: 16, J: 17, K: 18, L: 20, M: 21, N: 24, O: 25, P: 26,
+  Q: 28, R: 28, S: 29, T: 33, U: 35, V: 35, W: 36, X: 37,
+  Y: 37, Z: 37,
+}
 
 const SEARCH_CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 const DETAIL_CACHE_TTL = 30 * 60 * 1000 // 30 minutes
@@ -490,15 +500,26 @@ export class H18Service {
   public async getTagsPaginated(params?: {
     type?: string
     sort?: 'popular' | 'name'
+    letter?: string
     page?: number
     per_page?: number
   }): Promise<H18PaginatedTagsResult> {
+    if (params?.letter?.trim()) {
+      return this.getTagsByLetter({
+        type: params.type || 'tag',
+        letter: params.letter.trim(),
+        sort: params.sort,
+        page: params.page,
+        per_page: params.per_page,
+      })
+    }
+
     const rawType = (params?.type || 'tag').toLowerCase().trim()
     const validTypes = ['tag', 'artist', 'parody', 'character', 'group', 'category']
     const type = validTypes.includes(rawType) ? rawType : 'tag'
     const sort = params?.sort === 'name' ? 'name' : 'popular'
     const page = Math.max(1, params?.page || 1)
-    const perPage = Math.min(120, Math.max(1, params?.per_page || 60))
+    const perPage = Math.min(120, Math.max(1, params?.per_page || 50))
 
     const cacheKey = `${type}_${sort}_${page}_${perPage}`
     const cached = tagsCache.get(cacheKey)
@@ -521,8 +542,10 @@ export class H18Service {
         description: item.description || null,
       }))
 
+      const sliced = tags.slice(0, perPage)
+
       const result: H18PaginatedTagsResult = {
-        tags,
+        tags: sliced,
         total: typeof data.total === 'number' ? data.total : tags.length,
         num_pages: typeof data.num_pages === 'number' ? data.num_pages : 1,
         current_page: page,
@@ -538,6 +561,155 @@ export class H18Service {
     } catch {
       return this.getLocalFallbackTags(sort, page, perPage)
     }
+  }
+
+  /**
+   * Mengambil tag berdasarkan awalan huruf (A-Z) dengan pagination dan server caching
+   */
+  public async getTagsByLetter(params: {
+    type?: string
+    letter: string
+    sort?: 'popular' | 'name'
+    page?: number
+    per_page?: number
+  }): Promise<H18PaginatedTagsResult> {
+    const letter = (params.letter || 'A').trim().toUpperCase()[0] || 'A'
+    const rawType = (params.type || 'tag').toLowerCase().trim()
+    const validTypes = ['tag', 'artist', 'parody', 'character', 'group']
+    const type = validTypes.includes(rawType) ? rawType : 'tag'
+    const sort = params.sort === 'name' ? 'name' : 'popular'
+    const page = Math.max(1, params.page || 1)
+    const perPage = Math.min(100, Math.max(1, params.per_page || 50))
+
+    const cacheKey = `letter_${type}_${letter}_${sort}_${page}_${perPage}`
+    const cached = letterTagsCache.get(cacheKey)
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data
+    }
+
+    try {
+      // If sort is popular and page 1: live prefix search returns top 50 items instantly
+      if (sort === 'popular' && page === 1) {
+        const items = await this.searchTags({
+          query: letter.toLowerCase(),
+          type,
+          limit: perPage,
+        })
+        const result: H18PaginatedTagsResult = {
+          tags: items,
+          total: Math.max(items.length, items.length >= perPage ? 150 : items.length),
+          num_pages: items.length >= perPage ? 3 : 1,
+          current_page: 1,
+          per_page: perPage,
+        }
+        letterTagsCache.set(cacheKey, {
+          data: result,
+          expiresAt: Date.now() + TAGS_CACHE_TTL,
+        })
+        return result
+      }
+
+      // Fetch alphabetical pages using seed map
+      const startPage = TAG_LETTER_START_PAGES[letter] || 1
+      const collected: H18TagItem[] = []
+      let p = startPage
+
+      while (p <= startPage + 3) {
+        const raw = await requestWithFallback(`/api/v2/tags/${type}?sort=name&page=${p}`)
+        const data = JSON.parse(raw)
+        const list = Array.isArray(data.result) ? data.result : []
+        if (list.length === 0) break
+
+        const matching = list
+          .filter((item: any) => (item.name || '').toUpperCase().startsWith(letter))
+          .map((item: any) => ({
+            id: item.id || item.slug,
+            type: item.type || type,
+            name: item.name,
+            slug: item.slug,
+            count: typeof item.count === 'number' ? item.count : 0,
+            description: item.description || null,
+          }))
+        collected.push(...matching)
+
+        const lastItemName = (list[list.length - 1]?.name || '').toUpperCase()
+        if (lastItemName > letter) break
+        p++
+      }
+
+      if (sort === 'popular') {
+        collected.sort((a, b) => b.count - a.count)
+      } else {
+        collected.sort((a, b) => a.name.localeCompare(b.name))
+      }
+
+      const total = Math.max(collected.length, 1)
+      const numPages = Math.max(1, Math.ceil(total / perPage))
+      const safePage = Math.min(Math.max(1, page), numPages)
+      const paged = collected.slice((safePage - 1) * perPage, safePage * perPage)
+
+      const result: H18PaginatedTagsResult = {
+        tags: paged,
+        total,
+        num_pages: numPages,
+        current_page: safePage,
+        per_page: perPage,
+      }
+
+      letterTagsCache.set(cacheKey, {
+        data: result,
+        expiresAt: Date.now() + TAGS_CACHE_TTL,
+      })
+
+      return result
+    } catch {
+      return this.getLocalFallbackTags(sort, page, perPage)
+    }
+  }
+
+  /**
+   * Mengambil data taksonomi yang dikelompokkan (Genre, Karakter, Artis, Parodi, Grup)
+   * masing-masing 50 data terambil secara paralel dengan in-memory server cache
+   */
+  public async getGroupedTags(params?: {
+    letter?: string
+    sort?: 'popular' | 'name'
+    page?: number
+    per_page?: number
+  }): Promise<H18GroupedTagsResult> {
+    const letter = params?.letter?.trim().toUpperCase()
+    const sort = params?.sort === 'name' ? 'name' : 'popular'
+    const page = Math.max(1, params?.page || 1)
+    const perPage = Math.min(100, Math.max(1, params?.per_page || 50))
+
+    const cacheKey = `grouped_${letter || 'all'}_${sort}_${page}_${perPage}`
+    const cached = groupedTagsCache.get(cacheKey)
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data
+    }
+
+    const [tagRes, charRes, artistRes, parodyRes, groupRes] = await Promise.all([
+      this.getTagsPaginated({ type: 'tag', letter, sort, page, per_page: perPage }),
+      this.getTagsPaginated({ type: 'character', letter, sort, page, per_page: perPage }),
+      this.getTagsPaginated({ type: 'artist', letter, sort, page, per_page: perPage }),
+      this.getTagsPaginated({ type: 'parody', letter, sort, page, per_page: perPage }),
+      this.getTagsPaginated({ type: 'group', letter, sort, page, per_page: perPage }),
+    ])
+
+    const result: H18GroupedTagsResult = {
+      tag: tagRes,
+      character: charRes,
+      artist: artistRes,
+      parody: parodyRes,
+      group: groupRes,
+    }
+
+    groupedTagsCache.set(cacheKey, {
+      data: result,
+      expiresAt: Date.now() + TAGS_CACHE_TTL,
+    })
+
+    return result
   }
 
   /**

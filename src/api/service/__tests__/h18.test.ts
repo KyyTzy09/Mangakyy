@@ -64,4 +64,40 @@ describe('H18 Service live query', () => {
     )
     expect(match).toBe(true)
   }, 15000)
+
+  it('should fetch tags by letter with pagination', async () => {
+    const res = await h18Service.getTagsByLetter({
+      type: 'tag',
+      letter: 'B',
+      page: 1,
+      per_page: 50,
+    })
+    expect(res).toBeDefined()
+    expect(Array.isArray(res.tags)).toBe(true)
+    expect(res.tags.length).toBeGreaterThan(0)
+    expect(res.current_page).toBe(1)
+    expect(res.per_page).toBe(50)
+    const allStartWithB = res.tags.every((t) => t.name.toUpperCase().startsWith('B'))
+    expect(allStartWithB).toBe(true)
+  }, 15000)
+
+  it('should fetch grouped taxonomy for 5 categories (tag, character, artist, parody, group)', async () => {
+    const grouped = await h18Service.getGroupedTags({
+      sort: 'popular',
+      page: 1,
+      per_page: 50,
+    })
+    expect(grouped).toBeDefined()
+    expect(grouped.tag).toBeDefined()
+    expect(grouped.character).toBeDefined()
+    expect(grouped.artist).toBeDefined()
+    expect(grouped.parody).toBeDefined()
+    expect(grouped.group).toBeDefined()
+
+    expect(grouped.tag.tags.length).toBeGreaterThan(0)
+    expect(grouped.character.tags.length).toBeGreaterThan(0)
+    expect(grouped.artist.tags.length).toBeGreaterThan(0)
+    expect(grouped.parody.tags.length).toBeGreaterThan(0)
+    expect(grouped.group.tags.length).toBeGreaterThan(0)
+  }, 20000)
 })

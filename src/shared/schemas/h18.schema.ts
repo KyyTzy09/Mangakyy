@@ -19,14 +19,22 @@ export const getH18ListSchema = z.object({
 export const getH18TagsPaginatedSchema = z.object({
   type: z.string().optional().default('tag'),
   sort: z.enum(['popular', 'name']).optional().default('popular'),
+  letter: z.string().optional(),
   page: z.number().optional().default(1),
-  per_page: z.number().optional().default(60),
+  per_page: z.number().optional().default(50),
+})
+
+export const getH18GroupedTagsSchema = z.object({
+  letter: z.string().optional(),
+  sort: z.enum(['popular', 'name']).optional().default('popular'),
+  page: z.number().optional().default(1),
+  per_page: z.number().optional().default(50),
 })
 
 export const searchH18TagsSchema = z.object({
   query: z.string(),
   type: z.string().optional(),
-  limit: z.number().optional().default(20),
+  limit: z.number().optional().default(50),
 })
 
 export const getH18DetailSchema = z.object({
@@ -39,6 +47,7 @@ export const verifyH18PasscodeSchema = z.object({
 
 export type GetH18ListInput = z.infer<typeof getH18ListSchema>
 export type GetH18TagsPaginatedInput = z.infer<typeof getH18TagsPaginatedSchema>
+export type GetH18GroupedTagsInput = z.infer<typeof getH18GroupedTagsSchema>
 export type SearchH18TagsInput = z.infer<typeof searchH18TagsSchema>
 export type GetH18DetailInput = z.infer<typeof getH18DetailSchema>
 export type VerifyH18PasscodeInput = z.infer<typeof verifyH18PasscodeSchema>

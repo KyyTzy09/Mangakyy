@@ -55,3 +55,11 @@ export interface H18PaginatedTagsResult {
   current_page: number
   per_page: number
 }
+
+export interface H18GroupedTagsResult {
+  tag: H18PaginatedTagsResult
+  character: H18PaginatedTagsResult
+  artist: H18PaginatedTagsResult
+  parody: H18PaginatedTagsResult
+  group: H18PaginatedTagsResult
+}
