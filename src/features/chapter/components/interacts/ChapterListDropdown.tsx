@@ -11,13 +11,21 @@ import { Input } from '@/shared/shadcn/input'
 import { useDebounce } from '@/shared/hooks/useDebounce'
 
 interface Props {
-    chapters: ChapterListType[]
-    comic: ComicType
-    isOpen: boolean
-    setIsOpen: Dispatch<SetStateAction<boolean>>
+  chapters: ChapterListType[]
+  comic: ComicType
+  isOpen: boolean
+  setIsOpen: Dispatch<SetStateAction<boolean>>
+  readChapterIds?: Set<string>
+  latestChapterId?: string
 }
 
-export default function ChapterListDropdown({ comic, isOpen, setIsOpen }: Props) {
+export default function ChapterListDropdown({
+  comic,
+  isOpen,
+  setIsOpen,
+  readChapterIds,
+  latestChapterId,
+}: Props) {
     const [search, setSearch] = useState<string>('')
     const debounce = useDebounce(search, 1000)
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfiniteChapter(comic.manga_id)
@@ -62,10 +70,16 @@ export default function ChapterListDropdown({ comic, isOpen, setIsOpen }: Props)
                                 className="flex flex-col w-full max-h-[60vh] overflow-y-auto">
                                 {chapters?.map((chapterItem, i) => (
                                     <ChapterList
-                                        key={chapterItem?.chapter_id}
+                                        key={chapterItem?.chapter_id || i}
                                         index={i}
                                         chapter={chapterItem!}
                                         comic={comic}
+                                        isLastRead={latestChapterId === chapterItem?.chapter_id}
+                                        isRead={
+                                            chapterItem?.chapter_id
+                                                ? readChapterIds?.has(String(chapterItem.chapter_id))
+                                                : false
+                                        }
                                     />
                                 ))}
                                 <div

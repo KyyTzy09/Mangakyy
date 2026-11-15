@@ -1,15 +1,11 @@
 import SortHistoryButton from '@/features/history/components/buttons/SortHistoryButton'
-import type {SortType} from '@/features/history/components/buttons/SortHistoryButton';
+import type { SortType } from '@/features/history/components/buttons/SortHistoryButton'
 import ChapterHistoryCard from '@/features/history/components/cards/ChapterHistoryCard'
 import { Button } from '@/shared/shadcn/button'
 import { Label } from '@/shared/shadcn/label'
 import { Separator } from '@/shared/shadcn/separator'
-import {
-  getHistoryByComicId
-  
-  
-} from '@/shared/utils/history'
-import type {NewChapterHistory, NewComicHistory} from '@/shared/utils/history';
+import { getHistoryByComicId } from '@/shared/utils/history'
+import type { NewChapterHistory, NewComicHistory } from '@/shared/utils/history'
 import { useParams, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, History } from 'lucide-react'
 import { useState } from 'react'
@@ -20,7 +16,11 @@ export default function HistoryDetailPage() {
 
   const history = getHistoryByComicId(params.mangaId)
   const [sortedChapters, setSortedChapters] = useState<NewChapterHistory[]>(
-    history?.chapters || [],
+    history?.chapters
+      ? [...history.chapters].sort(
+          (a, b) => new Date(b.last_read_at).getTime() - new Date(a.last_read_at).getTime()
+        )
+      : []
   )
 
   const sortChapters = (sortType: SortType) => {
@@ -32,7 +32,7 @@ export default function HistoryDetailPage() {
       const timeA = new Date(a.last_read_at).getTime()
       const timeB = new Date(b.last_read_at).getTime()
 
-      return sortType === 'newest' ? timeA - timeB : timeB - timeA
+      return sortType === 'newest' ? timeB - timeA : timeA - timeB
     })
 
     setSortedChapters(sorted)
@@ -58,16 +58,23 @@ export default function HistoryDetailPage() {
         <p className="text-sm text-gray-400">Chapter yang sudah dibaca:</p>
         <SortHistoryButton onChange={(type) => sortChapters(type)} />
       </section>
-      <section className="grid grid-cols-1 sm:grid-cols-4 items-start justify-start w-full gap-4">
-        {sortedChapters?.map((chapter, i) => (
-          <ChapterHistoryCard
-            key={i}
-            history={history as NewComicHistory}
-            chapter={chapter}
-            index={i}
-          />
-        ))}
-      </section>
+      {sortedChapters.length === 0 ? (
+        <div className="flex flex-col items-center justify-center w-full py-16 text-center gap-2">
+          <History className="w-10 h-10 text-slate-500/50" />
+          <p className="text-slate-400 font-medium">Belum ada chapter yang dibaca</p>
+        </div>
+      ) : (
+        <section className="grid grid-cols-1 sm:grid-cols-4 items-start justify-start w-full gap-4">
+          {sortedChapters.map((chapter, i) => (
+            <ChapterHistoryCard
+              key={chapter.chapter_id || i}
+              history={history as NewComicHistory}
+              chapter={chapter}
+              index={i}
+            />
+          ))}
+        </section>
+      )}
     </div>
   )
 }

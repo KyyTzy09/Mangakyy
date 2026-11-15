@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useLoaderData, useNavigate, useRouter, useSearch } from '@tanstack/react-router'
 import {
   ArrowLeft,
@@ -14,8 +14,8 @@ import type { ComicType } from '@/shared/interfaces'
 import { Button } from '@/shared/shadcn/button'
 import { displayComicType } from '@/shared/utils/countryConverter'
 import { formatCompactNumber } from '@/shared/utils/formater'
-import type { NewChapterHistory } from '@/shared/utils/history'
-import { getLatestChapterHistory } from '@/shared/utils/history'
+import type { NewChapterHistory, NewComicHistory } from '@/shared/utils/history'
+import { getLatestChapterHistory, getHistoryByComicId } from '@/shared/utils/history'
 import { useGetChapterList } from '@/features/chapter/hooks/chapterQuery'
 import ChapterHistoryCard from '@/features/chapter/components/cards/ChapterHistoryCard'
 import ChapterList from '@/features/chapter/components/cards/chapterList'
@@ -31,6 +31,7 @@ export default function DetailPage() {
   const router = useRouter()
 
   const [history, setHistory] = useState<NewChapterHistory | null>(null)
+  const [comicHistory, setComicHistory] = useState<NewComicHistory | null>(null)
   const [open, setOpen] = useState(false)
   const [isDescExpanded, setIsDescExpanded] = useState(false)
 
@@ -71,7 +72,14 @@ export default function DetailPage() {
     if (!mangaId) return
     const h = getLatestChapterHistory(mangaId)
     setHistory(h)
+    const ch = getHistoryByComicId(mangaId)
+    setComicHistory(ch)
   }, [mangaId])
+
+  const readChapterIds = useMemo(() => {
+    if (!comicHistory?.chapters) return new Set<string>()
+    return new Set(comicHistory.chapters.map((c) => String(c.chapter_id)))
+  }, [comicHistory])
 
   const comic = detail?.data
   const activeView = isMobile ? 'list' : viewMode
@@ -415,6 +423,7 @@ export default function DetailPage() {
                 chapter={chapter}
                 comic={comic as ComicType}
                 isLastRead={history?.chapter_id === chapter.chapter_id}
+                isRead={readChapterIds.has(String(chapter.chapter_id))}
               />
             ))}
           </div>
@@ -427,6 +436,7 @@ export default function DetailPage() {
                 chapter={chapter}
                 comic={comic as ComicType}
                 isLastRead={history?.chapter_id === chapter.chapter_id}
+                isRead={readChapterIds.has(String(chapter.chapter_id))}
               />
             ))}
           </div>
@@ -447,6 +457,8 @@ export default function DetailPage() {
         chapters={chapters?.data || []}
         isOpen={open}
         setIsOpen={setOpen}
+        readChapterIds={readChapterIds}
+        latestChapterId={history?.chapter_id}
       />
     </main>
   )

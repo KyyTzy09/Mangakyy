@@ -11,6 +11,7 @@ interface Props {
   chapter: ChapterList
   comic: ComicType
   isLastRead?: boolean
+  isRead?: boolean
 }
 
 export default function ChapterGridCard({
@@ -18,6 +19,7 @@ export default function ChapterGridCard({
   index,
   comic,
   isLastRead = false,
+  isRead = false,
 }: Props) {
   const navigate = useNavigate()
 
@@ -50,7 +52,9 @@ export default function ChapterGridCard({
       className={`group flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none shadow-sm hover:shadow-md ${
         isLastRead
           ? 'bg-primary/20 border-primary/60 shadow-primary/20 hover:bg-primary/25'
-          : 'bg-[#0e1422]/75 hover:bg-[#141b2c]/90 border-white/5 hover:border-primary/40 backdrop-blur-xs'
+          : isRead
+            ? 'bg-primary/10 border-primary/30 hover:bg-primary/15 hover:border-primary/50'
+            : 'bg-[#0e1422]/75 hover:bg-[#141b2c]/90 border-white/5 hover:border-primary/40 backdrop-blur-xs'
       }`}
     >
       {/* Left: Thumbnail & Chapter Info */}
@@ -70,7 +74,11 @@ export default function ChapterGridCard({
         <div className="flex flex-col gap-1 min-w-0">
           <div
             className={`font-bold text-sm sm:text-base leading-snug truncate transition-colors ${
-              isLastRead ? 'text-primary' : 'text-white group-hover:text-primary'
+              isLastRead
+                ? 'text-primary'
+                : isRead
+                  ? 'text-primary/90 group-hover:text-primary'
+                  : 'text-white group-hover:text-primary'
             }`}
           >
             Chapter {chapter.chapter_number}
@@ -84,8 +92,12 @@ export default function ChapterGridCard({
       {/* Right: Badge Dibaca atau Icon Play */}
       <div className="shrink-0 ml-2.5">
         {isLastRead ? (
-          <span className="text-[10px] sm:text-[11px] bg-primary text-white font-semibold px-2 py-1 rounded-lg shadow-sm">
-            Dibaca
+          <span className="text-[10px] sm:text-[11px] bg-primary text-white font-bold px-2 py-1 rounded-lg shadow-sm">
+            Terakhir Dibaca
+          </span>
+        ) : isRead ? (
+          <span className="text-[10px] sm:text-[11px] bg-primary/20 border border-primary/40 text-primary font-semibold px-2 py-1 rounded-lg">
+            Sudah Dibaca
           </span>
         ) : (
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/5 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-all">

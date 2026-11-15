@@ -93,6 +93,49 @@ describe('history', () => {
     expect(latest?.chapter_id).toBe('ch-2')
   })
 
+  it('moves re-read chapter and comic to the top/latest position', () => {
+    const comic1 = {
+      comic_id: 'comic-1',
+      comic_title: 'One Piece',
+      comic_cover_url: 'https://example.com/onepiece.jpg',
+    }
+    const comic2 = {
+      comic_id: 'comic-2',
+      comic_title: 'Naruto',
+      comic_cover_url: 'https://example.com/naruto.jpg',
+    }
+
+    saveNewComicHistory(comic1, {
+      chapter_id: 'ch-1',
+      chapter_number: 1,
+      thumbnail_image_url: 'https://example.com/ch1.jpg',
+      last_read_at: new Date('2026-01-01T00:00:00Z'),
+    })
+
+    saveNewComicHistory(comic2, {
+      chapter_id: 'ch-naruto-1',
+      chapter_number: 1,
+      thumbnail_image_url: 'https://example.com/naruto1.jpg',
+      last_read_at: new Date('2026-01-02T00:00:00Z'),
+    })
+
+    // Initially comic2 is newest
+    let histories = getNewChapterHistories()
+    expect(histories[0].comic_id).toBe('comic-2')
+
+    // Re-read comic1 ch-1, it should now become the newest
+    saveNewComicHistory(comic1, {
+      chapter_id: 'ch-1',
+      chapter_number: 1,
+      thumbnail_image_url: 'https://example.com/ch1.jpg',
+      last_read_at: new Date('2026-01-03T00:00:00Z'),
+    })
+
+    histories = getNewChapterHistories()
+    expect(histories[0].comic_id).toBe('comic-1')
+    expect(histories[1].comic_id).toBe('comic-2')
+  })
+
   it('clears all history', () => {
     saveNewComicHistory(
       {

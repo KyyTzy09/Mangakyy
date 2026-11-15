@@ -12,6 +12,10 @@ interface HistoryCardProps {
 
 export default function HistoryCard({ h, index }: HistoryCardProps) {
   const navigate = useNavigate()
+  const latestChapter = [...h.chapters].sort(
+    (a, b) => new Date(b.last_read_at).getTime() - new Date(a.last_read_at).getTime()
+  )[0]
+
   return (
     <motion.article
       initial={{ translateY: 10 }}
@@ -34,7 +38,7 @@ export default function HistoryCard({ h, index }: HistoryCardProps) {
         <div className="absolute top-0 left-0 text-xs flex flex-col items-start justify-end w-full h-full bg-linear-to-b from-transparent via-black/60 to-black p-2 gap-2 z-10">
           <p className="line-clamp-2 font-semibold">{h.comic_title}</p>
           <p className="text-[10px] line-clamp-1">
-            Ch {h.chapters.length} - {formatRelativeTime(h.last_read_at)}
+            Ch {latestChapter?.chapter_number || h.chapters.length} - {formatRelativeTime(h.last_read_at)}
           </p>
         </div>
         <div className="absolute opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 top-0 left-0 text-xs flex flex-col items-center justify-center w-full h-full bg-black/70 z-20 p-5 gap-2 transition duration-500">
@@ -43,7 +47,7 @@ export default function HistoryCard({ h, index }: HistoryCardProps) {
               e.stopPropagation()
               navigate({
                 to: '/chapter/$chapterId',
-                params: { chapterId: h.chapters[h.chapters.length - 1].chapter_id },
+                params: { chapterId: latestChapter?.chapter_id || h.chapters[0]?.chapter_id },
               })
             }}
             className="w-full text-start hover:bg-white/10 text-sm py-2 px-3 rounded-md"

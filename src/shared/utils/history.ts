@@ -61,7 +61,13 @@ export function getNewChapterHistories(): NewComicHistory[] {
     if (typeof window === "undefined") return []
 
     const histories = localStorage.getItem(KEY)
-    return histories ? JSON.parse(histories) : []
+    if (!histories) return []
+    try {
+        const parsed: NewComicHistory[] = JSON.parse(histories)
+        return parsed.sort((a, b) => new Date(b.last_read_at).getTime() - new Date(a.last_read_at).getTime())
+    } catch {
+        return []
+    }
 }
 
 export function clearNewChapterHistories() {
@@ -116,24 +122,32 @@ export function saveNewComicHistory(
 
     // kalau chapter baru
     if (chapterIndex === -1) {
-        history.chapters.push({
+        history.chapters.unshift({
             ...chapter,
             last_read_at: now,
         })
     } else {
-        // kalau chapter sudah ada → update waktu baca
-        history.chapters[chapterIndex].last_read_at = now
+        // kalau chapter sudah ada → update waktu baca dan pindahkan ke paling depan
+        const updatedChapter: NewChapterHistory = {
+            ...history.chapters[chapterIndex],
+            ...chapter,
+            last_read_at: now,
+        }
+        history.chapters.splice(chapterIndex, 1)
+        history.chapters.unshift(updatedChapter)
     }
 
     // update waktu terakhir baca manga
     history.last_read_at = now
 
-    histories[index] = history
+    // Pindahkan ke paling awal daftar agar manga yang baru dibaca selalu di atas
+    histories.splice(index, 1)
+    histories.unshift(history)
 
     localStorage.setItem(KEY, JSON.stringify(histories))
 }
 
-export function getLatestChapterHistory(comicId: string) {
+export function getLatestChapterHistory(comicId: string): NewChapterHistory | null {
     const histories = getNewChapterHistories()
 
     const history = histories.find(
@@ -142,5 +156,10 @@ export function getLatestChapterHistory(comicId: string) {
 
     if (!history || history.chapters.length === 0) return null
 
-    return history.chapters[history.chapters.length - 1]
+    // Kembalikan chapter dengan waktu last_read_at paling baru
+    const sorted = [...history.chapters].sort((a, b) => {
+        return new Date(b.last_read_at).getTime() - new Date(a.last_read_at).getTime()
+    })
+
+    return sorted[0] || null
 }
