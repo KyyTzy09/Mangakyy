@@ -451,9 +451,10 @@ export class H18Service {
   public getLocalFallbackTags(
     sort: 'popular' | 'name' = 'popular',
     page = 1,
-    perPage = 60
+    perPage = 50,
+    letter?: string
   ): H18PaginatedTagsResult {
-    const fallbackAllTags: H18TagItem[] = []
+    let fallbackAllTags: H18TagItem[] = []
     const seenSlugs = new Set<string>()
 
     H18_GENRE_CATEGORIES.forEach((cat) => {
@@ -472,6 +473,13 @@ export class H18Service {
         }
       })
     })
+
+    if (letter?.trim()) {
+      const cleanL = letter.trim().toUpperCase()[0]
+      fallbackAllTags = fallbackAllTags.filter((t) =>
+        t.name.toUpperCase().startsWith(cleanL)
+      )
+    }
 
     if (sort === 'name') {
       fallbackAllTags.sort((a, b) => a.name.localeCompare(b.name))
@@ -564,7 +572,8 @@ export class H18Service {
   }
 
   /**
-   * Mengambil tag berdasarkan awalan huruf (A-Z) dengan pagination dan server caching
+   * Mengambil tag berdasarkan awalan huruf (A-Z) dengan pagination dan server caching.
+   * Jumlah halaman dihitung murni dari data riil tanpa default 3 halaman buatan.
    */
   public async getTagsByLetter(params: {
     type?: string
@@ -588,65 +597,18 @@ export class H18Service {
     }
 
     try {
-      // If sort is popular and page 1: live prefix search returns top 50 items instantly
-      if (sort === 'popular' && page === 1) {
-        const items = await this.searchTags({
-          query: letter.toLowerCase(),
-          type,
-          limit: perPage,
-        })
-        const result: H18PaginatedTagsResult = {
-          tags: items,
-          total: Math.max(items.length, items.length >= perPage ? 150 : items.length),
-          num_pages: items.length >= perPage ? 3 : 1,
-          current_page: 1,
-          per_page: perPage,
-        }
-        letterTagsCache.set(cacheKey, {
-          data: result,
-          expiresAt: Date.now() + TAGS_CACHE_TTL,
-        })
-        return result
-      }
+      // Live prefix search mengambil data aktual awalan huruf ini (sampai 50 item)
+      const items = await this.searchTags({
+        query: letter.toLowerCase(),
+        type,
+        limit: perPage,
+      })
 
-      // Fetch alphabetical pages using seed map
-      const startPage = TAG_LETTER_START_PAGES[letter] || 1
-      const collected: H18TagItem[] = []
-      let p = startPage
-
-      while (p <= startPage + 3) {
-        const raw = await requestWithFallback(`/api/v2/tags/${type}?sort=name&page=${p}`)
-        const data = JSON.parse(raw)
-        const list = Array.isArray(data.result) ? data.result : []
-        if (list.length === 0) break
-
-        const matching = list
-          .filter((item: any) => (item.name || '').toUpperCase().startsWith(letter))
-          .map((item: any) => ({
-            id: item.id || item.slug,
-            type: item.type || type,
-            name: item.name,
-            slug: item.slug,
-            count: typeof item.count === 'number' ? item.count : 0,
-            description: item.description || null,
-          }))
-        collected.push(...matching)
-
-        const lastItemName = (list[list.length - 1]?.name || '').toUpperCase()
-        if (lastItemName > letter) break
-        p++
-      }
-
-      if (sort === 'popular') {
-        collected.sort((a, b) => b.count - a.count)
-      } else {
-        collected.sort((a, b) => a.name.localeCompare(b.name))
-      }
-
-      const total = Math.max(collected.length, 1)
+      // Hitung halaman murni dari total data yang ada — tidak ada default/hardcoded 3 halaman
+      const total = items.length
       const numPages = Math.max(1, Math.ceil(total / perPage))
       const safePage = Math.min(Math.max(1, page), numPages)
-      const paged = collected.slice((safePage - 1) * perPage, safePage * perPage)
+      const paged = items.slice((safePage - 1) * perPage, safePage * perPage)
 
       const result: H18PaginatedTagsResult = {
         tags: paged,
@@ -663,7 +625,7 @@ export class H18Service {
 
       return result
     } catch {
-      return this.getLocalFallbackTags(sort, page, perPage)
+      return this.getLocalFallbackTags(sort, page, perPage, letter)
     }
   }
 

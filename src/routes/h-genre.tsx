@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import {
   Tag,
   Search,
@@ -194,8 +194,11 @@ function H18GenreIndexPage() {
           per_page: 50,
         },
       }),
+    placeholderData: keepPreviousData,
     initialData:
-      search.type === 'all' && !search.q ? initialGroupedData || undefined : undefined,
+      search.type === 'all' && !search.q && (search.page === 1 || !search.page)
+        ? initialGroupedData || undefined
+        : undefined,
     enabled: !search.q?.trim() && search.type === 'all',
     staleTime: 10 * 60 * 1000, // 10 minutes cache freshness
     gcTime: 60 * 60 * 1000, // 60 minutes in garbage collection cache
@@ -220,8 +223,12 @@ function H18GenreIndexPage() {
           per_page: 50,
         },
       }),
+    placeholderData: keepPreviousData,
     initialData:
-      search.type !== 'all' && search.type !== 'curated' && !search.q
+      search.type !== 'all' &&
+      search.type !== 'curated' &&
+      !search.q &&
+      (search.page === 1 || !search.page)
         ? initialSingleData || undefined
         : undefined,
     enabled:
@@ -243,6 +250,7 @@ function H18GenreIndexPage() {
           limit: 50,
         },
       }),
+    placeholderData: keepPreviousData,
     initialData: search.q?.trim() ? initialSearchData : undefined,
     enabled: !!search.q?.trim(),
     staleTime: 10 * 60 * 1000,
@@ -595,9 +603,22 @@ function H18GenreIndexPage() {
               </span>
             ) : (
               <span>
-                Menampilkan <strong>{singleQuery.data?.tags.length || 0}</strong> item (Halaman{' '}
-                <strong className="text-white">{singleQuery.data?.current_page || search.page}</strong> dari{' '}
-                {singleQuery.data?.num_pages || 1})
+                Menampilkan <strong>{singleQuery.data?.tags.length || 0}</strong> item
+                {search.letter ? (
+                  <>
+                    {' '}dengan awalan huruf{' '}
+                    <strong className="text-[#ff2d78] font-bold">
+                      &quot;{search.letter.toUpperCase()}&quot;
+                    </strong>
+                  </>
+                ) : null}
+                {(singleQuery.data?.num_pages || 1) > 1 && (
+                  <>
+                    {' '}(Halaman{' '}
+                    <strong className="text-white">{singleQuery.data?.current_page || search.page}</strong> dari{' '}
+                    {singleQuery.data?.num_pages || 1})
+                  </>
+                )}
               </span>
             )}
           </div>
