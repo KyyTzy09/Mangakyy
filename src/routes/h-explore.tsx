@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import {
   Search,
   Compass,
   ArrowLeft,
-  Filter,
   Sparkles,
   ChevronLeft,
   ChevronRight,
@@ -14,7 +13,7 @@ import {
   Check,
 } from 'lucide-react'
 import { z } from 'zod'
-import { getH18List } from '@/api/server/h18'
+import { getH18List, getH18GenreList } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 import H18Card from '@/features/h18/components/H18Card'
@@ -24,6 +23,8 @@ const exploreSearchSchema = z.object({
   category: z.string().optional(),
   language: z.string().optional(),
   tag: z.string().optional(),
+  artist: z.string().optional(),
+  theme: z.string().optional(),
   sort: z
     .enum(['recent', 'popular', 'popular-today', 'popular-week', 'popular-month'])
     .optional()
@@ -37,20 +38,34 @@ export const Route = createFileRoute('/h-explore')({
   loader: async ({ deps }) => {
     try {
       const cleanTag = deps.tag ? deps.tag.replace(/^#/, '').replace(/-/g, ' ') : undefined
-      const tags = cleanTag ? [cleanTag] : undefined
-      const res = await getH18List({
-        data: {
-          query: deps.q || '',
-          category: deps.category,
-          language: deps.language,
-          tags,
-          sort: deps.sort,
-          page: deps.page,
-        },
-      })
-      return { data: res }
+      const tagsList: string[] = []
+      if (cleanTag) tagsList.push(cleanTag)
+      if (deps.theme) tagsList.push(deps.theme.replace(/-/g, ' '))
+
+      const [res, categories] = await Promise.all([
+        getH18List({
+          data: {
+            query: deps.q || '',
+            category: deps.category,
+            language: deps.language,
+            tags: tagsList.length > 0 ? tagsList : undefined,
+            artist: deps.artist,
+            sort: deps.sort,
+            page: deps.page,
+          },
+        }),
+        getH18GenreList(),
+      ])
+
+      return {
+        data: res,
+        categories: categories || [],
+      }
     } catch {
-      return { data: { books: [], total_pages: 1, current_page: 1, per_page: 0 } }
+      return {
+        data: { books: [], total_pages: 1, current_page: 1, per_page: 0 },
+        categories: [],
+      }
     }
   },
   component: H18ExplorePage,
@@ -60,6 +75,8 @@ const CATEGORIES = [
   { label: 'Semua Kategori', value: '' },
   { label: 'Doujinshi', value: 'doujinshi' },
   { label: 'Manga', value: 'manga' },
+  { label: 'Artist CG', value: 'artist-cg' },
+  { label: 'Game CG', value: 'game-cg' },
 ]
 
 const LANGUAGES = [
@@ -78,10 +95,46 @@ const SORT_OPTIONS = [
   { label: 'Terbaru', value: 'recent' },
 ]
 
+const CREATOR_OPTIONS = [
+  { label: 'Semua Kreator', value: '' },
+  { label: 'Mizuryu Kei', value: 'mizuryu-kei' },
+  { label: 'Shindo L', value: 'shindo-l' },
+  { label: 'Hisasi', value: 'hisasi' },
+  { label: 'Asagi Ryu', value: 'asagi-ryu' },
+  { label: 'Homunculus', value: 'homunculus' },
+  { label: 'MEME50', value: 'meme50' },
+  { label: 'Distance', value: 'distance' },
+  { label: 'Bosshi', value: 'bosshi' },
+  { label: 'Kisaragi Gunma', value: 'kisaragi-gunma' },
+  { label: 'Kurogane Ken', value: 'kurogane-ken' },
+  { label: 'Po-Ju', value: 'po-ju' },
+  { label: 'ReDrop', value: 'redrop' },
+  { label: 'Tachibana Omina', value: 'tachibana-omina' },
+  { label: 'Tony Taka', value: 'tony-taka' },
+]
+
+const THEME_OPTIONS = [
+  { label: 'Semua Tema', value: '' },
+  { label: 'Komedi', value: 'comedy' },
+  { label: 'Romance', value: 'romance' },
+  { label: 'Harem', value: 'harem' },
+  { label: 'Fantasy', value: 'fantasy' },
+  { label: 'Supernatural', value: 'supernatural' },
+  { label: 'Drama', value: 'drama' },
+  { label: 'Slice of Life', value: 'slice-of-life' },
+  { label: 'Action', value: 'action' },
+  { label: 'Psychological', value: 'psychological' },
+  { label: 'Isekai', value: 'isekai' },
+  { label: 'Horror', value: 'horror' },
+  { label: 'Sci-Fi', value: 'sci-fi' },
+  { label: 'Mystery', value: 'mystery' },
+]
+
 const POPULAR_TAGS = [
   { label: '#sole-female', value: 'sole-female' },
   { label: '#sole-male', value: 'sole-male' },
   { label: '#romance', value: 'romance' },
+  { label: '#comedy', value: 'comedy' },
   { label: '#big-breasts', value: 'big-breasts' },
   { label: '#schoolgirl', value: 'schoolgirl' },
   { label: '#maid', value: 'maid' },
@@ -159,8 +212,8 @@ function MangaKyyCustomSelector<T extends string>({
                     : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <span>{opt.label}</span>
-                {isSelected && <Check className="w-3.5 h-3.5 shrink-0" />}
+                <span className="truncate">{opt.label}</span>
+                {isSelected && <Check className="w-3.5 h-3.5 shrink-0 ml-2" />}
               </button>
             )
           })}
@@ -171,12 +224,66 @@ function MangaKyyCustomSelector<T extends string>({
 }
 
 function H18ExplorePage() {
-  const { data } = Route.useLoaderData()
+  const { data, categories } = Route.useLoaderData()
   const search = Route.useSearch()
   const { isAuthenticated } = useH18Auth()
   const navigate = useNavigate()
 
-  const [inputQuery, setInputQuery] = useState(search.q || '')
+  const [inputQuery, setInputQuery] = useState(
+    search.tag ? `#${search.tag}` : search.q || ''
+  )
+  const [debouncedTagTerm, setDebouncedTagTerm] = useState<string | null>(null)
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
+
+  // Flatten all tags for autocomplete
+  const allFlattenedTags = useMemo(() => {
+    const map = new Map<string, { name: string; slug: string; count: string; category: string }>()
+    categories.forEach((cat) => {
+      cat.tags.forEach((t) => {
+        if (!map.has(t.slug)) {
+          map.set(t.slug, { ...t, category: cat.category })
+        }
+      })
+    })
+    return Array.from(map.values())
+  }, [categories])
+
+  // Debounce the # tag search term
+  useEffect(() => {
+    const hashIndex = inputQuery.lastIndexOf('#')
+    if (hashIndex !== -1) {
+      const rawTerm = inputQuery.slice(hashIndex + 1).trim().toLowerCase()
+      const timer = setTimeout(() => {
+        setDebouncedTagTerm(rawTerm)
+        setIsSuggestionOpen(true)
+      }, 200)
+      return () => clearTimeout(timer)
+    } else {
+      setDebouncedTagTerm(null)
+      setIsSuggestionOpen(false)
+    }
+  }, [inputQuery])
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setIsSuggestionOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [])
+
+  // Filtered tag suggestions based on debounced term
+  const suggestedTags = useMemo(() => {
+    if (debouncedTagTerm === null) return []
+    const term = debouncedTagTerm
+    return allFlattenedTags
+      .filter((t) => !term || t.name.toLowerCase().includes(term) || t.slug.includes(term))
+      .slice(0, 12)
+  }, [debouncedTagTerm, allFlattenedTags])
 
   if (!isAuthenticated) {
     return <H18LockedGate onSuccess={() => window.location.reload()} />
@@ -199,18 +306,27 @@ function H18ExplorePage() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSuggestionOpen(false)
     const trimmed = inputQuery.trim()
+
     // If user searched for #tag, extract as tag filter
     if (trimmed.startsWith('#')) {
       const tagSlug = trimmed.slice(1).toLowerCase().replace(/\s+/g, '-')
       updateSearch({ q: '', tag: tagSlug })
     } else {
-      updateSearch({ q: trimmed })
+      updateSearch({ q: trimmed, tag: undefined })
     }
+  }
+
+  const handleSelectSuggestedTag = (tag: { name: string; slug: string }) => {
+    setInputQuery(`#${tag.slug}`)
+    setIsSuggestionOpen(false)
+    updateSearch({ tag: tag.slug, q: '' })
   }
 
   const handleClearFilters = () => {
     setInputQuery('')
+    setIsSuggestionOpen(false)
     navigate({
       to: '/h-explore',
       search: {
@@ -218,6 +334,8 @@ function H18ExplorePage() {
         category: undefined,
         language: undefined,
         tag: undefined,
+        artist: undefined,
+        theme: undefined,
         sort: 'popular',
         page: 1,
       },
@@ -237,7 +355,13 @@ function H18ExplorePage() {
   }
 
   const hasActiveFilters = Boolean(
-    search.category || search.language || search.tag || search.q || search.sort !== 'popular'
+    search.category ||
+      search.language ||
+      search.tag ||
+      search.artist ||
+      search.theme ||
+      search.q ||
+      search.sort !== 'popular'
   )
 
   return (
@@ -259,7 +383,7 @@ function H18ExplorePage() {
                 <span>Explore H18</span>
               </h1>
               <p className="text-xs sm:text-sm text-slate-400">
-                Pencarian dan penjelajahan komik berdasarkan genre, tag, dan bahasa.
+                Pencarian dan filter komik berdasarkan genre, creator, tema, bahasa, dan tag.
               </p>
             </div>
           </div>
@@ -276,14 +400,19 @@ function H18ExplorePage() {
 
         {/* 2. MangaKyy Styled Filter Controls Container */}
         <div className="flex flex-col gap-4 p-4 sm:p-5 rounded-2xl bg-[#110a17] border border-white/10 shadow-xl">
-          {/* Search Bar supporting #tags */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Search Bar with Debounced #Tag Autocomplete */}
+          <div ref={searchContainerRef} className="relative flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <form onSubmit={handleSearchSubmit} className="relative flex-1">
               <input
                 type="text"
                 value={inputQuery}
+                onFocus={() => {
+                  if (inputQuery.includes('#')) {
+                    setIsSuggestionOpen(true)
+                  }
+                }}
                 onChange={(e) => setInputQuery(e.target.value)}
-                placeholder="Cari judul atau ketik #tag (misal: #sole-female, #maid, #romance)..."
+                placeholder="Cari judul komik atau ketik #tag (misal: #comedy, #romance, #maid, #sole-female)..."
                 className="w-full h-11 bg-black/60 border border-white/15 focus:border-[#ff2d78] rounded-xl pl-10 pr-9 text-xs sm:text-sm text-white outline-none transition-colors placeholder:text-slate-500 font-medium"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -292,12 +421,47 @@ function H18ExplorePage() {
                   type="button"
                   onClick={() => {
                     setInputQuery('')
-                    updateSearch({ q: '' })
+                    setIsSuggestionOpen(false)
+                    updateSearch({ q: '', tag: undefined })
                   }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
+              )}
+
+              {/* Debounced # Tag Autocomplete Suggestion Dropdown */}
+              {isSuggestionOpen && suggestedTags.length > 0 && (
+                <div className="absolute left-0 right-0 top-full mt-2 p-2 rounded-2xl bg-[#140c19] border border-[#ff2d78]/40 backdrop-blur-2xl shadow-2xl z-50 flex flex-col gap-1 max-h-72 overflow-y-auto">
+                  <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/10 text-[11px] font-bold text-slate-400">
+                    <span className="flex items-center gap-1.5 text-[#ff2d78]">
+                      <Tag className="w-3 h-3" />
+                      <span>Rekomendasi Tag &amp; Genre (#):</span>
+                    </span>
+                    <span>{suggestedTags.length} ditemukan</span>
+                  </div>
+
+                  {suggestedTags.map((t) => (
+                    <button
+                      key={t.slug}
+                      type="button"
+                      onClick={() => handleSelectSuggestedTag(t)}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-white/10 transition-colors cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-xs sm:text-sm font-bold text-[#ff2d78] group-hover:text-pink-400 truncate">
+                          #{t.name}
+                        </span>
+                        <span className="text-[10px] text-slate-500 truncate hidden sm:inline">
+                          ({t.category})
+                        </span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-white/5 text-[10px] font-semibold text-slate-400 group-hover:text-white border border-white/5 shrink-0">
+                        {t.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               )}
             </form>
 
@@ -313,8 +477,8 @@ function H18ExplorePage() {
             )}
           </div>
 
-          {/* Row 1: MangaKyy Styled Custom Selectors */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {/* Row 1: MangaKyy Styled Custom Selectors (Kategori, Bahasa, Kreator, Tema, Urutan) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
             <MangaKyyCustomSelector
               label="Kategori"
               value={search.category || ''}
@@ -327,6 +491,20 @@ function H18ExplorePage() {
               value={search.language || ''}
               options={LANGUAGES}
               onChange={(val) => updateSearch({ language: val || undefined })}
+            />
+
+            <MangaKyyCustomSelector
+              label="Kreator"
+              value={search.artist || ''}
+              options={CREATOR_OPTIONS}
+              onChange={(val) => updateSearch({ artist: val || undefined })}
+            />
+
+            <MangaKyyCustomSelector
+              label="Tema"
+              value={search.theme || ''}
+              options={THEME_OPTIONS}
+              onChange={(val) => updateSearch({ theme: val || undefined })}
             />
 
             <MangaKyyCustomSelector
@@ -356,7 +534,11 @@ function H18ExplorePage() {
                   <button
                     key={t.value}
                     type="button"
-                    onClick={() => updateSearch({ tag: isSelected ? undefined : t.value })}
+                    onClick={() => {
+                      const nextTag = isSelected ? undefined : t.value
+                      setInputQuery(nextTag ? `#${nextTag}` : '')
+                      updateSearch({ tag: nextTag })
+                    }}
                     className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       isSelected
                         ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/40 border border-[#ff2d78]'

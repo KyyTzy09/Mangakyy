@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { getH18Detail } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
+import { saveH18History } from '@/features/h18/utils/history'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h-read/$id')({
@@ -30,6 +31,20 @@ function H18ReaderPage() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
   const autoScrollTimerRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (detail && isAuthenticated) {
+      saveH18History({
+        id: detail.id,
+        title: detail.title,
+        japanese_title: detail.japanese_title,
+        media_id: detail.media_id,
+        cover_url: detail.cover_url,
+        thumbnail_url: detail.thumbnail_url,
+        page_count: detail.page_count,
+      })
+    }
+  }, [detail, isAuthenticated])
 
   // Track scroll progress
   useEffect(() => {

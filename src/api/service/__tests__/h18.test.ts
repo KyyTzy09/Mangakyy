@@ -25,4 +25,18 @@ describe('H18 Service live query', () => {
       expect(detail.images.length).toBeGreaterThan(0)
     }
   }, 15000)
+
+  it('should cover every letter from A to Z in getGenreCategories()', () => {
+    const categories = h18Service.getGenreCategories()
+    expect(categories.length).toBeGreaterThan(0)
+
+    const allTags = categories.flatMap((cat) => cat.tags)
+    expect(allTags.length).toBeGreaterThan(100)
+
+    const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+    alphabets.forEach((letter) => {
+      const matching = allTags.filter((tag) => tag.name.toUpperCase().startsWith(letter))
+      expect(matching.length, `Letter ${letter} should have at least one tag`).toBeGreaterThan(0)
+    })
+  })
 })

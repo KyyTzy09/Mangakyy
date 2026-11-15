@@ -1,5 +1,4 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Timer, ArrowLeft, Compass, Tag } from 'lucide-react'
 import { Activity } from 'react'
 
 export default function H18Navbar() {
@@ -34,45 +33,45 @@ export default function H18Navbar() {
 
               <Link
                 to="/h-explore"
-                className={`font-semibold transition-colors flex items-center gap-1.5 ${
+                className={`font-semibold transition-colors ${
                   location.pathname === '/h-explore'
                     ? 'text-[#ff2d78]'
                     : 'text-white hover:text-slate-200'
                 }`}
               >
-                <Compass className="w-4 h-4 text-[#ff2d78]" />
-                <span>Explore</span>
+                Explore
               </Link>
 
               <Link
                 to="/h-genre"
-                className={`font-semibold transition-colors flex items-center gap-1.5 ${
+                className={`font-semibold transition-colors ${
                   location.pathname.startsWith('/h-genre')
                     ? 'text-[#ff2d78]'
                     : 'text-white hover:text-slate-200'
                 }`}
               >
-                <Tag className="w-4 h-4 text-[#ff2d78]" />
-                <span>Genre</span>
+                Genre
               </Link>
 
-              {/* Redirect to Normal Mode Button */}
+              {/* Redirect to Normal Mode Button (Text Only) */}
               <Link
                 to="/"
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all cursor-pointer"
+                className="px-3 py-1 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all cursor-pointer"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Mode Biasa</span>
+                Mode Biasa
               </Link>
             </div>
           </section>
 
           <div className="w-1/2 flex items-center justify-end gap-3">
             <Link
-              to="/history"
-              className="flex items-center justify-center gap-1.5 text-sm font-bold px-3.5 bg-[#ff2d78] hover:bg-[#e02068] border border-[#ff2d78] text-white rounded-lg py-2 transition-colors shadow-sm"
+              to="/h-history"
+              className={`flex items-center justify-center text-sm font-bold px-3.5 border rounded-lg py-2 transition-colors shadow-sm ${
+                location.pathname === '/h-history'
+                  ? 'bg-[#ff2d78] text-white border-[#ff2d78]'
+                  : 'bg-[#ff2d78] hover:bg-[#e02068] border-[#ff2d78] text-white'
+              }`}
             >
-              <Timer className="w-4 h-4 mr-1" />
               History
             </Link>
           </div>

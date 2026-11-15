@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as HExploreRouteImport } from './routes/h-explore'
 import { Route as HGenreRouteImport } from './routes/h-genre'
+import { Route as HHistoryRouteImport } from './routes/h-history'
 import { Route as H18RouteImport } from './routes/h18'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as HomeRouteImport } from './routes/home'
@@ -47,6 +48,11 @@ const HExploreRoute = HExploreRouteImport.update({
 const HGenreRoute = HGenreRouteImport.update({
   id: '/h-genre',
   path: '/h-genre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HHistoryRoute = HHistoryRouteImport.update({
+  id: '/h-history',
+  path: '/h-history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const H18Route = H18RouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/h-explore': typeof HExploreRoute
   '/h-genre': typeof HGenreRoute
+  '/h-history': typeof HHistoryRoute
   '/h18': typeof H18Route
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/h-explore': typeof HExploreRoute
   '/h-genre': typeof HGenreRoute
+  '/h-history': typeof HHistoryRoute
   '/h18': typeof H18Route
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/h-explore': typeof HExploreRoute
   '/h-genre': typeof HGenreRoute
+  '/h-history': typeof HHistoryRoute
   '/h18': typeof H18Route
   '/history': typeof HistoryRoute
   '/home': typeof HomeRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/h-explore'
     | '/h-genre'
+    | '/h-history'
     | '/h18'
     | '/history'
     | '/home'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/h-explore'
     | '/h-genre'
+    | '/h-history'
     | '/h18'
     | '/history'
     | '/home'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/h-explore'
     | '/h-genre'
+    | '/h-history'
     | '/h18'
     | '/history'
     | '/home'
@@ -260,6 +272,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   HExploreRoute: typeof HExploreRoute
   HGenreRoute: typeof HGenreRoute
+  HHistoryRoute: typeof HHistoryRoute
   H18Route: typeof H18Route
   HistoryRoute: typeof HistoryRoute
   HomeRoute: typeof HomeRoute
@@ -305,6 +318,13 @@ declare module '@tanstack/react-router' {
       path: '/h-genre'
       fullPath: '/h-genre'
       preLoaderRoute: typeof HGenreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h-history': {
+      id: '/h-history'
+      path: '/h-history'
+      fullPath: '/h-history'
+      preLoaderRoute: typeof HHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/h18': {
@@ -420,6 +440,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   HExploreRoute: HExploreRoute,
   HGenreRoute: HGenreRoute,
+  HHistoryRoute: HHistoryRoute,
   H18Route: H18Route,
   HistoryRoute: HistoryRoute,
   HomeRoute: HomeRoute,

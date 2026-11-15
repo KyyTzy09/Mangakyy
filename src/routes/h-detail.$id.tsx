@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { ArrowLeft, Home, BookOpen, Heart, Calendar, BookText, AlertCircle, RefreshCw } from 'lucide-react'
 import { getH18Detail } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import { getH18ImageUrl } from '@/features/h18/utils/imageUrl'
+import { saveH18History } from '@/features/h18/utils/history'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 
 export const Route = createFileRoute('/h-detail/$id')({
@@ -23,6 +25,20 @@ function H18DetailPage() {
   const { detail, id } = Route.useLoaderData()
   const { isAuthenticated } = useH18Auth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (detail && isAuthenticated) {
+      saveH18History({
+        id: detail.id,
+        title: detail.title,
+        japanese_title: detail.japanese_title,
+        media_id: detail.media_id,
+        cover_url: detail.cover_url,
+        thumbnail_url: detail.thumbnail_url,
+        page_count: detail.page_count,
+      })
+    }
+  }, [detail, isAuthenticated])
 
   if (!isAuthenticated) {
     return <H18LockedGate onSuccess={() => window.location.reload()} />

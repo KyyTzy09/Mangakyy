@@ -10,6 +10,9 @@ export const getH18ListSchema = z.object({
   category: z.string().optional(),
   language: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  artist: z.string().optional(),
+  parody: z.string().optional(),
+  character: z.string().optional(),
 })
 
 export const getH18DetailSchema = z.object({

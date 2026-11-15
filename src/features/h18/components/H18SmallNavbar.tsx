@@ -56,11 +56,17 @@ export default function H18SmallNavbar() {
           </Link>
 
           <Link
-            to="/history"
-            className="flex flex-col items-center justify-center w-12 h-12 rounded-full text-gray-300 transition-all duration-300"
+            to="/h-history"
+            className={`flex flex-col items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
+              location.pathname === '/h-history'
+                ? 'bg-[#ff2d78] text-white -translate-y-3 shadow-lg shadow-[#ff2d78]/40'
+                : 'text-gray-300'
+            }`}
           >
             <Timer size={20} />
-            <span className="text-[10px]">History</span>
+            <span className={location.pathname === '/h-history' ? 'sr-only' : 'text-[10px]'}>
+              History
+            </span>
           </Link>
 
           <Link

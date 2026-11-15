@@ -1,54 +1,46 @@
-import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { Flame, Sparkles, Compass } from 'lucide-react'
-import { z } from 'zod'
+import { useState } from 'react'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { Flame, Sparkles } from 'lucide-react'
 import { getH18List } from '@/api/server/h18'
 import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 import H18Carousel from '@/features/h18/components/H18Carousel'
 import H18Card from '@/features/h18/components/H18Card'
 
-const searchSchema = z.object({
-  sort: z.enum(['recent', 'popular']).optional().default('recent'),
-})
-
 export const Route = createFileRoute('/h18')({
-  validateSearch: (search) => searchSchema.parse(search),
-  loaderDeps: ({ search: { sort } }) => ({ sort }),
-  loader: async ({ deps: { sort } }) => {
+  loader: async () => {
     try {
-      const res = await getH18List({ data: { query: '', page: 1, sort } })
-      return { data: res }
+      const [recentRes, popularRes] = await Promise.all([
+        getH18List({ data: { query: '', page: 1, sort: 'recent' } }),
+        getH18List({ data: { query: '', page: 1, sort: 'popular' } }),
+      ])
+      return {
+        recentBooks: recentRes?.books || [],
+        popularBooks: popularRes?.books || [],
+      }
     } catch {
-      return { data: { books: [], total_pages: 1, current_page: 1, per_page: 0 } }
+      return { recentBooks: [], popularBooks: [] }
     }
   },
   component: H18HomePage,
 })
 
 function H18HomePage() {
-  const { data } = Route.useLoaderData()
-  const { sort } = Route.useSearch()
+  const { recentBooks, popularBooks } = Route.useLoaderData()
   const { isAuthenticated } = useH18Auth()
-  const navigate = useNavigate()
+  const [activeSort, setActiveSort] = useState<'recent' | 'popular'>('recent')
 
   if (!isAuthenticated) {
     return <H18LockedGate onSuccess={() => window.location.reload()} />
   }
 
-  const books = data?.books || []
-  const activeSort = sort || 'recent'
-
-  const handleTabChange = (newSort: 'recent' | 'popular') => {
-    navigate({
-      to: '/h18',
-      search: { sort: newSort },
-    })
-  }
+  const books = activeSort === 'recent' ? recentBooks : popularBooks
+  const carouselBooks = recentBooks.length > 0 ? recentBooks : popularBooks
 
   return (
     <main className="relative flex flex-col items-center justify-start min-h-screen bg-[#08050a] text-slate-100 overflow-x-hidden pb-20">
       {/* 1. Hero Carousel in Solid Pink Style */}
-      {books.length > 0 && <H18Carousel items={books} />}
+      {carouselBooks.length > 0 && <H18Carousel items={carouselBooks} />}
 
       {/* 2. Main Content Catalog Container */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-8 flex flex-col gap-6">
@@ -71,13 +63,12 @@ function H18HomePage() {
             </div>
           </div>
 
-          {/* Right Action: Tabs Switcher & Link to Explore */}
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-            {/* Tab Pill Switcher (Semua vs Populer) */}
+          {/* Right Action: Pure Local Tabs Switcher (No URL parameters) */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-start sm:justify-end">
             <div className="flex items-center gap-1 bg-[#140c19] border border-white/10 p-1 rounded-xl">
               <button
                 type="button"
-                onClick={() => handleTabChange('recent')}
+                onClick={() => setActiveSort('recent')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   activeSort === 'recent'
                     ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/30'
@@ -88,7 +79,7 @@ function H18HomePage() {
               </button>
               <button
                 type="button"
-                onClick={() => handleTabChange('popular')}
+                onClick={() => setActiveSort('popular')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   activeSort === 'popular'
                     ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/30'
@@ -98,15 +89,6 @@ function H18HomePage() {
                 Populer
               </button>
             </div>
-
-            {/* Quick Explore Link */}
-            <Link
-              to="/h-explore"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-[#ff2d78]/20 border border-white/10 hover:border-[#ff2d78]/40 text-xs font-bold text-slate-300 hover:text-white transition-all shadow-sm"
-            >
-              <Compass className="w-3.5 h-3.5 text-[#ff2d78]" />
-              <span>Explore &gt;</span>
-            </Link>
           </div>
         </div>
 
