@@ -12,6 +12,7 @@ import {
   Info,
   BookOpen,
 } from 'lucide-react'
+import SectionEmptyState from '@/shared/components/reusable/SectionEmptyState'
 
 export type CarouselItem = ComicType | PopularComic
 
@@ -56,7 +57,15 @@ export default function CarouselSection({ items, recommendations }: Props) {
   }, [total, isPaused, isDetailOpen])
 
   if (!list || total === 0) {
-    return null
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-8">
+        <SectionEmptyState
+          size="md"
+          title="Rekomendasi Utama Belum Tersedia"
+          message="Belum ada data komik carousel rekomendasi dari server saat ini."
+        />
+      </div>
+    )
   }
 
   const activeComic = list[selectedIndex]

@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useGetRecommendationManga } from '../../hooks/MangaQuery'
 import RecommendationCardSkeleton from '../skeletons/RecommendationCardSkeleton'
 import Selector from '@/shared/components/reusable/selector'
+import SectionEmptyState from '@/shared/components/reusable/SectionEmptyState'
 
 interface Props {
     recommendation: ComicType[]
@@ -29,7 +30,7 @@ const recommendationButton = [
 export default function RecommendationSection({ recommendation }: Props) {
     const [selectedType, setSelectedType] = useState<"manga" | "manhua" | "manhwa">("manga")
 
-    const { data, isPending } = useGetRecommendationManga(selectedType, recommendation, 1)
+    const { data, isPending, refetch } = useGetRecommendationManga(selectedType, recommendation, 1)
     return (
         <section className='flex flex-col justify-center w-full h-full text-white gap-5'>
             <header className='flex flex-col md:flex-row items-center justify-between w-full gap-2'>
@@ -39,12 +40,22 @@ export default function RecommendationSection({ recommendation }: Props) {
                 </Label>
                 <Selector items={recommendationButton} selectedValue={selectedType} setSelectedValue={setSelectedType} />
             </header>
-            <div className='grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-1 md:gap-3'>
-                {!isPending ? data?.map((comic, i) => {
-                    return (
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-1 md:gap-3'>
+                {isPending ? (
+                    <RecommendationCardSkeleton count={10} />
+                ) : data && data.length > 0 ? (
+                    data.map((comic, i) => (
                         <RecommendationCard data={comic} index={i} key={i} />
-                    )
-                }) : <RecommendationCardSkeleton count={10} />}
+                    ))
+                ) : (
+                    <div className="col-span-full py-4">
+                        <SectionEmptyState
+                            title={`Data Rekomendasi ${selectedType.toUpperCase()} Kosong`}
+                            message={`Belum ada data rekomendasi komik untuk kategori ${selectedType} dari server.`}
+                            onRetry={() => refetch()}
+                        />
+                    </div>
+                )}
             </div>
         </section>
     )

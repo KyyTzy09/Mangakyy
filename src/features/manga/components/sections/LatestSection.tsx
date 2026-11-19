@@ -5,6 +5,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { LucideTimer } from 'lucide-react'
 import LatestCard from '@/features/manga/components/cards/LatestCard'
 import { useGetUpdateManga } from '@/features/manga/hooks/MangaQuery'
+import SectionEmptyState from '@/shared/components/reusable/SectionEmptyState'
 
 interface Props {
   latest?: UpdateComic[]
@@ -42,7 +43,7 @@ export default function LatestSection({ latest, initialResponse }: Props) {
     },
   }
 
-  const { data: updateData, isPending } = useGetUpdateManga(
+  const { data: updateData, isPending, refetch } = useGetUpdateManga(
     defaultResponse,
     selectedType,
     1,
@@ -95,10 +96,18 @@ export default function LatestSection({ latest, initialResponse }: Props) {
           Array.from({ length: 10 }).map((_, i) => (
             <LatestCardSkeleton key={i} />
           ))
-        ) : (
+        ) : items.length > 0 ? (
           items.slice(0, 10).map((data, i) => (
             <LatestCard key={data.manga_id || i} data={data} index={i} />
           ))
+        ) : (
+          <SectionEmptyState
+            size="sm"
+            className="my-auto py-8"
+            title={`Update ${selectedType === 'project' ? 'Project' : 'Mirror'} Kosong`}
+            message="Belum ada update chapter komik terbaru untuk kategori ini."
+            onRetry={() => refetch()}
+          />
         )}
       </div>
 

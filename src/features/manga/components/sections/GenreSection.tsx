@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { Compass } from 'lucide-react'
 import GenreComicCard from '@/features/manga/components/cards/GenreComicCard'
+import SectionEmptyState from '@/shared/components/reusable/SectionEmptyState'
 
 const POPULAR_GENRES = [
   { name: 'Action', slug: 'action' },
@@ -33,7 +34,7 @@ export default function GenreSection() {
   const [selectedGenre, setSelectedGenre] = useState('action')
   const pillRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
 
-  const { data, isPending } = useQuery({
+  const { data, isPending, refetch } = useQuery({
     queryKey: ['genre-preview-home', selectedGenre],
     queryFn: async () => {
       const res = await trpcClient.manga.getComicByGenres.query({
@@ -109,10 +110,18 @@ export default function GenreSection() {
           Array.from({ length: 12 }).map((_, i) => (
             <GenreCardSkeleton key={i} />
           ))
-        ) : (
+        ) : comics.length > 0 ? (
           comics.slice(0, 12).map((comic, i) => (
             <GenreComicCard key={comic.manga_id || i} data={comic} index={i} />
           ))
+        ) : (
+          <div className="col-span-full py-6">
+            <SectionEmptyState
+              title={`Komik Genre "${POPULAR_GENRES.find((g) => g.slug === selectedGenre)?.name || selectedGenre}" Belum Tersedia`}
+              message="Belum ada daftar komik untuk genre yang dipilih saat ini."
+              onRetry={() => refetch()}
+            />
+          </div>
         )}
       </div>
     </section>

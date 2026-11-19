@@ -6,6 +6,7 @@ import { Flame } from 'lucide-react'
 import { useState } from 'react'
 import { useGetPopularManga } from '../../hooks/MangaQuery'
 import RecommendationCardSkeleton from '../skeletons/RecommendationCardSkeleton'
+import SectionEmptyState from '@/shared/components/reusable/SectionEmptyState'
 
 interface Props {
     popular: PopularComic[]
@@ -28,7 +29,7 @@ const popularButton = [
 
 export default function PopularSection({ popular }: Props) {
     const [selectedType, setSelectedType] = useState<{ title: string, value: "daily" | "weekly" | "all_time" }>({ title: "Semua", value: "all_time" })
-    const { data, isPending } = useGetPopularManga(selectedType.value, popular)
+    const { data, isPending, refetch } = useGetPopularManga(selectedType.value, popular)
 
     return (
         <section className='flex flex-col w-full h-full text-white gap-5'>
@@ -51,11 +52,21 @@ export default function PopularSection({ popular }: Props) {
                 </div>
             </header>
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-1 md:gap-3'>
-                {!isPending ? data?.map((comic, i) => {
-                    return (
+                {isPending ? (
+                    <RecommendationCardSkeleton count={10} />
+                ) : data && data.length > 0 ? (
+                    data.map((comic, i) => (
                         <RecommendationCard data={comic as ComicType} index={i} key={i} />
-                    )
-                }) : <RecommendationCardSkeleton count={10} />}
+                    ))
+                ) : (
+                    <div className="col-span-full py-4">
+                        <SectionEmptyState
+                            title={`Data Populer ${selectedType.title} Kosong`}
+                            message={`Belum ada data komik terpopuler untuk periode ${selectedType.title.toLowerCase()} dari server sumber.`}
+                            onRetry={() => refetch()}
+                        />
+                    </div>
+                )}
             </div>
         </section >
     )
