@@ -2,7 +2,7 @@ import axios from "axios"
 import type {AxiosRequestConfig} from "axios";
 import { getScraperHeaders } from "./headerApi"
 
-const baseurl = "https://api.shngm.io/v1"
+const baseurl = "https://api.shinigami.io/v1"
 
 const axiosInstance = axios.create({
     baseURL: baseurl,

@@ -15,9 +15,15 @@ export class ShinigamiService {
     }
 
     public async getGenreList() {
-        return await apiClient<APIResponse<TaxonomyItem[]>>({
-            url: `/genre/list`
-        });
+        try {
+            return await apiClient<APIResponse<TaxonomyItem[]>>({
+                url: `/taxonomy/list?type=genre&limit=100`
+            });
+        } catch {
+            return await apiClient<APIResponse<TaxonomyItem[]>>({
+                url: `/genre/list`
+            });
+        }
     }
 
     public async getComicGenre(query: string = "", genres: string[] = [], statuses: string[] = [], formates: string[] = [], types: string[] = [], inclusion: "or" | "and" = "or", exclusion: "or" | "and" = "or", page: number = 1, pageSize: number = 19) {
