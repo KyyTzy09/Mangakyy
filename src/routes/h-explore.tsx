@@ -18,11 +18,19 @@ import { useH18Auth } from '@/features/h18/hooks/useH18Auth'
 import H18LockedGate from '@/features/h18/components/H18LockedGate'
 import H18Card from '@/features/h18/components/H18Card'
 
+export function parseTagsList(tagParam: string | string[] | undefined): string[] {
+  if (!tagParam) return []
+  const rawList = Array.isArray(tagParam) ? tagParam : tagParam.split(',')
+  return rawList
+    .map((t) => t.trim().replace(/^#/, '').toLowerCase())
+    .filter(Boolean)
+}
+
 const exploreSearchSchema = z.object({
   q: z.string().optional().default(''),
   category: z.string().optional(),
   language: z.string().optional(),
-  tag: z.string().optional(),
+  tag: z.union([z.string(), z.array(z.string())]).optional(),
   artist: z.string().optional(),
   theme: z.string().optional(),
   sort: z
@@ -33,15 +41,21 @@ const exploreSearchSchema = z.object({
 })
 
 export const Route = createFileRoute('/h-explore')({
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 30,
   validateSearch: (search) => exploreSearchSchema.parse(search),
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
     try {
-      const cleanTag = deps.tag ? deps.tag.replace(/^#/, '').replace(/-/g, ' ') : undefined
+      const tagsFromParam = parseTagsList(deps.tag)
       const cleanArtist = deps.artist ? deps.artist.replace(/-/g, ' ') : undefined
-      const tagsList: string[] = []
-      if (cleanTag) tagsList.push(cleanTag)
-      if (deps.theme) tagsList.push(deps.theme.replace(/-/g, ' '))
+      const tagsList: string[] = [...tagsFromParam]
+      if (deps.theme) {
+        const cleanTheme = deps.theme.replace(/-/g, ' ')
+        if (!tagsList.includes(cleanTheme)) {
+          tagsList.push(cleanTheme)
+        }
+      }
 
       const [res, categories] = await Promise.all([
         getH18List({
@@ -248,15 +262,20 @@ function H18ExplorePage() {
   const { isAuthenticated } = useH18Auth()
   const navigate = useNavigate()
 
-  const [inputQuery, setInputQuery] = useState(
-    search.tag ? `#${search.tag}` : search.q || ''
-  )
+  const activeTags = useMemo(() => parseTagsList(search.tag), [search.tag])
+
+  const [inputQuery, setInputQuery] = useState(search.q || '')
   const [debouncedTagTerm, setDebouncedTagTerm] = useState<string | null>(null)
   const [liveSuggestions, setLiveSuggestions] = useState<
     Array<{ name: string; slug: string; count: string; category: string }>
   >([])
   const [isSuggestionOpen, setIsSuggestionOpen] = useState(false)
   const searchContainerRef = useRef<HTMLDivElement>(null)
+
+  // Sync external search.q changes into local inputQuery
+  useEffect(() => {
+    setInputQuery(search.q || '')
+  }, [search.q])
 
   // Flatten all tags for autocomplete
   const allFlattenedTags = useMemo(() => {
@@ -271,15 +290,16 @@ function H18ExplorePage() {
     return Array.from(map.values())
   }, [categories])
 
-  // Debounce the # tag search term
+  // Debounce the # tag search term: checks the word being typed after the last '#'
   useEffect(() => {
     const hashIndex = inputQuery.lastIndexOf('#')
     if (hashIndex !== -1) {
-      const rawTerm = inputQuery.slice(hashIndex + 1).trim().toLowerCase()
+      const afterHash = inputQuery.slice(hashIndex + 1)
+      const currentWord = afterHash.split(/\s+/)[0]?.trim().toLowerCase() ?? ''
       const timer = setTimeout(() => {
-        setDebouncedTagTerm(rawTerm)
+        setDebouncedTagTerm(currentWord)
         setIsSuggestionOpen(true)
-      }, 250)
+      }, 200)
       return () => clearTimeout(timer)
     } else {
       setDebouncedTagTerm(null)
@@ -289,12 +309,17 @@ function H18ExplorePage() {
 
   // Query live tags from API when typing #tag
   useEffect(() => {
-    if (debouncedTagTerm === null || !debouncedTagTerm.trim()) {
+    if (debouncedTagTerm === null) {
       setLiveSuggestions([])
       return
     }
 
     const term = debouncedTagTerm.trim()
+    if (!term) {
+      setLiveSuggestions([])
+      return
+    }
+
     let isMounted = true
 
     searchH18Tags({ data: { query: term, limit: 15 } })
@@ -347,8 +372,10 @@ function H18ExplorePage() {
         }
       })
 
-    return Array.from(mergedMap.values()).slice(0, 15)
-  }, [debouncedTagTerm, liveSuggestions, allFlattenedTags])
+    return Array.from(mergedMap.values())
+      .filter((t) => !activeTags.includes(t.slug.toLowerCase()))
+      .slice(0, 15)
+  }, [debouncedTagTerm, liveSuggestions, allFlattenedTags, activeTags])
 
   if (!isAuthenticated) {
     return <H18LockedGate onSuccess={() => window.location.reload()} />
@@ -374,19 +401,56 @@ function H18ExplorePage() {
     setIsSuggestionOpen(false)
     const trimmed = inputQuery.trim()
 
-    // If user searched for #tag, extract as tag filter
-    if (trimmed.startsWith('#')) {
-      const tagSlug = trimmed.slice(1).toLowerCase().replace(/\s+/g, '-')
-      updateSearch({ q: '', tag: tagSlug })
-    } else {
-      updateSearch({ q: trimmed, tag: undefined })
-    }
+    // Extract all #tags (e.g. #sole-female #romance)
+    const matchedHashTags = trimmed.match(/#([\w-]+)/g) || []
+    const extractedTagSlugs = matchedHashTags.map((t) => t.slice(1).toLowerCase().replace(/\s+/g, '-'))
+
+    // The remaining text without #hashtags is the title query (q)
+    const cleanQ = trimmed.replace(/#([\w-]+)/g, '').replace(/\s+/g, ' ').trim()
+
+    // Combine existing active tags with newly typed tags
+    const combinedTags = Array.from(new Set([...activeTags, ...extractedTagSlugs]))
+
+    updateSearch({
+      q: cleanQ || undefined,
+      tag: combinedTags.length > 0 ? combinedTags.join(',') : undefined,
+    })
+    setInputQuery(cleanQ)
   }
 
   const handleSelectSuggestedTag = (tag: { name: string; slug: string }) => {
-    setInputQuery(`#${tag.slug}`)
+    const nextTagSlug = tag.slug.toLowerCase()
+    const nextTags = Array.from(new Set([...activeTags, nextTagSlug]))
+
+    // Remove the trailing #... that was being typed from inputQuery
+    const hashIndex = inputQuery.lastIndexOf('#')
+    const remainingInput = hashIndex !== -1 ? inputQuery.slice(0, hashIndex).trim() : inputQuery.trim()
+
+    setInputQuery(remainingInput)
     setIsSuggestionOpen(false)
-    updateSearch({ tag: tag.slug, q: '' })
+    updateSearch({
+      tag: nextTags.join(','),
+      q: remainingInput || undefined,
+    })
+  }
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    const nextTags = activeTags.filter((t) => t !== tagToRemove)
+    updateSearch({
+      tag: nextTags.length > 0 ? nextTags.join(',') : undefined,
+    })
+  }
+
+  const handleTogglePopularTag = (tagSlug: string) => {
+    let nextTags: string[]
+    if (activeTags.includes(tagSlug)) {
+      nextTags = activeTags.filter((t) => t !== tagSlug)
+    } else {
+      nextTags = [...activeTags, tagSlug]
+    }
+    updateSearch({
+      tag: nextTags.length > 0 ? nextTags.join(',') : undefined,
+    })
   }
 
   const handleClearFilters = () => {
@@ -422,7 +486,7 @@ function H18ExplorePage() {
   const hasActiveFilters = Boolean(
     search.category ||
       search.language ||
-      search.tag ||
+      activeTags.length > 0 ||
       search.artist ||
       search.theme ||
       search.q ||
@@ -477,7 +541,7 @@ function H18ExplorePage() {
                   }
                 }}
                 onChange={(e) => setInputQuery(e.target.value)}
-                placeholder="Cari judul komik atau ketik #tag (misal: #comedy, #romance, #maid, #sole-female)..."
+                placeholder="Cari judul komik atau ketik satu/lebih #tag (misal: #comedy #romance #maid)..."
                 className="w-full h-11 bg-black/60 border border-white/15 focus:border-[#ff2d78] rounded-xl pl-10 pr-9 text-xs sm:text-sm text-white outline-none transition-colors placeholder:text-slate-500 font-medium"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -487,9 +551,10 @@ function H18ExplorePage() {
                   onClick={() => {
                     setInputQuery('')
                     setIsSuggestionOpen(false)
-                    updateSearch({ q: '', tag: undefined })
+                    updateSearch({ q: '' })
                   }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer"
+                  title="Bersihkan input pencarian"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -541,6 +606,43 @@ function H18ExplorePage() {
               </button>
             )}
           </div>
+
+          {/* Active Tag Chips (Multi-tag filter) */}
+          {activeTags.length > 0 && (
+            <div className="flex items-center gap-1.5 flex-wrap p-2.5 rounded-xl bg-black/40 border border-[#ff2d78]/25">
+              <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5 mr-1">
+                <Tag className="w-3.5 h-3.5 text-[#ff2d78]" />
+                <span>Tag Terpilih ({activeTags.length}):</span>
+              </span>
+              {activeTags.map((tagSlug) => (
+                <span
+                  key={tagSlug}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#ff2d78]/20 border border-[#ff2d78]/50 text-xs font-bold text-white shadow-xs group"
+                >
+                  <span className="text-[#ff2d78]">#</span>
+                  <span>{tagSlug}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTag(tagSlug)}
+                    className="w-4 h-4 rounded-full hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-colors cursor-pointer"
+                    title={`Hapus #${tagSlug}`}
+                    aria-label={`Hapus #${tagSlug}`}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+              {activeTags.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => updateSearch({ tag: undefined })}
+                  className="text-xs text-rose-400 hover:text-rose-300 font-bold px-2.5 py-1 rounded-lg hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-colors cursor-pointer ml-auto"
+                >
+                  Hapus Semua Tag ({activeTags.length})
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Row 1: MangaKyy Styled Custom Selectors (Kategori, Bahasa, Kreator, Tema, Urutan) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
@@ -594,16 +696,12 @@ function H18ExplorePage() {
 
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
               {POPULAR_TAGS.map((t) => {
-                const isSelected = search.tag === t.value
+                const isSelected = activeTags.includes(t.value)
                 return (
                   <button
                     key={t.value}
                     type="button"
-                    onClick={() => {
-                      const nextTag = isSelected ? undefined : t.value
-                      setInputQuery(nextTag ? `#${nextTag}` : '')
-                      updateSearch({ tag: nextTag })
-                    }}
+                    onClick={() => handleTogglePopularTag(t.value)}
                     className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       isSelected
                         ? 'bg-[#ff2d78] text-white shadow-sm shadow-[#ff2d78]/40 border border-[#ff2d78]'
