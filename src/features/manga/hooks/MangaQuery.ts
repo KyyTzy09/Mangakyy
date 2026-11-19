@@ -43,3 +43,15 @@ export const useGetUpdateManga = (initialData: APIResponse<UpdateComic[]>, type:
         placeholderData: (prev) => prev ?? initialData
     })
 }
+
+export const useGetSimilarManga = (mangaId: string, initialData?: APIResponse<ComicType[]>) => {
+    return useQuery({
+        queryKey: ["similar-manga", mangaId],
+        queryFn: async () => {
+            return await trpcClient.manga.getSimilarManga.query({ mangaId })
+        },
+        initialData,
+        enabled: !!mangaId,
+        staleTime: 1000 * 60 * 10,
+    })
+}

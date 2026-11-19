@@ -23,9 +23,10 @@ export interface Meta {
 }
 
 export interface ComicType {
+    id?: number;
     alternative_title: string;
     bookmark_count: number;
-    country_id: "KR" | "JP" | "CN";
+    country_id: "KR" | "JP" | "CN" | string;
 
     cover_image_url: string;
     cover_portrait_url: string;
@@ -34,7 +35,7 @@ export interface ComicType {
     deleted_at: string | null;
 
     description: string;
-    is_recommended: boolean;
+    is_recommended?: boolean;
 
     latest_chapter_id: string;
     latest_chapter_number: number;
@@ -45,14 +46,18 @@ export interface ComicType {
     release_year: string;
     status: number;
 
-    taxonomy: Taxonomy;
+    taxonomy?: Taxonomy;
 
     title: string;
 
     updated_at: string;
 
     user_rate: number;
+    weighted_score?: number;
     view_count: number;
+    total_chapters?: number;
+    rating_count?: number;
+    badge_text?: string | null;
 }
 
 export interface PopularComic {
@@ -124,6 +129,7 @@ export interface Chapter {
 }
 
 export interface ComicDetail {
+    id?: number;
     manga_id: string
     title: string
     description: string
@@ -134,12 +140,17 @@ export interface ComicDetail {
     cover_portrait_url: string
     view_count: number
     user_rate: number
+    weighted_score?: number
     latest_chapter_id: string
     latest_chapter_number: number
-    latest_chapter_time: Date
+    latest_chapter_time: string | Date
     country_id: string
     bookmark_count: number
+    total_chapters?: number
+    rating_count?: number
     rank: number
+    is_recommended?: boolean
+    badge_text?: string | null
     taxonomy: Taxonomy
     created_at: string
     updated_at: string
@@ -166,8 +177,19 @@ export interface Taxonomy {
 
 
 export interface TaxonomyItem {
+    taxonomy_id?: number;
     name: string;
     slug: string;
+}
+
+export interface SimilarMangaResponse {
+    retcode: number;
+    message: string;
+    meta: Meta;
+    data: {
+        mangas: ComicType[];
+        processing_time_ms?: number;
+    };
 }
 
 

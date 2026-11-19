@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useLoaderData, useNavigate, useRouter, useSearch } from '@tanstack/react-router'
 import {
   ArrowLeft,
@@ -9,6 +9,9 @@ import {
   Trophy,
   BookOpen,
   Bookmark,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import type { ComicType } from '@/shared/interfaces'
 import { Button } from '@/shared/shadcn/button'
@@ -17,6 +20,9 @@ import { formatCompactNumber } from '@/shared/utils/formater'
 import type { NewChapterHistory, NewComicHistory } from '@/shared/utils/history'
 import { getLatestChapterHistory, getHistoryByComicId } from '@/shared/utils/history'
 import { useGetChapterList } from '@/features/chapter/hooks/chapterQuery'
+import { useGetSimilarManga } from '@/features/manga/hooks/MangaQuery'
+import GenreComicCard from '@/features/manga/components/cards/GenreComicCard'
+import SectionEmptyState from '@/shared/components/reusable/SectionEmptyState'
 import ChapterHistoryCard from '@/features/chapter/components/cards/ChapterHistoryCard'
 import ChapterList from '@/features/chapter/components/cards/chapterList'
 import ChapterGridCard from '@/features/chapter/components/cards/ChapterGridCard'
@@ -26,7 +32,7 @@ import CardLayoutSwitcher from '@/features/manga/components/interacts/CardLayout
 import type { ViewMode } from '@/features/manga/components/interacts/CardLayoutSwitcher'
 
 export default function DetailPage() {
-  const { detail, chapters } = useLoaderData({ from: '/detail/$mangaId' })
+  const { detail, chapters, similar } = useLoaderData({ from: '/detail/$mangaId' })
   const navigate = useNavigate()
   const router = useRouter()
 
@@ -57,6 +63,17 @@ export default function DetailPage() {
     page,
   )
 
+  const { data: similarData } = useGetSimilarManga(mangaId, similar)
+  const similarMangas = similarData?.data || similar?.data || []
+  const similarScrollRef = useRef<HTMLDivElement>(null)
+
+  const handleScrollSimilar = (direction: 'left' | 'right') => {
+    if (similarScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -360 : 360
+      similarScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+    }
+  }
+
   // Mobile detection for forcing list mode on small screens
   useEffect(() => {
     const handleResize = () => {
@@ -81,28 +98,6 @@ export default function DetailPage() {
     return new Set(comicHistory.chapters.map((c) => String(c.chapter_id)))
   }, [comicHistory])
 
-  const comic = detail?.data
-  const activeView = isMobile ? 'list' : viewMode
-
-  const coverUrl = comic?.cover_portrait_url || comic?.cover_image_url || ''
-  const statusText =
-    comic?.status === 1
-      ? 'Ongoing'
-      : comic?.status === 2
-        ? 'Hiatus'
-        : 'Completed'
-
-  const formatText =
-    comic?.taxonomy?.Format?.[0]?.name ||
-    displayComicType(comic?.country_id || '') ||
-    'Comic'
-
-  const typeText = comic?.taxonomy?.Type?.[0]?.name || 'Project'
-
-  const authors = comic?.taxonomy?.Author || []
-  const artists = comic?.taxonomy?.Artist || []
-  const genres = comic?.taxonomy?.Genre || []
-
   // Safe back navigation handler
   const handleBack = () => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
@@ -112,10 +107,46 @@ export default function DetailPage() {
     }
   }
 
+  const comic = detail?.data
+
+  if (!comic) {
+    return (
+      <main className="relative flex flex-col items-center justify-center min-h-screen bg-[#080C14] text-slate-100 p-6">
+        <SectionEmptyState
+          size="lg"
+          title="Komik Tidak Ditemukan"
+          message="Data komik detail tidak tersedia atau gagal dimuat dari server."
+          onRetry={handleBack}
+        />
+      </main>
+    )
+  }
+
+  const activeView = isMobile ? 'list' : viewMode
+
+  const coverUrl = comic.cover_portrait_url || comic.cover_image_url || ''
+  const statusText =
+    comic.status === 1
+      ? 'Ongoing'
+      : comic.status === 2
+        ? 'Hiatus'
+        : 'Completed'
+
+  const formatText =
+    comic.taxonomy?.Format?.[0]?.name ||
+    displayComicType(comic.country_id || '') ||
+    'Comic'
+
+  const typeText = comic.taxonomy?.Type?.[0]?.name || 'Project'
+
+  const authors = comic.taxonomy?.Author || []
+  const artists = comic.taxonomy?.Artist || []
+  const genres = comic.taxonomy?.Genre || []
+
   // Read action target
   const handleStartRead = () => {
     const targetChapterId =
-      history?.chapter_id || comic?.latest_chapter_id || ''
+      history?.chapter_id || comic.latest_chapter_id || ''
     if (targetChapterId) {
       navigate({
         to: '/chapter/$chapterId',
@@ -125,7 +156,11 @@ export default function DetailPage() {
   }
 
   const totalChapters =
-    comic?.latest_chapter_number || chapterList?.meta?.total_record || chapterList?.data?.length || 0
+    comic.total_chapters ||
+    comic.latest_chapter_number ||
+    chapterList?.meta?.total_record ||
+    chapterList?.data?.length ||
+    0
 
   return (
     <main className="relative flex flex-col items-center justify-start min-h-screen bg-[#080C14] text-slate-100 overflow-x-hidden pb-16">
@@ -225,7 +260,12 @@ export default function DetailPage() {
                   {/* Rating */}
                   <div className="flex items-center gap-1.5 text-amber-300 font-bold">
                     <Star className="w-4 h-4 fill-amber-300 text-amber-300" />
-                    <span>{comic?.user_rate ? comic.user_rate.toFixed(1) : '0.0'}</span>
+                    <span>{comic.user_rate ? comic.user_rate.toFixed(1) : '0.0'}</span>
+                    {comic.rating_count ? (
+                      <span className="text-[11px] font-normal text-slate-400">
+                        ({formatCompactNumber(comic.rating_count)})
+                      </span>
+                    ) : null}
                   </div>
 
                   <span className="w-1 h-1 rounded-full bg-slate-600" />
@@ -386,7 +426,66 @@ export default function DetailPage() {
         </div>
       </section>
 
-      {/* 2. Chapter List Section with Grid/List Layout Switcher (Transparent so watermark logo is visible) */}
+      {/* 2. Komik Terkait (Similar Comics) Section */}
+      {similarMangas.length > 0 && (
+        <section className="relative z-10 flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-8 pb-2 gap-4 bg-transparent">
+          {/* Header */}
+          <header className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2.5 bg-primary/10 rounded-2xl border border-primary/20 text-primary">
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl sm:text-2xl font-bold font-heading text-white">
+                  Komik Terkait
+                </h3>
+                <span className="text-xs text-slate-400">
+                  Rekomendasi komik serupa yang mungkin kamu suka ({similarMangas.length})
+                </span>
+              </div>
+            </div>
+
+            {/* Scroll Navigation Buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleScrollSimilar('left')}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 hover:bg-primary/20 border border-white/10 hover:border-primary/40 text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95"
+                title="Geser ke kiri"
+                aria-label="Geser ke kiri"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleScrollSimilar('right')}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 hover:bg-primary/20 border border-white/10 hover:border-primary/40 text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95"
+                title="Geser ke kanan"
+                aria-label="Geser ke kanan"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </header>
+
+          {/* Horizontal Scroll Carousel */}
+          <div
+            ref={similarScrollRef}
+            className="flex items-stretch gap-3 sm:gap-4 overflow-x-auto pb-4 pt-1 scroll-smooth scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
+            {similarMangas.map((similarComic, i) => (
+              <div
+                key={similarComic.manga_id || i}
+                className="shrink-0 w-36 sm:w-44 md:w-48"
+              >
+                <GenreComicCard data={similarComic} index={i} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 3. Chapter List Section with Grid/List Layout Switcher (Transparent so watermark logo is visible) */}
       <section className="relative z-10 flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 gap-6 bg-transparent">
         {/* Section Header */}
         <header className="flex items-center justify-between w-full">

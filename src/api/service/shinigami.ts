@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/http/apiClient";
-import type { APIResponse, ChapterDetail, ChapterList, ComicType, PopularComic, TaxonomyItem, UpdateComic } from "@/shared/interfaces";
+import type { APIResponse, ChapterDetail, ChapterList, ComicDetail, ComicType, PopularComic, TaxonomyItem, UpdateComic } from "@/shared/interfaces";
 
 export class ShinigamiService {
     public async getRecommendationLists() {
@@ -77,7 +77,29 @@ export class ShinigamiService {
     }
 
     public async getComicDetail(comicId: string) {
-        return await apiClient<APIResponse<ComicType>>({ url: `/manga/detail/${comicId}` })
+        return await apiClient<APIResponse<ComicDetail>>({ url: `/manga/detail/${comicId}` })
+    }
+
+    public async getSimilarManga(comicId: string): Promise<APIResponse<ComicType[]>> {
+        const res = await apiClient<{
+            retcode: number;
+            message: string;
+            meta: any;
+            data: {
+                mangas: ComicType[];
+                processing_time_ms?: number;
+            };
+        }>({
+            url: `/manga/${comicId}/similar`,
+            method: "get"
+        });
+
+        return {
+            retcode: res?.retcode ?? 0,
+            message: res?.message ?? "success",
+            meta: res?.meta ?? ({} as any),
+            data: res?.data?.mangas || []
+        };
     }
 
     public async getChapterList(comicId: string, page: number = 1, pageSize: number = 24, sort_order: "asc" | "desc" = "desc") {

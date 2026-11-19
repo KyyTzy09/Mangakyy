@@ -1,5 +1,5 @@
 import { getChapterList } from '@/api/server/chapter'
-import { getMangaDetail } from '@/api/server/manga'
+import { getMangaDetail, getSimilarManga } from '@/api/server/manga'
 import DetailPage from '@/pages/detail'
 import {
   DEFAULT_OG_IMAGE,
@@ -23,25 +23,31 @@ export const Route = createFileRoute('/detail/$mangaId')({
   loaderDeps: ({ search: { page } }) => ({ page }),
   component: DetailPage,
   loader: async ({ params, deps: { page } }) => {
-    const detail = await getMangaDetail({ data: { mangaId: params.mangaId } })
-    return {
-      detail,
-      chapters: await getChapterList({
+    const [detail, chapters, similar] = await Promise.all([
+      getMangaDetail({ data: { mangaId: params.mangaId } }),
+      getChapterList({
         data: { mangaId: params.mangaId, page: page || 1 },
       }),
+      getSimilarManga({ data: { mangaId: params.mangaId } }).catch(() => ({ data: [] })),
+    ])
+
+    return {
+      detail,
+      chapters,
+      similar,
       meta: {
-        title: `Baca Komik ${detail?.data.title || 'Manga'} Bahasa Indonesia - ${SITE_NAME}`,
-        rawTitle: detail?.data.title || 'Manga',
+        title: `Baca Komik ${detail?.data?.title || 'Manga'} Bahasa Indonesia - ${SITE_NAME}`,
+        rawTitle: detail?.data?.title || 'Manga',
         description:
-          detail?.data.description ||
-          `Baca manga ${detail?.data.title} online gratis subtitle bahasa Indonesia update chapter terbaru di MangaKyy.`,
-        image: detail?.data.cover_image_url || DEFAULT_OG_IMAGE,
+          detail?.data?.description ||
+          `Baca manga ${detail?.data?.title} online gratis subtitle bahasa Indonesia update chapter terbaru di MangaKyy.`,
+        image: detail?.data?.cover_image_url || DEFAULT_OG_IMAGE,
         genres:
-          detail?.data.taxonomy?.Genre?.map((g: { name: string }) => g.name) ||
+          detail?.data?.taxonomy?.Genre?.map((g: { name: string }) => g.name) ||
           [],
-        rating: detail?.data.user_rate || 0,
-        totalChapters: detail?.data.latest_chapter_number || 0,
-        status: detail?.data.status,
+        rating: detail?.data?.user_rate || 0,
+        totalChapters: detail?.data?.latest_chapter_number || detail?.data?.total_chapters || 0,
+        status: detail?.data?.status,
       },
     }
   },

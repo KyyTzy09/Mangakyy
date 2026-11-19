@@ -20,6 +20,10 @@ export const getComicDetailSchema = z.object({
     mangaId: z.string()
 })
 
+export const getSimilarMangaSchema = z.object({
+    mangaId: z.string()
+})
+
 export const getUpdateComicSchema = z.object({
     type: z.enum(["mirror", "project"]).optional(),
     page: z.number().optional() || 1,
