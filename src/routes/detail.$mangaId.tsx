@@ -15,6 +15,8 @@ export interface DetailSearch {
 }
 
 export const Route = createFileRoute('/detail/$mangaId')({
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 30,
   validateSearch: (search: Record<string, unknown>): DetailSearch => {
     return {
       page: Number(search.page) > 0 ? Number(search.page) : 1,

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { defaultImage } from '@/shared/dummy/image'
 import type { ChapterList as ChapterListType, ComicType } from '@/shared/interfaces'
 import { Button } from '@/shared/shadcn/button'
@@ -14,7 +15,7 @@ interface Props {
   isRead?: boolean
 }
 
-export default function ChapterList({
+function ChapterList({
   chapter,
   index,
   comic,
@@ -107,3 +108,5 @@ export default function ChapterList({
     </motion.article>
   )
 }
+
+export default memo(ChapterList)

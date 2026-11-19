@@ -11,6 +11,8 @@ import {
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/chapter/$chapterId')({
+  staleTime: 1000 * 60 * 10,
+  gcTime: 1000 * 60 * 30,
   component: ChapterPage,
   loader: async ({ params }) => {
     const detail = await getChapterDetail({

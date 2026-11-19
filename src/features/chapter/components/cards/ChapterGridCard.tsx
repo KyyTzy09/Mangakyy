@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { defaultImage } from '@/shared/dummy/image'
 import type { ChapterList, ComicType } from '@/shared/interfaces'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
@@ -14,7 +15,7 @@ interface Props {
   isRead?: boolean
 }
 
-export default function ChapterGridCard({
+function ChapterGridCard({
   chapter,
   index,
   comic,
@@ -108,3 +109,5 @@ export default function ChapterGridCard({
     </motion.article>
   )
 }
+
+export default memo(ChapterGridCard)

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { Link, useLoaderData, useNavigate, useRouter, useSearch } from '@tanstack/react-router'
 import {
   ArrowLeft,
@@ -44,12 +44,12 @@ export default function DetailPage() {
   const search = useSearch({ from: '/detail/$mangaId' })
   const page = Number(search?.page) > 0 ? Number(search.page) : 1
 
-  const setPage = (target: number | ((prev: number) => number)) => {
+  const setPage = useCallback((target: number | ((prev: number) => number)) => {
     const newPage = typeof target === 'function' ? target(page) : target
     navigate({
       search: (prev) => ({ ...prev, page: newPage }),
     })
-  }
+  }, [navigate, page])
 
   // Layout switcher state (default grid for large screens)
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
@@ -67,21 +67,22 @@ export default function DetailPage() {
   const similarMangas = similarData?.data || similar?.data || []
   const similarScrollRef = useRef<HTMLDivElement>(null)
 
-  const handleScrollSimilar = (direction: 'left' | 'right') => {
+  const handleScrollSimilar = useCallback((direction: 'left' | 'right') => {
     if (similarScrollRef.current) {
       const scrollAmount = direction === 'left' ? -360 : 360
       similarScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
     }
-  }
+  }, [])
 
-  // Mobile detection for forcing list mode on small screens
+  // Mobile detection with matchMedia (zero layout thrashing, only fires on boundary cross)
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 640)
-    }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    if (typeof window === 'undefined') return
+    const mediaQuery = window.matchMedia('(max-width: 639px)')
+    setIsMobile(mediaQuery.matches)
+
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mediaQuery.addEventListener('change', handler)
+    return () => mediaQuery.removeEventListener('change', handler)
   }, [])
 
   // Load history
@@ -99,13 +100,13 @@ export default function DetailPage() {
   }, [comicHistory])
 
   // Safe back navigation handler
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
       router.history.back()
     } else {
       navigate({ to: '/' })
     }
-  }
+  }, [router, navigate])
 
   const comic = detail?.data
 
@@ -144,7 +145,7 @@ export default function DetailPage() {
   const genres = comic.taxonomy?.Genre || []
 
   // Read action target
-  const handleStartRead = () => {
+  const handleStartRead = useCallback(() => {
     const targetChapterId =
       history?.chapter_id || comic.latest_chapter_id || ''
     if (targetChapterId) {
@@ -153,7 +154,7 @@ export default function DetailPage() {
         params: { chapterId: targetChapterId },
       })
     }
-  }
+  }, [history?.chapter_id, comic.latest_chapter_id, navigate])
 
   const totalChapters =
     comic.total_chapters ||

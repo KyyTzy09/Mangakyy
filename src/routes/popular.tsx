@@ -18,6 +18,8 @@ export interface PopularSearch {
 }
 
 export const Route = createFileRoute('/popular')({
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 30,
   validateSearch: (search: Record<string, unknown>): PopularSearch => {
     const page = Number(search.page)
     return {

@@ -27,6 +27,8 @@ export interface ExploreSearch {
 }
 
 export const Route = createFileRoute('/explore')({
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 30,
   validateSearch: (search: Record<string, unknown>): ExploreSearch => {
     return {
       page: Number(search.page) > 0 ? Number(search.page) : 1,
@@ -135,9 +137,9 @@ export const Route = createFileRoute('/explore')({
     const query = deps.q || ''
     const page = deps.page || 1
 
-    return {
-      genres: await getComicGenres(),
-      comics: await getMangaByGenre({
+    const [genresData, comicsData] = await Promise.all([
+      getComicGenres(),
+      getMangaByGenre({
         data: {
           query,
           genres,
@@ -149,6 +151,11 @@ export const Route = createFileRoute('/explore')({
           page,
         },
       }),
+    ])
+
+    return {
+      genres: genresData,
+      comics: comicsData,
       initialSearch: deps,
     }
   },

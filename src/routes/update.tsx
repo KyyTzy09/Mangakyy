@@ -19,6 +19,8 @@ export interface UpdateSearch {
 }
 
 export const Route = createFileRoute('/update')({
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 30,
   validateSearch: (search: Record<string, unknown>): UpdateSearch => {
     const type = search.type === 'project' ? 'project' : 'mirror'
     const page = Number(search.page) > 0 ? Number(search.page) : 1

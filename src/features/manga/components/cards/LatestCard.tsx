@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { UpdateComic } from '@/shared/interfaces'
 import { formatRelativeTime } from '@/shared/utils/dateConverter'
 import { useNavigate } from '@tanstack/react-router'
@@ -8,7 +9,7 @@ interface Props {
   index?: number
 }
 
-export default function LatestCard({ data, index = 0 }: Props) {
+function LatestCard({ data, index = 0 }: Props) {
   const navigate = useNavigate()
   const {
     manga_id,
@@ -104,3 +105,5 @@ export default function LatestCard({ data, index = 0 }: Props) {
     </motion.article>
   )
 }
+
+export default memo(LatestCard)

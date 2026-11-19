@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { ComicType } from '@/shared/interfaces'
 import { formatCompactNumber } from '@/shared/utils/formater'
 import { Link } from '@tanstack/react-router'
@@ -9,7 +10,7 @@ interface Props {
   index?: number
 }
 
-export default function GenreComicCard({ data, index = 0 }: Props) {
+function GenreComicCard({ data, index = 0 }: Props) {
   const cover = data.cover_portrait_url || data.cover_image_url
 
   return (
@@ -74,3 +75,5 @@ export default function GenreComicCard({ data, index = 0 }: Props) {
     </Link>
   )
 }
+
+export default memo(GenreComicCard)

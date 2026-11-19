@@ -18,6 +18,8 @@ import {
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 30,
   component: HomePage,
   head: () => ({
     meta: [
@@ -100,19 +102,35 @@ export const Route = createFileRoute('/')({
     ],
   }),
   loader: async () => {
-    return {
-      topWeekly: await getPopularManga({
+    const [
+      topWeekly,
+      heroRecommendation,
+      recommendationLists,
+      recommendation,
+      popular,
+      update,
+    ] = await Promise.all([
+      getPopularManga({
         data: { type: 'weekly', pageSize: 12 },
       }).catch(() => null),
-      heroRecommendation: await getRecommendationBySlug({
+      getRecommendationBySlug({
         data: { slug: 'home' },
       }).catch(() => null),
-      recommendationLists: await getRecommendationLists().catch(() => null),
-      recommendation: await getRecommendationManga({
+      getRecommendationLists().catch(() => null),
+      getRecommendationManga({
         data: { format: 'manga' },
       }).catch(() => null),
-      popular: await getPopularManga({ data: { type: 'all_time' } }).catch(() => null),
-      update: await getUpdateManga({ data: { type: 'project' } }).catch(() => null),
+      getPopularManga({ data: { type: 'all_time' } }).catch(() => null),
+      getUpdateManga({ data: { type: 'project' } }).catch(() => null),
+    ])
+
+    return {
+      topWeekly,
+      heroRecommendation,
+      recommendationLists,
+      recommendation,
+      popular,
+      update,
     }
   },
 })

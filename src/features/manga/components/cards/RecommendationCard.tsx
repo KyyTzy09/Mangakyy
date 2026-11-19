@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Label } from '@/shared/shadcn/label'
 import type { ComicType } from '@/shared/interfaces'
 import { countryCodeToFlag } from '@/shared/utils/countryConverter'
@@ -11,7 +12,7 @@ interface Props {
     index: number
 }
 
-export default function RecommendationCard({ data, index }: Props) {
+function RecommendationCard({ data, index }: Props) {
     return (
         <Link to={`/detail/$mangaId`} params={{ mangaId: data.manga_id }} >
             <motion.article
@@ -60,3 +61,5 @@ export default function RecommendationCard({ data, index }: Props) {
         </Link >
     )
 }
+
+export default memo(RecommendationCard)
