@@ -1,5 +1,7 @@
 import {
   getPopularManga,
+  getRecommendationBySlug,
+  getRecommendationLists,
   getRecommendationManga,
   getUpdateManga,
 } from '@/api/server/manga'
@@ -101,12 +103,16 @@ export const Route = createFileRoute('/')({
     return {
       topWeekly: await getPopularManga({
         data: { type: 'weekly', pageSize: 12 },
-      }),
+      }).catch(() => null),
+      heroRecommendation: await getRecommendationBySlug({
+        data: { slug: 'home' },
+      }).catch(() => null),
+      recommendationLists: await getRecommendationLists().catch(() => null),
       recommendation: await getRecommendationManga({
         data: { format: 'manga' },
-      }),
-      popular: await getPopularManga({ data: { type: 'all_time' } }),
-      update: await getUpdateManga({ data: { type: 'project' } }),
+      }).catch(() => null),
+      popular: await getPopularManga({ data: { type: 'all_time' } }).catch(() => null),
+      update: await getUpdateManga({ data: { type: 'project' } }).catch(() => null),
     }
   },
 })

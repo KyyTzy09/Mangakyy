@@ -1,5 +1,9 @@
 import z from "zod";
 
+export const getRecommendationListSchema = z.object({
+    slug: z.string().optional().default("home")
+})
+
 export const getRecommendationComicSchema = z.object({
     format: z.enum(["manhwa", "manhua", "manga"]).optional() || "manhwa",
     page: z.number().optional() || 1,

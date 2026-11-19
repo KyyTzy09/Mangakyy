@@ -1,8 +1,18 @@
 "use server"
 
 import { trpcRouter } from "@/integrations/trpc/router"
-import { getComicByGenreSchema, getComicDetailSchema, getPopularComicSchema, getRecommendationComicSchema, getUpdateComicSchema } from "@/shared/schemas/shinigami.scema"
+import { getComicByGenreSchema, getComicDetailSchema, getPopularComicSchema, getRecommendationComicSchema, getRecommendationListSchema, getUpdateComicSchema } from "@/shared/schemas/shinigami.scema"
 import { createServerFn } from "@tanstack/react-start"
+
+export const getRecommendationLists = createServerFn().handler(async ({ context }) => {
+    const caller = trpcRouter.createCaller(context!)
+    return await caller.manga.getRecommendationLists()
+})
+
+export const getRecommendationBySlug = createServerFn().validator(getRecommendationListSchema).handler(async ({ context, data }) => {
+    const caller = trpcRouter.createCaller(context!)
+    return await caller.manga.getRecommendationBySlug(data)
+})
 
 export const getRecommendationManga = createServerFn().validator(getRecommendationComicSchema).handler(async ({ context, data }) => {
     const caller = trpcRouter.createCaller(context!)

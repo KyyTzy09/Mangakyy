@@ -2,6 +2,40 @@ import { apiClient } from "@/shared/http/apiClient";
 import type { APIResponse, ChapterDetail, ChapterList, ComicType, PopularComic, TaxonomyItem, UpdateComic } from "@/shared/interfaces";
 
 export class ShinigamiService {
+    public async getRecommendationLists() {
+        return await apiClient<APIResponse<Array<{ slug: string; name: string; description: string; item_count: number }>>>({
+            url: `/manga/recommendation/lists`,
+            method: "get"
+        });
+    }
+
+    public async getRecommendationListBySlug(slug: string = "home"): Promise<APIResponse<ComicType[]>> {
+        const res = await apiClient<{
+            retcode: number;
+            message: string;
+            meta: any;
+            data: {
+                list: {
+                    slug: string;
+                    name: string;
+                    description: string;
+                    item_count: number;
+                };
+                mangas: ComicType[];
+            };
+        }>({
+            url: `/manga/recommendation/lists/${slug}`,
+            method: "get"
+        });
+
+        return {
+            retcode: res?.retcode ?? 0,
+            message: res?.message ?? "success",
+            meta: res?.meta ?? ({} as any),
+            data: res?.data?.mangas || []
+        };
+    }
+
     public async getComicRecomendation(format: "manhwa" | "manhua" | "manga" = "manga", page: number = 1, pageSize: number = 10) {
         return await apiClient<APIResponse<ComicType[]>>({ url: `/manga/list?format=${format}&page=${page}&page_size=${pageSize}&is_recommended=true&sort=latest&sort_order=desc`, method: "get" })
     }

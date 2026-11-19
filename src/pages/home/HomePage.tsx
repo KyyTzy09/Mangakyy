@@ -7,9 +7,14 @@ import type { ComicType } from '@/shared/interfaces'
 import { useLoaderData } from '@tanstack/react-router'
 
 export default function HomePage() {
-  const { topWeekly, recommendation, popular, update } = useLoaderData({
+  const { topWeekly, heroRecommendation, recommendation, popular, update } = useLoaderData({
     from: '/',
   })
+
+  // Prioritas data Carousel: Rekomendasi Home (dari /manga/recommendation/lists/home), fallback ke topWeekly
+  const carouselItems = (heroRecommendation?.data && heroRecommendation.data.length > 0)
+    ? heroRecommendation.data
+    : (topWeekly?.data || [])
 
   return (
     <div className="relative flex flex-col w-full min-h-screen text-slate-100 bg-[#080C14] pb-16 md:pb-10 overflow-x-hidden">
@@ -27,9 +32,9 @@ export default function HomePage() {
         />
       </div>
 
-      {/* 1. Full-width Hero Carousel Section (Edge-to-Edge) - Top Weekly */}
+      {/* 1. Full-width Hero Carousel Section (Edge-to-Edge) - Recommendations */}
       <div className="relative z-10 w-full">
-        <CarouselSection items={topWeekly?.data || []} />
+        <CarouselSection recommendations={carouselItems} />
       </div>
 
       {/* 2. Lower Content Section (Centered max-w Container) */}

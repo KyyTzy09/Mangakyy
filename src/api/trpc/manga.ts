@@ -1,8 +1,14 @@
 import { shinigamiService } from "@/api/service/shinigami";
 import { createTRPCRouter, publicProcedure } from "../../integrations/trpc/init";
-import { getComicByGenreSchema, getComicDetailSchema, getPopularComicSchema, getRecommendationComicSchema, getUpdateComicSchema } from "@/shared/schemas/shinigami.scema";
+import { getComicByGenreSchema, getComicDetailSchema, getPopularComicSchema, getRecommendationComicSchema, getRecommendationListSchema, getUpdateComicSchema } from "@/shared/schemas/shinigami.scema";
 
 export const mangaRouter = createTRPCRouter({
+    getRecommendationLists: publicProcedure.query(async () => {
+        return await shinigamiService.getRecommendationLists()
+    }),
+    getRecommendationBySlug: publicProcedure.input(getRecommendationListSchema).query(async ({ input }) => {
+        return await shinigamiService.getRecommendationListBySlug(input.slug)
+    }),
     getRecommendationComic: publicProcedure.input(getRecommendationComicSchema).query(async ({ input }) => {
         return await shinigamiService.getComicRecomendation(input.format, input.page, input.pageSize)
     }),

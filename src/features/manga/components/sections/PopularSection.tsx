@@ -27,7 +27,7 @@ const popularButton = [
 ]
 
 export default function PopularSection({ popular }: Props) {
-    const [selectedType, setSelectedType] = useState<{ title: string, value: "daily" | "weekly" | "all_time" }>({ title: "Harian", value: "daily" })
+    const [selectedType, setSelectedType] = useState<{ title: string, value: "daily" | "weekly" | "all_time" }>({ title: "Semua", value: "all_time" })
     const { data, isPending } = useGetPopularManga(selectedType.value, popular)
 
     return (
